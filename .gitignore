@@ -1,5 +1,6 @@
 /src/db.sqlite3
 /.project
 /.pydevproject
+/.settings
 *.pyc
 *.pyo
