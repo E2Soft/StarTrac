@@ -25,7 +25,7 @@ PRIORITY_LVL= (
 class RequirementTask(models.Model):
     name = models.CharField(max_length=70, default="")
     state_kind = models.CharField(max_length=1, choices=STATE_KIND, default="C")
-    project_tast_user = models.ForeignKey(User, null=True)
+    project_tast_user = models.ForeignKey(User)
     priority_lvl = models.CharField(max_length=1, choices=PRIORITY_LVL, default="L")
     
     class Meta:
@@ -51,11 +51,11 @@ class Milestone(models.Model):
     date_created = models.DateTimeField('date published')
     name = models.CharField(max_length=70, default="")
     summry =  models.CharField(max_length=300)
-    event = models.ForeignKey(Event)
+    event = models.ForeignKey(Event, null=True)
 
 class Task(RequirementTask):
-    projects = models.ForeignKey(Requirement)
-    milestone = models.ForeignKey(Milestone)
+    projects = models.ForeignKey(Requirement, null=True)
+    milestone = models.ForeignKey(Milestone, null=True)
 
 class Comment(Event):
     content = models.CharField(max_length=200, default="")
