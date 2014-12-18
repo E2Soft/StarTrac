@@ -22,24 +22,43 @@ PRIORITY_LVL= (
         ('L', 'Low'),
     )
 
-class ProjectTask(models.Model):
+class RequirementTask(models.Model):
     name = models.CharField(max_length=70, default="")
     state_kind = models.CharField(max_length=1, choices=STATE_KIND, default="C")
     project_tast_user = models.ForeignKey(User, null=True)
     priority_lvl = models.CharField(max_length=1, choices=PRIORITY_LVL, default="L")
     
     class Meta:
-        abstract = True
+        abstract = False
         ordering = ['name']
      
     def __str__(self):
         return self.name
 
-class Project(ProjectTask):
+class Requirement(RequirementTask):
     pub_date = models.DateTimeField('date published')
-
-class Task(ProjectTask):
-    projects = models.ForeignKey(Project)
     
-class Milestone(ProjectTask):
+class Event(models.Model):
+    event_user = models.ForeignKey(User)
+    event_kind = models.CharField(max_length=1, choices=EVENT_KIND, default="C")
+    date_created = models.DateTimeField('date published')
+    requirement_task = models.ForeignKey(RequirementTask)
+    
+    class Meta:
+        abstract = False
+
+class Milestone(models.Model):
+    date_created = models.DateTimeField('date published')
+    name = models.CharField(max_length=70, default="")
     summry =  models.CharField(max_length=300)
+    event = models.ForeignKey(Event)
+
+class Task(RequirementTask):
+    projects = models.ForeignKey(Requirement)
+    milestone = models.ForeignKey(Milestone)
+
+class Comment(Event):
+    content = models.CharField(max_length=200, default="")
+    
+class StateChange(Event):
+    new_state = models.CharField(max_length=1, choices=STATE_KIND, default="C")
