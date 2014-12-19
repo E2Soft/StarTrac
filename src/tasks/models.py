@@ -27,6 +27,8 @@ class RequirementTask(models.Model):
     state_kind = models.CharField(max_length=1, choices=STATE_KIND, default="C")
     project_tast_user = models.ForeignKey(User)
     priority_lvl = models.CharField(max_length=1, choices=PRIORITY_LVL, default="L")
+    pub_date = models.DateTimeField('date published')
+    content = models.CharField(max_length=100, default="")
     
     class Meta:
         abstract = False
@@ -36,7 +38,7 @@ class RequirementTask(models.Model):
         return self.name
 
 class Requirement(RequirementTask):
-    pub_date = models.DateTimeField('date published')
+    pass
     
 class Event(models.Model):
     event_user = models.ForeignKey(User)
@@ -54,8 +56,9 @@ class Milestone(models.Model):
     event = models.ForeignKey(Event, null=True)
 
 class Task(RequirementTask):
-    projects = models.ForeignKey(Requirement, null=True)
-    milestone = models.ForeignKey(Milestone, null=True)
+    projects = models.ForeignKey(Requirement, null=True, blank=True)
+    milestone = models.ForeignKey(Milestone, null=True, blank=True)
+    assigned_to = models.ForeignKey(User)
 
 class Comment(Event):
     content = models.CharField(max_length=200, default="")

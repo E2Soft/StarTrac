@@ -15,8 +15,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Event',
             fields=[
-                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
-                ('event_kind', models.CharField(max_length=1, choices=[('C', 'Accepted'), ('P', 'Created')], default='C')),
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
+                ('event_kind', models.CharField(default='C', choices=[('C', 'Accepted'), ('P', 'Created')], max_length=1)),
                 ('date_created', models.DateTimeField(verbose_name='date published')),
             ],
             options={
@@ -27,8 +27,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Comment',
             fields=[
-                ('event_ptr', models.OneToOneField(serialize=False, auto_created=True, primary_key=True, parent_link=True, to='tasks.Event')),
-                ('content', models.CharField(max_length=200, default='')),
+                ('event_ptr', models.OneToOneField(to='tasks.Event', auto_created=True, primary_key=True, parent_link=True, serialize=False)),
+                ('content', models.CharField(default='', max_length=200)),
             ],
             options={
             },
@@ -37,9 +37,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Milestone',
             fields=[
-                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
                 ('date_created', models.DateTimeField(verbose_name='date published')),
-                ('name', models.CharField(max_length=70, default='')),
+                ('name', models.CharField(default='', max_length=70)),
                 ('summry', models.CharField(max_length=300)),
             ],
             options={
@@ -49,22 +49,23 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='RequirementTask',
             fields=[
-                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
-                ('name', models.CharField(max_length=70, default='')),
-                ('state_kind', models.CharField(max_length=1, choices=[('P', 'Accepted'), ('C', 'Created'), ('Z', 'Closed'), ('O', 'On Wait')], default='C')),
-                ('priority_lvl', models.CharField(max_length=1, choices=[('C', 'Critical'), ('H', 'High'), ('M', 'Medium'), ('L', 'Low')], default='L')),
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
+                ('name', models.CharField(default='', max_length=70)),
+                ('state_kind', models.CharField(default='C', choices=[('P', 'Accepted'), ('C', 'Created'), ('Z', 'Closed'), ('O', 'On Wait')], max_length=1)),
+                ('priority_lvl', models.CharField(default='L', choices=[('C', 'Critical'), ('H', 'High'), ('M', 'Medium'), ('L', 'Low')], max_length=1)),
+                ('pub_date', models.DateTimeField(verbose_name='date published')),
+                ('content', models.CharField(default='', max_length=100)),
             ],
             options={
-                'ordering': ['name'],
                 'abstract': False,
+                'ordering': ['name'],
             },
             bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='Requirement',
             fields=[
-                ('requirementtask_ptr', models.OneToOneField(serialize=False, auto_created=True, primary_key=True, parent_link=True, to='tasks.RequirementTask')),
-                ('pub_date', models.DateTimeField(verbose_name='date published')),
+                ('requirementtask_ptr', models.OneToOneField(to='tasks.RequirementTask', auto_created=True, primary_key=True, parent_link=True, serialize=False)),
             ],
             options={
             },
@@ -73,8 +74,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='StateChange',
             fields=[
-                ('event_ptr', models.OneToOneField(serialize=False, auto_created=True, primary_key=True, parent_link=True, to='tasks.Event')),
-                ('new_state', models.CharField(max_length=1, choices=[('P', 'Accepted'), ('C', 'Created'), ('Z', 'Closed'), ('O', 'On Wait')], default='C')),
+                ('event_ptr', models.OneToOneField(to='tasks.Event', auto_created=True, primary_key=True, parent_link=True, serialize=False)),
+                ('new_state', models.CharField(default='C', choices=[('P', 'Accepted'), ('C', 'Created'), ('Z', 'Closed'), ('O', 'On Wait')], max_length=1)),
             ],
             options={
             },
@@ -83,9 +84,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Task',
             fields=[
-                ('requirementtask_ptr', models.OneToOneField(serialize=False, auto_created=True, primary_key=True, parent_link=True, to='tasks.RequirementTask')),
-                ('milestone', models.ForeignKey(to='tasks.Milestone')),
-                ('projects', models.ForeignKey(to='tasks.Requirement')),
+                ('requirementtask_ptr', models.OneToOneField(to='tasks.RequirementTask', auto_created=True, primary_key=True, parent_link=True, serialize=False)),
+                ('assigned_to', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('milestone', models.ForeignKey(null=True, blank=True, to='tasks.Milestone')),
+                ('projects', models.ForeignKey(null=True, blank=True, to='tasks.Requirement')),
             ],
             options={
             },
@@ -94,13 +96,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='requirementtask',
             name='project_tast_user',
-            field=models.ForeignKey(to=settings.AUTH_USER_MODEL, null=True),
+            field=models.ForeignKey(to=settings.AUTH_USER_MODEL),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='milestone',
             name='event',
-            field=models.ForeignKey(to='tasks.Event'),
+            field=models.ForeignKey(null=True, to='tasks.Event'),
             preserve_default=True,
         ),
         migrations.AddField(
