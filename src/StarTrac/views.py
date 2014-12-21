@@ -71,9 +71,9 @@ def register(request):
             form.save()
             context = {'message': "User registred, now login..."}
             return render(request, 'tasks/index.html',context)
-        else:
+        """else:
             print(form.is_valid)
-            print(form.error_messages)
+            print(form.error_messages)"""
     else:
         form = RegistrationForm()
 
