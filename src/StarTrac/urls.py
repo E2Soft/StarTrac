@@ -10,6 +10,6 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
     url(r'^tasks/', include('tasks.urls')),
     url(r'^admin/', include(admin.site.urls)),
-    """url(r'login/', views.login, name='login'),
-    url(r'logout/', views.logout, name='logout'),"""
+    url(r'login/', views.login, name='login'),
+    url(r'logout/', views.logout, name='logout'),
 )
