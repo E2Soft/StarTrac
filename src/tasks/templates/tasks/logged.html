@@ -1,0 +1,12 @@
+<html>
+	<head>
+		<title>Login page</title>
+	</head>
+	<body>
+		<h1>HOME PAGE {{username}}</h1>
+		<a href="{% url 'logout' %}">Logout</a>
+		{% if isadmin %}
+		<a href="/admin">Admin</a>
+		{% endif %}
+	</body>
+</html>
