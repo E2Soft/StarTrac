@@ -1,0 +1,15 @@
+<html>
+	<head>
+		<title>Login page</title>
+	</head>
+	<body>
+		{% if invalid %}
+			{{invalid}}
+		{% endif %}
+		<form action="{% url 'login' %}" method="post">{% csrf_token %}
+			Username: <input type="text" id="username" name="username" />
+			Password: <input type="password" id="password" name="password" />
+			<input type="submit" value="Login"/>
+		</form>
+	</body>
+</html>
