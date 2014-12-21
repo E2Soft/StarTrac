@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 
-from src.StarTrac import views
+from StarTrac import views
 
 
 urlpatterns = patterns('',
@@ -12,4 +12,5 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'login/', views.login, name='login'),
     url(r'logout/', views.logout, name='logout'),
+    url(r'register/', views.register, name='register'),
 )
