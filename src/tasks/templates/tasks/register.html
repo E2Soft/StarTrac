@@ -1,0 +1,12 @@
+<html>
+	<h1>Register new user</h1>
+	<form action="{% url 'register' %}" method="post">{% csrf_token %}
+	
+	<table>
+	{{form.as_table}}
+	</table>
+	
+	<input type="submit" value="Register"/>
+	
+	</form>
+</html>

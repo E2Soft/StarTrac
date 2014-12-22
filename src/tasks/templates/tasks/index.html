@@ -3,13 +3,16 @@
 		<title>Login page</title>
 	</head>
 	<body>
-		{% if invalid %}
-			{{invalid}}
+		{% if message %}
+			{{message}}
 		{% endif %}
 		<form action="{% url 'login' %}" method="post">{% csrf_token %}
 			Username: <input type="text" id="username" name="username" />
 			Password: <input type="password" id="password" name="password" />
 			<input type="submit" value="Login"/>
 		</form>
+		<div>
+			<a href="{% url 'register' %}">Register</a>
+		</div>
 	</body>
 </html>

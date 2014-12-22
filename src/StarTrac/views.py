@@ -3,15 +3,19 @@ Created on Dec 21, 2014
 
 @author: Milos
 '''
-from django.contrib import auth
-from django.shortcuts import render
-
 """
     Stranica koja se prikazuje kada korisnik ode na root sajta
     Proverava da li ima autentifikovan korisnik, ako ima samo 
     odradi redirekt na main stranicu tj stranicu tasks aplikacije.
     Ako nije autentifikovan ostavlja stranicu za login kao pocetnu
 """
+
+from django.contrib import auth
+from django.shortcuts import render
+
+from StarTrac.forms import RegistrationForm
+
+
 def home(request):
     if request.user.is_authenticated():
         context = {"isadmin":request.user.is_superuser,"username":request.user.username}
@@ -54,3 +58,23 @@ def login(request):
 def logout(request):
     auth.logout(request)
     return render(request, 'tasks/index.html')
+
+"""
+    Stranica koja se bavi registracijom korisnika.Korisiti se ugradjena
+    stranica za to od djanga.PRednosti daje prikaz cele forme i moze da se
+    bira prikaz, a takodje ima odradjenu validaciju ili bar nesto od iste.
+"""
+def register(request):
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            context = {'message': "User registred, now login..."}
+            return render(request, 'tasks/index.html',context)
+        """else:
+            print(form.is_valid)
+            print(form.error_messages)"""
+    else:
+        form = RegistrationForm()
+
+    return render(request,'tasks/register.html', {'form': form})
