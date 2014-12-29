@@ -15,8 +15,8 @@ class MilestonesList(ListView):
     def get_queryset(self):
         return Milestone.objects.all()
     
-    def get_context_data(self, **kwargs):
+    """def get_context_data(self, **kwargs):
         context = super(MilestonesList, self).get_context_data(**kwargs)
         
         context["back"] = self.request.META["HTTP_REFERER"]      
-        return context
+        return context"""

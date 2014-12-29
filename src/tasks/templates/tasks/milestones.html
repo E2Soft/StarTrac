@@ -3,12 +3,20 @@
 
 {% block content %}
 		
+	<form action="" method="post">{% csrf_token %}
+	    <ul>
+	        {% for publisher in object_list %}
+	            <li>{{publisher.name}}</li>
+	        {% endfor %}
+	    </ul>
+	</form>
+		
 {% endblock %}
 
 {% block sidebar %}
 
 <a href="">Add new milestone</a>
 
-<a href="{{back}}">Back</a>
+<a href="/tasks">Back</a>
 
 {% endblock %}
