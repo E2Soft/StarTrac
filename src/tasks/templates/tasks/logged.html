@@ -1,12 +1,16 @@
-<html>
-	<head>
-		<title>Login page</title>
-	</head>
-	<body>
-		<h1>HOME PAGE {{username}}</h1>
-		<a href="{% url 'logout' %}">Logout</a>
-		{% if isadmin %}
-		<a href="/admin">Admin</a>
-		{% endif %}
-	</body>
-</html>
+{% extends "tasks/base.html" %}
+{% block title %}Main Page{% endblock %}
+
+{% block content %}
+<h1>HOME PAGE {{username}}</h1>
+{% endblock %}
+
+{% block sidebar %}
+
+{% if isadmin %}
+<a href="/admin">Admin</a>
+{% endif %}
+
+<a href="{% url 'logout' %}">Logout</a>
+
+{% endblock %}

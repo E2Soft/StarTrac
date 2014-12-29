@@ -1,9 +1,8 @@
-<html>
-	<head>
-		<title>Login page</title>
-	</head>
-	<body>
-		{% if message %}
+{% extends "tasks/base.html" %}
+{% block title %}Login Page{% endblock %}
+
+{% block content %}
+{% if message %}
 			{{message}}
 		{% endif %}
 		<form action="{% url 'login' %}" method="post">{% csrf_token %}
@@ -11,8 +10,8 @@
 			Password: <input type="password" id="password" name="password" />
 			<input type="submit" value="Login"/>
 		</form>
-		<div>
-			<a href="{% url 'register' %}">Register</a>
-		</div>
-	</body>
-</html>
+{% endblock %}
+
+{% block sidebar %}
+<a href="{% url 'register' %}">Register</a>
+{% endblock %}

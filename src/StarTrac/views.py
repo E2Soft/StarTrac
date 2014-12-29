@@ -77,4 +77,4 @@ def register(request):
     else:
         form = RegistrationForm()
 
-    return render(request,'tasks/register.html', {'form': form})
+    return render(request,'tasks/register.html', {'form': form,"back":request.META["HTTP_REFERER"]})
