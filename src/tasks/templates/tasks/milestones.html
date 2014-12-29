@@ -6,7 +6,7 @@
 	<form action="" method="post">{% csrf_token %}
 	    <ul>
 	        {% for publisher in object_list %}
-	            <li>{{publisher.name}}</li>
+	            <li><a href="{% url 'mdetail' publisher.pk %}">{{publisher.name}}</a></li>
 	        {% endfor %}
 	    </ul>
 	</form>

@@ -20,7 +20,6 @@ $(document).ready(function(){
             type: "post",
             dataType: "json",
             data : {
-            	'hello':'wsaap',
             	'csrfmiddlewaretoken' : $("input[name=csrfmiddlewaretoken]").val(),
             	'content' : $("#content").val(),
             	'pk' : $("#pk").val()

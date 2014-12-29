@@ -1,0 +1,48 @@
+{% extends "tasks/base.html" %}
+{% block title %}Detail Page{% endblock %}
+
+{% block content %}
+<div>
+<ul>
+	<li>Name: {{milestone}}</li>
+	<li>Date created: {{milestone.date_created}}</li>
+	<li>Name: {{milestone.summry}}</li>
+</ul>
+<div>
+
+<div>
+	<h3>Comments</h3>
+	
+	<div>
+		<form method="post" id="form">{% csrf_token %}
+			<input type='hidden' name='pk' value='{{milestone.pk}}' id="pk" />
+			<textarea rows="5" cols="50" form="usrform" name="commentform" id="content"></textarea> </br>
+			<input type="submit" value="Comment" />
+		<form>
+	</div>
+	
+	{% for event in milestone.event_set.all %}
+		<ul>
+			<li>{{event.comment.content}}</li>
+		</ul>
+	{% endfor %}
+</div>
+
+<div>
+	<h3>Tasks</h3>
+	{% for event in milestone.task_set.all %}
+		<ul>
+			<li>{{event.task.name}}</li>
+		</ul>
+	{% endfor %}
+</div>
+		
+{% endblock %}
+
+{% block sidebar %}
+
+<a href="">Edit</a>
+
+<a href="{{back}}">Back</a>
+
+{% endblock %}
