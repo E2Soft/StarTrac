@@ -24,7 +24,7 @@ $(document).ready(function(){
             	'content' : $("#content").val(),
             	'pk' : $("#pk").val()
             },
-            url: "/tasks/mstnscmt/",
+            url: "/tasks/mcomment/",
             success: function(data){
             var json = JSON.stringify(data);
                 alert(json);

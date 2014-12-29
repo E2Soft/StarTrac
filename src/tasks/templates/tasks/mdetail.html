@@ -23,7 +23,13 @@
 	
 	{% for event in milestone.event_set.all %}
 		<ul>
-			<li>{{event.comment.content}}</li>
+			<li>
+			<div>
+				{{event.comment.content}}
+				{{event.comment.event_user.username}}
+				{{event.comment.date_created}}
+			<div>
+			</li>
 		</ul>
 	{% endfor %}
 </div>

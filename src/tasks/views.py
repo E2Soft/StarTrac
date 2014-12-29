@@ -1,11 +1,8 @@
 import json
 
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
-
-import tasks
 from tasks.models import Comment
 from tasks.models import Milestone
 
@@ -21,15 +18,19 @@ def index(request):
     
 def mcomment(request):
     if request.POST:
-        content = request.POST.get("content","")
+        ccontent = request.POST.get("content","")
         milestone_id = request.POST.get("pk","")
         date = timezone.now()
         milestone = get_object_or_404(Milestone,pk=milestone_id)
         
-        """print("stigo post params: {}, {}, {}, {}, {}, {}, {}".format(hello, content, milestone_id, 
-                                                                 date, milestone, request.user, "K"))"""
+        
+        comment = Comment(event_user=request.user,content=ccontent,
+                                  date_created=date,
+                                  milestone=milestone,event_kind="K")
+        comment.save()                                                         
     
     response_data = {}
-    response_data['result'] = 'failed'
-    response_data['message'] = 'You messed up'
+    response_data['content'] = 'ccontent'
+    response_data['date'] = date.__str__()
+    response_data['user'] = request.user.username
     return HttpResponse(json.dumps(response_data), content_type="application/json")
