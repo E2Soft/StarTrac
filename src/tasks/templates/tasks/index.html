@@ -3,7 +3,7 @@
 
 {% block content %}
 {% if message %}
-			{{message}}
+		{{message}}
 		{% endif %}
 		<form action="{% url 'login' %}" method="post">{% csrf_token %}
 			Username: <input type="text" id="username" name="username" />
