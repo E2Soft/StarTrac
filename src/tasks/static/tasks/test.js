@@ -1,4 +1,4 @@
-$(document).ready(function(){
+/*$(document).ready(function(){
     $("#comment").click(function(){
         $.ajax({
             type: "GET",
@@ -12,7 +12,7 @@ $(document).ready(function(){
             }
         });
     });
-});
+});*/
 
 $(document).ready(function(){
 	$("#form").submit(function(){
@@ -21,15 +21,20 @@ $(document).ready(function(){
             dataType: "json",
             data : {
             	'csrfmiddlewaretoken' : $("input[name=csrfmiddlewaretoken]").val(),
-            	'content' : $("#content").val(),
+            	'content' : $("#ccontent").val(),
             	'pk' : $("#pk").val()
             },
             url: "/tasks/mcomment/",
+            
             success: function(data){
-            var json = JSON.stringify(data);
-                alert(json);
-                $("#rez").html(json);
+            
+                var content = data['content'];
+                var usr = data['user'];
+                var dt = data['date'];
+                
+            	$("#rez").append("<li><div>"+ content +" "+ usr +" "+ dt +"</div></li>");
             },
+            
             error: function(){
                 alert("error");
             }

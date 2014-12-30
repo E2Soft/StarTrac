@@ -16,31 +16,31 @@
 	<div>
 		<form method="post" id="form">{% csrf_token %}
 			<input type='hidden' name='pk' value='{{milestone.pk}}' id="pk" />
-			<textarea rows="5" cols="50" form="usrform" name="commentform" id="content"></textarea> </br>
+			<textarea rows="5" cols="50" form="usrform" id="ccontent"></textarea> </br>
 			<input type="submit" value="Comment" />
-		<form>
+		</form>
 	</div>
 	
-	{% for event in milestone.event_set.all %}
-		<ul>
+	<ul id="rez">
+		{% for event in milestone.event_set.all %}
 			<li>
-			<div>
-				{{event.comment.content}}
-				{{event.comment.event_user.username}}
-				{{event.comment.date_created}}
-			<div>
+				<div>
+					{{event.comment.content}}
+					{{event.comment.event_user.username}}
+					{{event.comment.date_created}}
+				</div>
 			</li>
-		</ul>
-	{% endfor %}
+		{% endfor %}
+	</ul>
 </div>
 
 <div>
 	<h3>Tasks</h3>
-	{% for event in milestone.task_set.all %}
-		<ul>
-			<li>{{event.task.name}}</li>
-		</ul>
-	{% endfor %}
+	<ul>
+		{% for event in milestone.task_set.all %}
+				<li>{{event.task.name}}</li>
+		{% endfor %}
+	</ul>
 </div>
 		
 {% endblock %}

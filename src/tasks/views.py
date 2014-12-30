@@ -18,19 +18,20 @@ def index(request):
     
 def mcomment(request):
     if request.POST:
-        ccontent = request.POST.get("content","")
+        content = request.POST.get("content","")
         milestone_id = request.POST.get("pk","")
         date = timezone.now()
         milestone = get_object_or_404(Milestone,pk=milestone_id)
         
+        print(content)
         
-        comment = Comment(event_user=request.user,content=ccontent,
+        comment = Comment(event_user=request.user,content=content,
                                   date_created=date,
                                   milestone=milestone,event_kind="K")
         comment.save()                                                         
     
     response_data = {}
-    response_data['content'] = 'ccontent'
+    response_data['content'] = content
     response_data['date'] = date.__str__()
     response_data['user'] = request.user.username
     return HttpResponse(json.dumps(response_data), content_type="application/json")
