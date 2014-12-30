@@ -1,0 +1,15 @@
+{% extends "tasks/base.html" %}
+{% block title %}Edit Milestone{% endblock %}
+
+{% block content %}
+	<form action="" method="post">{% csrf_token %}
+		<table>
+	    	{{ form.as_table }}
+	    <table>
+	    <input type="submit" value="Update" />
+	</form>
+{% endblock %}
+
+{% block sidebar %}
+	<a href="{{back}}">Back</a>
+{% endblock %}

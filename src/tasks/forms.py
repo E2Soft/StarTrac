@@ -50,7 +50,7 @@ class MilestoneUpdate(UpdateView):
         return reverse('mdetail',args=(self.get_object().id,))
     
     def get_context_data(self, **kwargs):
-        context = super(MilestoneDetail, self).get_context_data(**kwargs)
+        context = super(MilestoneUpdate, self).get_context_data(**kwargs)
         
         #KeyError
         try:
