@@ -2,28 +2,29 @@
 {% block title %}Detail Page{% endblock %}
 
 {% block content %}
-<div>
-<ul>
-	<li>Name: {{milestone}}</li>
-	<li>Date created: {{milestone.date_created}}</li>
-	<li>Name: {{milestone.summry}}</li>
+<div class="jumbotron">
+<h2>{{milestone}}</h2>
+
+<ul class="list-group">
+	<li class="list-group-item">Date created: {{milestone.date_created}}</li>
+	<li class="list-group-item">Name: {{milestone.summry}}</li>
 </ul>
-<div>
+
+</div>
 
 <div>
-	<h3>Comments</h3>
-	
-	<div>
-		<form method="post" id="form">{% csrf_token %}
+	<form method="post" id="form" role="form">{% csrf_token %}
 			<input type='hidden' name='pk' value='{{milestone.pk}}' id="pk" />
-			<textarea rows="5" cols="50" form="usrform" id="ccontent"></textarea> </br>
-			<input type="submit" value="Comment" />
-		</form>
-	</div>
+			<div class="form-group">
+				<label for="comment">Comment:</label>
+				<textarea rows="5" cols="50" form="usrform" id="ccontent" class="form-control"></textarea>
+			</div>
+			<input type="submit" value="Comment" class="save btn btn-default" />
+	</form>
 	
-	<ul id="rez">
+	<ul id="rez" class="list-group">
 		{% for event in milestone.event_set.all %}
-			<li>
+			<li class="list-group-item">
 				<div>
 					{{event.comment.content}}
 					{{event.comment.event_user.username}}
@@ -36,9 +37,9 @@
 
 <div>
 	<h3>Tasks</h3>
-	<ul>
+	<ul class="list-group">
 		{% for event in milestone.task_set.all %}
-				<li>{{event.task.name}}</li>
+				<li class="list-group-item">{{event.task.name}}</li>
 		{% endfor %}
 	</ul>
 </div>
@@ -46,10 +47,31 @@
 {% endblock %}
 
 {% block sidebar %}
-{{ block.super }}
-
-	<a href="{% url 'medit' milestone.pk %}">Edit</a>
-	
-	<a href="{{back}}">Back</a>
-
+<div id="sidebar-wrapper">
+    	<ul class="sidebar-nav">
+        	<li class="sidebar-brand">
+            	<p>
+            		<span class="glyphicon glyphicon-road"></span>
+            		StarTrac
+            	</p>
+            </li>
+			<li>
+				<b>
+					<a href="{{back}}">
+						<span class="glyphicon glyphicon-chevron-left"></span>
+						Back
+					</a>
+				</b>
+			</li>
+			<li>
+				<b>
+					<a href="{% url 'medit' milestone.pk %}">
+						<span class="glyphicon glyphicon-pencil"></span>
+						Edit
+					</a>
+				</b>
+			</li>
+			{{block.super}}
+		</ul>
+	</div>
 {% endblock %}

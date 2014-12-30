@@ -32,7 +32,8 @@ $(document).ready(function(){
                 var usr = data['user'];
                 var dt = data['date'];
                 
-            	$("#rez").append("<li><div>"+ content +" "+ usr +" "+ dt +"</div></li>");
+            	$("#rez").append("<li class=\"list-group-item\"><div>"+ content +" "+ usr +" "+ dt +"</div></li>");
+            	 $("#ccontent").val("")
             },
             
             error: function(){
@@ -44,5 +45,5 @@ $(document).ready(function(){
 });
 
 $(document).ready(function() {
-    $('.form-control').datepicker();
+    $('#datepicker').datepicker();
 });
