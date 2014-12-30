@@ -15,4 +15,5 @@ urlpatterns = patterns('',
     url(r'^mdetail/(?P<pk>\d+)/$', MilestoneDetail.as_view(), name='mdetail'),
     url(r'^mcomment/$', views.mcomment, name='mcomment'),
     url(r'^medit/(?P<pk>\d+)/$', MilestoneUpdate.as_view(), name='medit'),
+    url(r'^addmilestone/$', views.addmilestone, name='addmilestone'),
 )

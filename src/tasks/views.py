@@ -1,8 +1,12 @@
 import json
 
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse
+from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
+
+from tasks.forms import MilestoneForm
 from tasks.models import Comment
 from tasks.models import Milestone
 
@@ -35,3 +39,22 @@ def mcomment(request):
     response_data['date'] = date.__str__()
     response_data['user'] = request.user.username
     return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+def addmilestone(request):
+    if request.POST:
+        form = MilestoneForm(request.POST)
+        if form.is_valid():
+            form.save()
+            
+            return HttpResponseRedirect(reverse('milestones'))
+    else:
+        form = MilestoneForm()
+    
+    back = ""
+    try:
+        back = request.META["HTTP_REFERER"]
+    except(KeyError):
+        back="/"
+        
+    return render(request,'tasks/addmilestone.html',{"form":form,
+                                                     "back":back})

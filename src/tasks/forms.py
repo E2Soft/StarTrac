@@ -3,6 +3,8 @@ Created on Dec 29, 2014
 
 @author: Milos
 '''
+from django import forms
+from django.contrib.admin import widgets
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 from django.views.generic.detail import DetailView
@@ -11,6 +13,16 @@ from django.views.generic.list import ListView
 
 from tasks.models import Milestone
 
+
+class MilestoneForm(forms.ModelForm):
+    class Meta:
+        model = Milestone
+        fields = ["date_created", "name", "summry"]
+    
+    def __init__(self, *args, **kwargs):
+        super(MilestoneForm, self).__init__(*args, **kwargs)
+        self.fields['date_created'].widget.attrs['class'] = 'datepicker'
+        self.fields["summry"].widget = widgets.AdminTextareaWidget()
 
 class MilestonesList(ListView):
     model = Milestone

@@ -42,3 +42,7 @@ $(document).ready(function(){
         return false;
     });
 });
+
+$(document).ready(function() {
+    $('.datepicker').datepicker();
+});
