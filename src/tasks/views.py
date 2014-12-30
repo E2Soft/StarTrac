@@ -26,9 +26,7 @@ def mcomment(request):
         milestone_id = request.POST.get("pk","")
         date = timezone.now()
         milestone = get_object_or_404(Milestone,pk=milestone_id)
-        
-        print(content)
-        
+
         comment = Comment(event_user=request.user,content=content,
                                   date_created=date,
                                   milestone=milestone,event_kind="K")

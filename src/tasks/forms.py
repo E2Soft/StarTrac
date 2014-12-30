@@ -21,8 +21,13 @@ class MilestoneForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
         super(MilestoneForm, self).__init__(*args, **kwargs)
-        self.fields['date_created'].widget.attrs['class'] = 'datepicker'
+        #self.fields['date_created'].widget.attrs['class'] = 'datepicker'
         self.fields["summry"].widget = widgets.AdminTextareaWidget()
+        self.fields["summry"].widget.attrs['class']='form-control'
+        self.fields["summry"].widget.attrs['rows']='5'
+        
+        self.fields["name"].widget.attrs['class']='form-control'
+        self.fields["date_created"].widget.attrs['class']='form-control'
 
 class MilestonesList(ListView):
     model = Milestone

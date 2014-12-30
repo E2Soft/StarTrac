@@ -2,15 +2,31 @@
 {% block title %}Add Milestone {% endblock %}
 
 {% block content %}
-    <h1>New post</h1>
-    <form method="POST" class="post-form">{% csrf_token %}
-        {{ form.as_p }}
+    <h1>Add new milestone</h1>
+    <form method="POST" class="post-form" role="form">{% csrf_token %}
+        {{ form.as_ul }}
         <button type="submit" class="save btn btn-default">Save</button>
     </form>
 {% endblock %}
 
 {% block sidebar %}
-
-<a href="{{back}}">Back</a>
-
+<div id="sidebar-wrapper">
+    	<ul class="sidebar-nav">
+        	<li class="sidebar-brand">
+            	<p>
+            		<span class="glyphicon glyphicon-road"></span>
+            		StarTrac
+            	</p>
+            </li>
+			<li>
+				<b>
+					<a href="{{back}}">
+						<span class="glyphicon glyphicon-chevron-left"></span>
+						Back
+					</a>
+				</b>
+			</li>
+			{{block.super}}
+		</ul>
+	</div>
 {% endblock %}

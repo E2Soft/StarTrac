@@ -46,6 +46,7 @@
 {% endblock %}
 
 {% block sidebar %}
+{{ block.super }}
 
 	<a href="{% url 'medit' milestone.pk %}">Edit</a>
 	
