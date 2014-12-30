@@ -2,9 +2,14 @@
 {% block title %}Add Milestone {% endblock %}
 
 {% block content %}
-    <h1>Add new milestone</h1>
+	<div class="jumbotron">
+    	<h2>Add new milestone</h2>
+    </div>
+    
     <form method="POST" class="post-form" role="form">{% csrf_token %}
-        {{ form.as_ul }}
+    	<table class="table table-hover">
+        {{ form.as_table }}
+        </table>
         <button type="submit" class="save btn btn-default">Save</button>
     </form>
 {% endblock %}

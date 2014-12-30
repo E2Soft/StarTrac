@@ -2,16 +2,38 @@
 {% block title %}Edit Milestone{% endblock %}
 
 {% block content %}
-	<form action="" method="post">{% csrf_token %}
-		<table>
+
+	<div class="jumbotron">
+    	<h2>Update milestone</h2>
+    </div>
+	
+	<form action="" method="post" role="form">{% csrf_token %}
+		<table class="table table-hover">
 	    	{{ form.as_table }}
-	    <table>
-	    <input type="submit" value="Update" />
+	    </table>
+	    <input type="submit" value="Update" class="save btn btn-default" />
 	</form>
+	
 {% endblock %}
 
 {% block sidebar %}
-{{ block.super }}
-
-	<a href="{{back}}">Back</a>
+<div id="sidebar-wrapper">
+    	<ul class="sidebar-nav">
+        	<li class="sidebar-brand">
+            	<p>
+            		<span class="glyphicon glyphicon-road"></span>
+            		StarTrac
+            	</p>
+            </li>
+			<li>
+				<b>
+					<a href="{{back}}">
+						<span class="glyphicon glyphicon-chevron-left"></span>
+						Back
+					</a>
+				</b>
+			</li>
+			{{block.super}}
+		</ul>
+	</div>
 {% endblock %}

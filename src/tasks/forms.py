@@ -6,12 +6,14 @@ Created on Dec 29, 2014
 from django import forms
 from django.contrib.admin import widgets
 from django.core.urlresolvers import reverse
+from django.forms.models import modelform_factory
 from django.shortcuts import get_object_or_404
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
 from django.views.generic.list import ListView
 
 from tasks.models import Milestone
+from django.forms.widgets import Textarea
 
 
 class MilestoneForm(forms.ModelForm):
@@ -62,6 +64,7 @@ class MilestoneUpdate(UpdateView):
     model = Milestone
     fields = ["date_created", "name", "summry"]
     template_name = 'tasks/mupdate.html'
+    form_class = MilestoneForm
     
     def get_success_url(self):
         return reverse('mdetail',args=(self.get_object().id,))
