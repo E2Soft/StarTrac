@@ -26,3 +26,12 @@ class RegistrationForm(UserCreationForm):
             user.save()
 
         return user
+    
+    def __init__(self, *args, **kwargs):
+        super(RegistrationForm, self).__init__(*args, **kwargs)
+        self.fields["first_name"].widget.attrs['class']='form-control'
+        self.fields["last_name"].widget.attrs['class']='form-control'
+        self.fields["username"].widget.attrs['class']='form-control'
+        self.fields["email"].widget.attrs['class']='form-control'
+        self.fields["password1"].widget.attrs['class']='form-control'
+        self.fields["password2"].widget.attrs['class']='form-control'

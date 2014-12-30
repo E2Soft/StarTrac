@@ -76,5 +76,11 @@ def register(request):
             print(form.error_messages)"""
     else:
         form = RegistrationForm()
-
-    return render(request,'tasks/register.html', {'form': form,"back":request.META["HTTP_REFERER"]})
+    
+    back = ""
+    try:
+        back = request.META["HTTP_REFERER"]
+    except(KeyError):
+        back = "/"
+        
+    return render(request,'tasks/register.html', {'form': form,"back":back})
