@@ -7,13 +7,13 @@ from django import forms
 from django.contrib.admin import widgets
 from django.core.urlresolvers import reverse
 from django.forms.models import modelform_factory
+from django.forms.widgets import Textarea
 from django.shortcuts import get_object_or_404
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
 from django.views.generic.list import ListView
 
-from tasks.models import Milestone
-from django.forms.widgets import Textarea
+from tasks.models import Milestone, Requirement
 
 
 class MilestoneForm(forms.ModelForm):
@@ -71,6 +71,29 @@ class MilestoneUpdate(UpdateView):
     
     def get_context_data(self, **kwargs):
         context = super(MilestoneUpdate, self).get_context_data(**kwargs)
+        
+        #KeyError
+        try:
+            context["back"] = self.request.META["HTTP_REFERER"]
+        except(KeyError):
+            context["back"]="/"
+     
+        return context
+    
+class RequirementsList(ListView):
+    model = Requirement
+    template_name = 'tasks/requirements.html'
+    
+    def get_queryset(self):
+        return Requirement.objects.all()
+    
+class RequirementDetail(DetailView):
+    model = Requirement
+    template_name = 'tasks/rdetail.html'
+    context_object_name='requirement'
+    
+    def get_context_data(self, **kwargs):
+        context = super(RequirementDetail, self).get_context_data(**kwargs)
         
         #KeyError
         try:
