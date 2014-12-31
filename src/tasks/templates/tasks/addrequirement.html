@@ -1,0 +1,39 @@
+{% extends "tasks/base.html" %}
+{% block title %}Edit Requirement{% endblock %}
+
+{% block content %}
+
+	<div class="jumbotron">
+    	<h2>Update requirement</h2>
+    </div>
+	
+	<form action="" method="post" role="form">{% csrf_token %}
+		<table class="table table-hover">
+	    	{{ form.as_table }}
+	    </table>
+	    <input type="submit" value="Add" class="save btn btn-default" />
+	</form>
+	
+{% endblock %}
+
+{% block sidebar %}
+<div id="sidebar-wrapper">
+    	<ul class="sidebar-nav">
+        	<li class="sidebar-brand">
+            	<p>
+            		<span class="glyphicon glyphicon-road"></span>
+            		StarTrac
+            	</p>
+            </li>
+			<li>
+				<b>
+					<a href="{{back}}">
+						<span class="glyphicon glyphicon-chevron-left"></span>
+						Back
+					</a>
+				</b>
+			</li>
+			{{block.super}}
+		</ul>
+	</div>
+{% endblock %}

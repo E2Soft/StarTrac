@@ -10,7 +10,7 @@ from django.forms.models import modelform_factory
 from django.forms.widgets import Textarea
 from django.shortcuts import get_object_or_404
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import UpdateView, CreateView
 from django.views.generic.list import ListView
 
 from tasks.models import Milestone, Requirement
@@ -134,6 +134,25 @@ class RequirementUpdate(UpdateView):
     
     def get_context_data(self, **kwargs):
         context = super(RequirementUpdate, self).get_context_data(**kwargs)
+        
+        #KeyError
+        try:
+            context["back"] = self.request.META["HTTP_REFERER"]
+        except(KeyError):
+            context["back"]="/"
+     
+        return context
+
+class RequiremenCreate(CreateView):
+    model = Requirement
+    template_name = 'tasks/addrequirement.html'
+    form_class = RequirementForm
+    
+    def get_success_url(self):
+        return reverse('requirements')
+    
+    def get_context_data(self, **kwargs):
+        context = super(RequiremenCreate, self).get_context_data(**kwargs)
         
         #KeyError
         try:

@@ -7,7 +7,7 @@ from django.conf.urls import patterns, url
 
 from tasks import views
 from tasks.forms import MilestonesList, MilestoneDetail, MilestoneUpdate, \
-    RequirementsList, RequirementDetail, RequirementUpdate
+    RequirementsList, RequirementDetail, RequirementUpdate, RequiremenCreate
 
 
 urlpatterns = patterns('',
@@ -20,4 +20,5 @@ urlpatterns = patterns('',
     url(r'^requirements/$', RequirementsList.as_view(), name='requirements'),
     url(r'^rdetail/(?P<pk>\d+)/$', RequirementDetail.as_view(), name='rdetail'),
     url(r'^redit/(?P<pk>\d+)/$', RequirementUpdate.as_view(), name='redit'),
+    url(r'^addrequirement/$', RequiremenCreate.as_view(), name='addrequirement'),
 )
