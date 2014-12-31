@@ -13,6 +13,7 @@
 						{% for publisher in object_list %}
 							<li class="list-group-item">
 							<a href="{% url 'rdetail' publisher.pk %}">{{publisher.name}}</a>
+							<p>Tasks:<span class="badge">{{publisher.task_set.all.count}}</span></p>
 							</li>
 						{% endfor %}
 					</ul>

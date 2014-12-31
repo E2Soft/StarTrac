@@ -24,12 +24,12 @@ PRIORITY_LVL= (
     )
 
 RESOLVE_TYPE = (
-        ('F', 'None'),
+        ('N', 'None'),
         ('F', 'Fixed'),
         ('I', 'Invalid'),
         ('W', 'Wontfix'),
         ('D', 'Duplicate'),
-        ('D', 'Worksforme'),
+        ('R', 'Worksforme'),
     )
 
 class RequirementTask(models.Model):

@@ -80,6 +80,26 @@ class MilestoneUpdate(UpdateView):
      
         return context
     
+class RequirementForm(forms.ModelForm):
+    class Meta:
+        model = Requirement
+        fields = ["name", "state_kind", "project_tast_user", "priority_lvl", "pub_date", "content", "resolve_type"]
+    
+    def __init__(self, *args, **kwargs):
+        super(RequirementForm, self).__init__(*args, **kwargs)
+        self.fields['pub_date'].widget.attrs['class'] = 'form-control'
+        self.fields["pub_date"].widget.attrs['id']='datepicker'
+        
+        self.fields["content"].widget = widgets.AdminTextareaWidget()
+        self.fields["content"].widget.attrs['class']='form-control'
+        self.fields["content"].widget.attrs['rows']='5'
+        
+        self.fields["name"].widget.attrs['class']='form-control'
+        self.fields["state_kind"].widget.attrs['class']='form-control'
+        self.fields["project_tast_user"].widget.attrs['class']='form-control'
+        self.fields["priority_lvl"].widget.attrs['class']='form-control'
+        self.fields["resolve_type"].widget.attrs['class']='form-control'
+            
 class RequirementsList(ListView):
     model = Requirement
     template_name = 'tasks/requirements.html'
@@ -94,6 +114,26 @@ class RequirementDetail(DetailView):
     
     def get_context_data(self, **kwargs):
         context = super(RequirementDetail, self).get_context_data(**kwargs)
+        
+        #KeyError
+        try:
+            context["back"] = self.request.META["HTTP_REFERER"]
+        except(KeyError):
+            context["back"]="/"
+     
+        return context
+    
+class RequirementUpdate(UpdateView):
+    model = Requirement
+    fields = ["name", "state_kind", "project_tast_user", "priority_lvl", "pub_date", "content", "resolve_type"]
+    template_name = 'tasks/rupdate.html'
+    form_class = RequirementForm
+    
+    def get_success_url(self):
+        return reverse('rdetail',args=(self.get_object().id,))
+    
+    def get_context_data(self, **kwargs):
+        context = super(RequirementUpdate, self).get_context_data(**kwargs)
         
         #KeyError
         try:
