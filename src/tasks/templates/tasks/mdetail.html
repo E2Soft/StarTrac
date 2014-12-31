@@ -6,8 +6,8 @@
 <h2>{{milestone}}</h2>
 
 <ul class="list-group">
-	<li class="list-group-item">Date created: {{milestone.date_created}}</li>
-	<li class="list-group-item">Summry: {{milestone.summry}}</li>
+	<li class="list-group-item"><span class="glyphicon glyphicon-calendar"></span> {{milestone.date_created}}</li>
+	<li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> {{milestone.summry}}</li>
 </ul>
 
 </div>
@@ -19,17 +19,19 @@
 				<label for="comment">Comment:</label>
 				<textarea rows="5" cols="50" form="usrform" id="ccontent" class="form-control"></textarea>
 			</div>
-			<input type="submit" value="Comment" class="save btn btn-default" />
+			<!--<input type="submit" value="Comment" class="save btn btn-default" />-->
+			<button type="submit" class="btn btn-warning">
+				Comment
+				<span class="glyphicon glyphicon-comment"></span>
+			</button>
 	</form>
 	
 	<ul id="rez" class="list-group">
 		{% for event in milestone.event_set.all %}
 			<li class="list-group-item">
-				<div>
-					{{event.comment.content}}
-					{{event.comment.event_user.username}}
-					{{event.comment.date_created}}
-				</div>
+				<span class="glyphicon glyphicon-comment"></span> {{event.comment.content}}
+				<p><span class="glyphicon glyphicon-user"></span> {{event.comment.event_user.username}}</p>
+				<span class="glyphicon glyphicon-calendar"></span> {{event.comment.date_created}}
 			</li>
 		{% endfor %}
 	</ul>
