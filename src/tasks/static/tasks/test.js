@@ -32,7 +32,11 @@ $(document).ready(function(){
                 var usr = data['user'];
                 var dt = data['date'];
                 
-            	$("#rez").append("<li class=\"list-group-item\"><div>"+ content +" "+ usr +" "+ dt +"</div></li>");
+                var contentlogo = "<span class=\"glyphicon glyphicon-comment\"></span>";
+				var usrlogo = "<p><span class=\"glyphicon glyphicon-user\"></span>";
+				var dtlogo = "<span class=\"glyphicon glyphicon-calendar\"></span>";
+                
+            	$("#rez").append("<li class=\"list-group-item\">"+ contentlogo+" "+content +" "+usrlogo+" "+usr+"</p>"+" "+dtlogo+" "+dt +"</li>");
             	 $("#ccontent").val("")
             },
             
@@ -46,4 +50,10 @@ $(document).ready(function(){
 
 $(document).ready(function() {
     $('#datepicker').datepicker();
+});
+
+$(document).ready(function() {
+    $('#addtask').click(function(){
+        alert("TREBA DODATI LINK!");
+    });
 });

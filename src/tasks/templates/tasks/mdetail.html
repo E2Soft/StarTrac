@@ -12,38 +12,49 @@
 
 </div>
 
-<div>
-	<form method="post" id="form" role="form">{% csrf_token %}
-			<input type='hidden' name='pk' value='{{milestone.pk}}' id="pk" />
-			<div class="form-group">
-				<label for="comment">Comment:</label>
-				<textarea rows="5" cols="50" form="usrform" id="ccontent" class="form-control"></textarea>
-			</div>
-			<!--<input type="submit" value="Comment" class="save btn btn-default" />-->
-			<button type="submit" class="btn btn-warning">
-				Comment
-				<span class="glyphicon glyphicon-comment"></span>
-			</button>
-	</form>
-	
-	<ul id="rez" class="list-group">
-		{% for event in milestone.event_set.all %}
-			<li class="list-group-item">
-				<span class="glyphicon glyphicon-comment"></span> {{event.comment.content}}
-				<p><span class="glyphicon glyphicon-user"></span> {{event.comment.event_user.username}}</p>
-				<span class="glyphicon glyphicon-calendar"></span> {{event.comment.date_created}}
-			</li>
-		{% endfor %}
-	</ul>
-</div>
+<ul class="nav nav-tabs" role="tablist">
+	<li class="active"><a href="#pane1" data-toggle="tab"><span class="glyphicon glyphicon-comment"></span> Comments</a></li>
+	<li><a href="#pane2" data-toggle="tab"><span class="glyphicon glyphicon-tasks"></span> Tasks</a></li>        
+</ul>
 
-<div>
-	<h3>Tasks</h3>
-	<ul class="list-group">
-		{% for event in milestone.task_set.all %}
-				<li class="list-group-item">{{event.task.name}}</li>
-		{% endfor %}
-	</ul>
+<div class="tab-content">
+	<div id="pane1" class="tab-pane active">
+		<form method="post" id="form" role="form">{% csrf_token %}
+				<input type='hidden' name='pk' value='{{milestone.pk}}' id="pk" />
+				<div class="form-group">
+					<label for="comment">Comment:</label>
+					<textarea rows="5" cols="50" form="usrform" id="ccontent" class="form-control"></textarea>
+				</div>
+				<!--<input type="submit" value="Comment" class="save btn btn-default" />-->
+				<button type="submit" class="btn btn-warning">
+					Comment
+					<span class="glyphicon glyphicon-comment"></span>
+				</button>
+		</form>
+		
+		<ul id="rez" class="list-group">
+			{% for event in milestone.event_set.all %}
+				<li class="list-group-item">
+					<span class="glyphicon glyphicon-comment"></span> {{event.comment.content}}
+					<p><span class="glyphicon glyphicon-user"></span> {{event.comment.event_user.username}}</p>
+					<span class="glyphicon glyphicon-calendar"></span> {{event.comment.date_created}}
+				</li>
+			{% endfor %}
+		</ul>
+	</div>
+
+	<div id="pane2" class="tab-pane">
+		<p><button type="submit" class="btn btn-success" id="addtask">
+	        Add
+	        <span class="glyphicon glyphicon-plus"></span>
+        </button></p>
+        
+		<ul class="list-group">
+			{% for event in milestone.task_set.all %}
+					<li class="list-group-item">{{event.task.name}}</li>
+			{% endfor %}
+		</ul>
+	</div>
 </div>
 		
 {% endblock %}
