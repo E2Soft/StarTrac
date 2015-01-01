@@ -22,7 +22,28 @@
 
 <div class="tab-content">
 	<div id="pane1" class="tab-pane active">
-		<p>Dodace se...</p>
+		<form method="post" id="formreq" role="form">{% csrf_token %}
+				<input type='hidden' name='pk' value='{{requirement.pk}}' id="pk" />
+				<div class="form-group">
+					<label for="comment">Comment:</label>
+					<textarea rows="5" cols="50" form="usrform" id="ccontent" class="form-control"></textarea>
+				</div>
+				<!--<input type="submit" value="Comment" class="save btn btn-default" />-->
+				<button type="submit" class="btn btn-warning">
+					Comment
+					<span class="glyphicon glyphicon-comment"></span>
+				</button>
+		</form>
+		
+		<ul id="rez" class="list-group">
+			{% for event in requirement.event_set.all %}
+				<li class="list-group-item">
+					<span class="glyphicon glyphicon-comment"></span> {{event.comment.content}}
+					<p><span class="glyphicon glyphicon-user"></span> {{event.comment.event_user.username}}</p>
+					<span class="glyphicon glyphicon-calendar"></span> {{event.comment.date_created}}
+				</li>
+			{% endfor %}
+		</ul>
 	</div>
 	
 	<div id="pane2" class="tab-pane">

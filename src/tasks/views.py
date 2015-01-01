@@ -7,7 +7,7 @@ from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 
 from tasks.forms import MilestoneForm
-from tasks.models import Comment
+from tasks.models import Comment, Requirement
 from tasks.models import Milestone
 
 
@@ -56,3 +56,23 @@ def addmilestone(request):
         
     return render(request,'tasks/addmilestone.html',{"form":form,
                                                      "back":back})
+
+def rcomment(request):
+    if request.POST:
+        content = request.POST.get("content","")
+        requirement_id = request.POST.get("pk","")
+        date = timezone.now()
+        requirement = get_object_or_404(Requirement,pk=requirement_id)
+
+        comment = Comment(event_user=request.user,content=content,
+                                  date_created=date,
+                                  requirement_task=requirement,event_kind="K")
+        comment.save()                                                         
+    
+    response_data = {}
+    response_data['content'] = content
+    response_data['date'] = date.__str__()
+    response_data['user'] = request.user.username
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+

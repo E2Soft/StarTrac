@@ -21,4 +21,5 @@ urlpatterns = patterns('',
     url(r'^rdetail/(?P<pk>\d+)/$', RequirementDetail.as_view(), name='rdetail'),
     url(r'^redit/(?P<pk>\d+)/$', RequirementUpdate.as_view(), name='redit'),
     url(r'^addrequirement/$', RequiremenCreate.as_view(), name='addrequirement'),
+     url(r'^rcomment/$', views.rcomment, name='rcomment'),
 )
