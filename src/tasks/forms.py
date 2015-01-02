@@ -8,12 +8,14 @@ from django.contrib.admin import widgets
 from django.core.urlresolvers import reverse
 from django.forms.models import modelform_factory
 from django.forms.widgets import Textarea
+from django.http.response import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView, CreateView
 from django.views.generic.list import ListView
-from django.utils import timezone
-from tasks.models import Milestone, Requirement, StateChange
+
+from tasks.models import Milestone, Requirement, StateChange, Comment
 
 
 class MilestoneForm(forms.ModelForm):
@@ -130,20 +132,26 @@ class RequirementUpdate(UpdateView):
     form_class = RequirementForm
     
     def get_success_url(self):
-        
+        return reverse('rdetail',args=(self.get_object().id,))
+    
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+
         #izmena stanja
-        #state_var = self.request.POST.get("state_kind",None)
+        state_var = self.request.POST.get("state_kind",None)
         pk = self.get_object().id
-        #print("NOva var {} za kljuc {}".format(state_var,pk))
-        
         requirement = get_object_or_404(Requirement,pk=pk)
         
-        state_change = StateChange(event_user=self.request.user, event_kind="S",
-                                   date_created=timezone.now(),requirement_task=requirement,
-                                   milestone=None)
-        state_change.save()
+        if(state_var != requirement.state_kind):
+            state_change = StateChange(event_user=self.request.user, event_kind="S",
+                                       date_created=timezone.now(),requirement_task=requirement,
+                                       milestone=None,new_state=state_var)
+            state_change.save()
+
+        self.object.save()
         
-        return reverse('rdetail',args=(self.get_object().id,))
+        return HttpResponseRedirect(self.get_success_url())
+
     
     def get_context_data(self, **kwargs):
         context = super(RequirementUpdate, self).get_context_data(**kwargs)

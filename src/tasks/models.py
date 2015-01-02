@@ -47,6 +47,21 @@ class RequirementTask(models.Model):
      
     def __str__(self):
         return self.name
+    
+    def getstate(self):
+        for t in STATE_KIND:
+            if(t[0]==self.state_kind):
+                return t[1]
+    
+    def getpriority(self):
+        for t in PRIORITY_LVL:
+            if(t[0]==self.priority_lvl):
+                return t[1]
+    
+    def getresolve(self):
+        for t in RESOLVE_TYPE:
+            if(t[0]==self.resolve_type):
+                return t[1]
 
 class Requirement(RequirementTask):
     pass
@@ -68,6 +83,9 @@ class Event(models.Model):
     
     class Meta:
         abstract = False
+    
+    def iscomment(self):
+        return self.event_kind == "K"
 
 class Task(RequirementTask):
     projects = models.ForeignKey(Requirement, null=True, blank=True)

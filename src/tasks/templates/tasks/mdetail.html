@@ -34,11 +34,13 @@
 		
 		<ul id="rez" class="list-group">
 			{% for event in milestone.event_set.all %}
+				{% if event.iscomment %}
 				<li class="list-group-item">
 					<span class="glyphicon glyphicon-comment"></span> {{event.comment.content}}
 					<p><span class="glyphicon glyphicon-user"></span> {{event.comment.event_user.username}}</p>
 					<span class="glyphicon glyphicon-calendar"></span> {{event.comment.date_created}}
 				</li>
+				{% endif %}
 			{% endfor %}
 		</ul>
 	</div>
