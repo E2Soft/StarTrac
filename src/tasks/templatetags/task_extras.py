@@ -17,8 +17,8 @@ def commnets(milestone):
     return size
 
 @register.filter
-def closedtasks(milestone):#Z state_kind .task_set.all.count
-    """"""
+def closedtasks(milestone):
+    """Filtrira taskove, uzimajuci samo one koji su zatvoreni i vraca njihov broj"""
     closed_tasks = milestone.task_set.filter(state_kind="Z")
     size = closed_tasks.count()
     
@@ -26,7 +26,7 @@ def closedtasks(milestone):#Z state_kind .task_set.all.count
 
 @register.filter
 def percentage(milestone):
-    """"""
+    """Filter koji racuina procentualno koliko je posla uradjeno"""
     closed_tasks = milestone.task_set.filter(state_kind="Z")
     part = closed_tasks.count()
     
