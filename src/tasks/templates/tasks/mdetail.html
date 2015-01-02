@@ -1,0 +1,77 @@
+{% extends "tasks/base.html" %}
+{% block title %}Detail Page{% endblock %}
+
+{% block content %}
+<div class="jumbotron">
+<h2>{{milestone}}</h2>
+
+<ul class="list-group">
+	<li class="list-group-item">Date created: {{milestone.date_created}}</li>
+	<li class="list-group-item">Name: {{milestone.summry}}</li>
+</ul>
+
+</div>
+
+<div>
+	<form method="post" id="form" role="form">{% csrf_token %}
+			<input type='hidden' name='pk' value='{{milestone.pk}}' id="pk" />
+			<div class="form-group">
+				<label for="comment">Comment:</label>
+				<textarea rows="5" cols="50" form="usrform" id="ccontent" class="form-control"></textarea>
+			</div>
+			<input type="submit" value="Comment" class="save btn btn-default" />
+	</form>
+	
+	<ul id="rez" class="list-group">
+		{% for event in milestone.event_set.all %}
+			<li class="list-group-item">
+				<div>
+					{{event.comment.content}}
+					{{event.comment.event_user.username}}
+					{{event.comment.date_created}}
+				</div>
+			</li>
+		{% endfor %}
+	</ul>
+</div>
+
+<div>
+	<h3>Tasks</h3>
+	<ul class="list-group">
+		{% for event in milestone.task_set.all %}
+				<li class="list-group-item">{{event.task.name}}</li>
+		{% endfor %}
+	</ul>
+</div>
+		
+{% endblock %}
+
+{% block sidebar %}
+<div id="sidebar-wrapper">
+    	<ul class="sidebar-nav">
+        	<li class="sidebar-brand">
+            	<p>
+            		<span class="glyphicon glyphicon-road"></span>
+            		StarTrac
+            	</p>
+            </li>
+			<li>
+				<b>
+					<a href="{{back}}">
+						<span class="glyphicon glyphicon-chevron-left"></span>
+						Back
+					</a>
+				</b>
+			</li>
+			<li>
+				<b>
+					<a href="{% url 'medit' milestone.pk %}">
+						<span class="glyphicon glyphicon-pencil"></span>
+						Edit
+					</a>
+				</b>
+			</li>
+			{{block.super}}
+		</ul>
+	</div>
+{% endblock %}

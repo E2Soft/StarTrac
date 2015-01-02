@@ -11,8 +11,9 @@ STATE_KIND = (
     )
 
 EVENT_KIND = (
-        ('C', 'Accepted'),
-        ('P', 'Created'),
+        ('K', 'Comment'),
+        ('C', 'Commit'),
+        ('S', 'StateChange'),
     )
 
 PRIORITY_LVL= (
@@ -22,13 +23,23 @@ PRIORITY_LVL= (
         ('L', 'Low'),
     )
 
+RESOLVE_TYPE = (
+        ('F', 'None'),
+        ('F', 'Fixed'),
+        ('I', 'Invalid'),
+        ('W', 'Wontfix'),
+        ('D', 'Duplicate'),
+        ('D', 'Worksforme'),
+    )
+
 class RequirementTask(models.Model):
     name = models.CharField(max_length=70, default="")
-    state_kind = models.CharField(max_length=1, choices=STATE_KIND, default="C")
+    state_kind = models.CharField(max_length=1, choices=STATE_KIND, default="K")
     project_tast_user = models.ForeignKey(User)
     priority_lvl = models.CharField(max_length=1, choices=PRIORITY_LVL, default="L")
     pub_date = models.DateTimeField('date published')
     content = models.CharField(max_length=100, default="")
+    resolve_type = models.CharField(max_length=1, choices=RESOLVE_TYPE, default="F")
     
     class Meta:
         abstract = False
@@ -39,29 +50,35 @@ class RequirementTask(models.Model):
 
 class Requirement(RequirementTask):
     pass
+  
+class Milestone(models.Model):
+    date_created = models.DateTimeField('date published')
+    name = models.CharField(max_length=70, default="")
+    summry =  models.CharField(max_length=300)
+    
+    def __str__(self):
+        return self.name 
     
 class Event(models.Model):
     event_user = models.ForeignKey(User)
     event_kind = models.CharField(max_length=1, choices=EVENT_KIND, default="C")
     date_created = models.DateTimeField('date published')
-    requirement_task = models.ForeignKey(RequirementTask)
+    requirement_task = models.ForeignKey(RequirementTask, blank=True, null=True)
+    milestone = models.ForeignKey(Milestone, null=True, blank=True)
     
     class Meta:
         abstract = False
 
-class Milestone(models.Model):
-    date_created = models.DateTimeField('date published')
-    name = models.CharField(max_length=70, default="")
-    summry =  models.CharField(max_length=300)
-    event = models.ForeignKey(Event, null=True)
-
 class Task(RequirementTask):
     projects = models.ForeignKey(Requirement, null=True, blank=True)
     milestone = models.ForeignKey(Milestone, null=True, blank=True)
-    assigned_to = models.ForeignKey(User)
+    assigned_to = models.ForeignKey(User, null=True, blank=True)
 
 class Comment(Event):
     content = models.CharField(max_length=200, default="")
     
 class StateChange(Event):
     new_state = models.CharField(max_length=1, choices=STATE_KIND, default="C")
+    
+class Commit(Event):
+    commit_url = models.URLField()

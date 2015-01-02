@@ -1,0 +1,59 @@
+{% extends "tasks/base.html" %}
+{% block title %}Milestones Page{% endblock %}
+
+{% block content %}
+	<div id="page-content-wrapper">
+    	<div class="container-fluid">
+        	<div class="row">
+            	<div class="col-lg-12">	
+            		<div class="page-header">
+       					<h1>Milestones</h1>
+    				</div>
+					<ul class="list-group">
+						{% for publisher in object_list %}
+							<li class="list-group-item">
+							<a href="{% url 'mdetail' publisher.pk %}">{{publisher.name}}</a>
+							<div class="progress">
+								<div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:70%">
+							    	70%
+							    </div>
+							</div>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+		
+{% endblock %}
+
+{% block sidebar %}
+	<div id="sidebar-wrapper">
+    	<ul class="sidebar-nav">
+        	<li class="sidebar-brand">
+            	<p>
+            		<span class="glyphicon glyphicon-road"></span>
+            		StarTrac
+            	</p>
+            </li>
+			<li>
+				<b>
+					<a href="{% url 'addmilestone' %}">
+						<span class="glyphicon glyphicon-file"></span>
+						Add new milestone
+					</a>
+				</b>
+			</li>
+			<li>
+				<b>
+					<a href="/tasks">
+						<span class="glyphicon glyphicon-chevron-left"></span>
+						Back
+					</a>
+				</b>
+			</li>
+			{{block.super}}
+		</ul>
+	</div>
+{% endblock %}

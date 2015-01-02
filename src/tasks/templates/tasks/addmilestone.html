@@ -1,18 +1,17 @@
 {% extends "tasks/base.html" %}
-{% block title %}Register Page{% endblock %}
+{% block title %}Add Milestone {% endblock %}
 
 {% block content %}
 	<div class="jumbotron">
-		<h2>Register new user</h2>
-	</div>
-	
-	<form action="{% url 'register' %}" method="post" role="form" >{% csrf_token %}
-	<table class="table table-hover">
-	{{form.as_table}}
-	</table>
-	<input type="submit" value="Register" class="save btn btn-default" />
-	
-	</form>
+    	<h2>Add new milestone</h2>
+    </div>
+    
+    <form method="POST" class="post-form" role="form">{% csrf_token %}
+    	<table class="table table-hover">
+        {{ form.as_table }}
+        </table>
+        <button type="submit" class="save btn btn-default">Save</button>
+    </form>
 {% endblock %}
 
 {% block sidebar %}
