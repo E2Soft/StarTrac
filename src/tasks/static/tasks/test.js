@@ -91,3 +91,15 @@ $(document).ready(function(){
         return false;
     });
 });
+
+$(document).ready(function() {
+    $("#ccontent").keyup(function(){
+    	if($("#ccontent").val().length > 0){
+    		$("#err").attr("class","form-group");
+    		$("#btncomment").attr("class","btn btn-warning");
+    	}else{
+    		$("#err").attr("class","form-group has-error has-feedback");
+    		$("#btncomment").attr("class","btn btn-warning disabled");
+    	}
+  	});
+});
