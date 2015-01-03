@@ -1,0 +1,55 @@
+{% extends "tasks/base.html" %}
+{% block title %}Timeline{% endblock %}
+
+{% block content %}
+	<div id="page-content-wrapper">
+    	<div class="container-fluid">
+        	<div class="row">
+            	<div class="col-lg-12">	
+            		<div class="page-header">
+       					<h2><span class="glyphicon glyphicon-time"></span> Timeline</h2>
+    				</div>
+					<ul class="list-group">
+						{% for publisher in object_list %}
+							<div class="bs-callout bs-callout-primary">
+							<ul class="list-group">
+									{% for obj in publisher %}
+										{% if forloop.first %}
+											<ul class="list-group"><h4><span class="glyphicon glyphicon-calendar"></span> {{obj.date_created}}</h4></ul>
+										{% endif %}
+										<li class="list-group-item">
+											{{obj.event_kind}} <span class="glyphicon glyphicon-user"></span> {{obj.event_user}}
+										</li>
+									{% endfor %}
+								</ul>
+							</div>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+		
+{% endblock %}
+
+{% block sidebar %}
+	<div id="sidebar-wrapper">
+    	<ul class="sidebar-nav">
+        	<li class="sidebar-brand">
+            	<p>
+            		<span class="glyphicon glyphicon-road"></span>
+            		StarTrac
+            	</p>
+            </li>
+			<li>
+				<b>
+					<a href="/tasks">
+						<span class="glyphicon glyphicon-chevron-left"></span>
+						Back
+					</a>
+				</b>
+			</li>
+			{{block.super}}
+		</ul>
+	</div>
+{% endblock %}

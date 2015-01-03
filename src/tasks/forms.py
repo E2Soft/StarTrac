@@ -3,9 +3,13 @@ Created on Dec 29, 2014
 
 @author: Milos
 '''
+from itertools import groupby
+
 from django import forms
 from django.contrib.admin import widgets
 from django.core.urlresolvers import reverse
+from django.db.models import Count
+from django.db.models.query import QuerySet
 from django.forms.models import modelform_factory
 from django.forms.widgets import Textarea
 from django.http.response import HttpResponseRedirect
@@ -15,7 +19,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView, CreateView
 from django.views.generic.list import ListView
 
-from tasks.models import Milestone, Requirement, StateChange, Comment
+from tasks.models import Milestone, Requirement, StateChange, Comment, Event
 
 
 class MilestoneForm(forms.ModelForm):
@@ -182,3 +186,20 @@ class RequiremenCreate(CreateView):
             context["back"]="/"
      
         return context
+
+def extract_date(entity):
+    'extracts the starting date from an entity'
+    return entity.date_created.date()
+
+class TimelineList(ListView):
+    model = Event
+    template_name = 'tasks/timeline.html'
+    
+    def get_queryset(self):
+        
+        #results = Event.objects.values('date_created').annotate(dcount=Count('date_created'))
+        
+        entities = Event.objects.order_by('date_created')
+        list_of_lists = [list(g) for t, g in groupby(entities, key=extract_date)]
+
+        return list_of_lists
