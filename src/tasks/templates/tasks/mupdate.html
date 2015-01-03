@@ -7,6 +7,7 @@
     	<h2>Update milestone</h2>
     </div>
 	
+	<div class="bs-callout bs-callout-primary">
 	<form action="" method="post" role="form">{% csrf_token %}
 		<table class="table table-hover">
 	    	{{ form.as_table }}
@@ -16,6 +17,7 @@
         <span class="glyphicon glyphicon-ok"></span>
         </button>
 	</form>
+	</div>
 	
 {% endblock %}
 

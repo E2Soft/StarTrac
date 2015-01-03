@@ -5,6 +5,7 @@
 <div class="jumbotron">
 <h2>{{requirement}}</h2>
 
+<div class="bs-callout bs-callout-default">
 <ul class="list-group">
 	<li class="list-group-item"><span class="glyphicon glyphicon-calendar"></span> Date: {{requirement.pub_date}}</li>
 	<li class="list-group-item"><span class="glyphicon glyphicon-cog"></span> State: {{requirement.getstate}}</li>
@@ -14,6 +15,7 @@
 	<li class="list-group-item"><span class="glyphicon glyphicon-tag"></span> Resolve: {{requirement.getresolve}}</li>
 </ul>
 </div>
+</div>
 
 <ul class="nav nav-tabs" role="tablist">
 	<li class="active"><a href="#pane1" data-toggle="tab"><span class="glyphicon glyphicon-comment"></span> Comments</a></li>
@@ -22,6 +24,7 @@
 
 <div class="tab-content">
 	<div id="pane1" class="tab-pane active">
+		<div class="bs-callout bs-callout-warning">
 		<form method="post" id="formreq" role="form">{% csrf_token %}
 				<input type='hidden' name='pk' value='{{requirement.pk}}' id="pk" />
 				<div class="form-group">
@@ -34,6 +37,7 @@
 					<span class="glyphicon glyphicon-comment"></span>
 				</button>
 		</form>
+		</div>
 		
 		<ul id="rez" class="list-group">
 			{% for event in requirement.event_set.all %}
@@ -49,13 +53,12 @@
 	</div>
 	
 	<div id="pane2" class="tab-pane">
-		</br>
-		<p>
+		<div class="bs-callout bs-callout-success">
 		<button type="submit" class="btn btn-success" id="addtask">
 	        Add
 	        <span class="glyphicon glyphicon-plus"></span>
         </button>
-        </p>
+        </div>
         
 		<ul class="list-group">
 			{% for event in requirement.task_set.all %}

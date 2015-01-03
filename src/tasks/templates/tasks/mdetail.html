@@ -5,10 +5,12 @@
 <div class="jumbotron">
 <h2>{{milestone}}</h2>
 
+<div class="bs-callout bs-callout-default">
 <ul class="list-group">
 	<li class="list-group-item"><span class="glyphicon glyphicon-calendar"></span> Date: {{milestone.date_created}}</li>
 	<li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> Summry: {{milestone.summry}}</li>
 </ul>
+</div>
 
 </div>
 
@@ -19,11 +21,13 @@
 
 <div class="tab-content">
 	<div id="pane1" class="tab-pane active">
+		<div class="bs-callout bs-callout-warning">
 		<form method="post" id="form" role="form">{% csrf_token %}
 				<input type='hidden' name='pk' value='{{milestone.pk}}' id="pk" />
 				<div class="form-group">
-					<label for="comment">Comment:</label>
-					<textarea rows="5" cols="50" form="usrform" id="ccontent" class="form-control"></textarea>
+					
+					<textarea rows="5" cols="50" form="usrform" id="ccontent" class="form-control"
+					placeholder="Share your thoughts"></textarea>
 				</div>
 				<!--<input type="submit" value="Comment" class="save btn btn-default" />-->
 				<button type="submit" class="btn btn-warning">
@@ -31,6 +35,7 @@
 					<span class="glyphicon glyphicon-comment"></span>
 				</button>
 		</form>
+		</div>
 		
 		<ul id="rez" class="list-group">
 			{% for event in milestone.event_set.all %}
@@ -46,13 +51,12 @@
 	</div>
 
 	<div id="pane2" class="tab-pane">
-		</br>
-		<p>
+		<div class="bs-callout bs-callout-success">
 		<button type="submit" class="btn btn-success" id="addtask">
 	        Add
 	        <span class="glyphicon glyphicon-plus"></span>
         </button>
-        </p>
+        </div>
         
 		<ul class="list-group">
 			{% for event in milestone.task_set.all %}

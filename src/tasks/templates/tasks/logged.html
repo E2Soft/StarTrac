@@ -28,8 +28,8 @@
         {{username}} 
         <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="#"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
-            {% if isadmin %}<li><a href="/admin"><span class="glyphicon glyphicon-star"></span> Admin panel</a></li>{% endif %}
+            <li><a href="{% url 'udetail' %}"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+            {% if isadmin %}<li><a href="/admin"><span class="glyphicon glyphicon-tower"></span> Admin panel</a></li>{% endif %}
             <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
           </ul>
         </li>

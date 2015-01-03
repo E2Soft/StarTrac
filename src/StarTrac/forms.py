@@ -4,8 +4,13 @@ Created on Dec 21, 2014
 @author: Milos
 '''
 from django import forms
-from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
+from django.shortcuts import get_object_or_404
+from django.views.generic.detail import DetailView
+from django.views.generic.edit import UpdateView
+
 
 class RegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True)
@@ -35,3 +40,59 @@ class RegistrationForm(UserCreationForm):
         self.fields["email"].widget.attrs['class']='form-control'
         self.fields["password1"].widget.attrs['class']='form-control'
         self.fields["password2"].widget.attrs['class']='form-control'
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name','last_name', 'username', 'email']
+    
+    def __init__(self, *args, **kwargs):
+        super(UserForm, self).__init__(*args, **kwargs)
+        self.fields["first_name"].widget.attrs['class']='form-control'
+        self.fields["last_name"].widget.attrs['class']='form-control'
+        self.fields["username"].widget.attrs['class']='form-control'
+        self.fields["email"].widget.attrs['class']='form-control'
+        
+class UserUpdate(UpdateView):
+    model = User
+    fields = ['first_name','last_name', 'username', 'email']
+    template_name = 'tasks/uupdate.html'
+    form_class = UserForm
+    
+    def get_success_url(self):
+        return reverse('udetail')
+    
+    def get_object(self, queryset=None):
+        return self.request.user
+    
+    def get_context_data(self, **kwargs):
+        context = super(UserUpdate, self).get_context_data(**kwargs)
+        
+        #KeyError
+        try:
+            context["back"] = self.request.META["HTTP_REFERER"]
+        except(KeyError):
+            context["back"]="/"
+     
+        return context
+    
+class DetailUser(DetailView):
+    model = User
+    template_name = 'tasks/udetail.html'
+    context_object_name='user'
+    
+    
+    def get_object(self):
+        return get_object_or_404(User, pk=self.request.user.pk)
+    
+    def get_context_data(self, **kwargs):
+        context = super(DetailUser, self).get_context_data(**kwargs)
+        
+        #KeyError
+        try:
+            context["back"] = self.request.META["HTTP_REFERER"]
+        except(KeyError):
+            context["back"]="/"
+        
+        #context["user"] = self.request.user
+        return context

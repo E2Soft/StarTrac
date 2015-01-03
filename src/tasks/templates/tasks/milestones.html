@@ -15,6 +15,7 @@
     				</div>
 					<ul class="list-group">
 						{% for publisher in object_list %}
+							<div class="bs-callout bs-callout-primary">
 							<p>
 							<li class="list-group-item">
 							<span class="badge"><span class="glyphicon glyphicon-tasks"></span> {{publisher.task_set.all.count}}</span>
@@ -29,6 +30,7 @@
 							    </div>
 							</div>
 							</li>
+							</div>
 						{% endfor %}
 					</ul>
 				</div>
