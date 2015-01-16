@@ -86,6 +86,11 @@ class Event(models.Model):
     
     def iscomment(self):
         return self.event_kind == "K"
+    
+    def geteventkind(self):
+        for t in EVENT_KIND:
+            if(t[0]==self.event_kind):
+                return t[1]
 
 class Task(RequirementTask):
     projects = models.ForeignKey(Requirement, null=True, blank=True)
