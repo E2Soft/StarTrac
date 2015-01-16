@@ -27,4 +27,7 @@ urlpatterns = patterns('',
     url(r'^rcomment/$', views.rcomment, name='rcomment'),
     
     url(r'^timeline/$', TimelineList.as_view(), name='timeline'),
+    url(r'^graph/$', views.testgraph, name='graph'),
+    url(r'^prioritygraph/$', views.testgraphpriority, name='prioritygraph'),
+    url(r'^resolvegraph/$', views.resolvegraph, name='resolvegraph'),
 )

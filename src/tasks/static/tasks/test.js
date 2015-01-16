@@ -103,3 +103,98 @@ $(document).ready(function() {
     	}
   	});
 });
+
+
+function preparegraph(data,graphtitle){
+	$('#myModalLabel').text(graphtitle);
+	//$('#content').text(data);
+	
+	// Get context with jQuery - using jQuery's .get() method.
+	$("#content").html("");
+	//mora da se obrise tag i opet doda, da bi se obrisala vrednost
+	//posto recikliram grafik
+	$("#content").html("<canvas id=\"canvas\" height=\"450\" width=\"600\"></canvas>");
+	
+	var ctx = $("#canvas").get(0).getContext("2d");
+	
+	// This will get the first returned node in the jQuery collection.
+	var myNewChart = new Chart(ctx);
+	
+	var myPieChart = new Chart(ctx).Pie(data);
+}
+
+$(document).ready(function(){
+    $("#graph").click(function(){
+        $.ajax({
+            type: "GET",
+            url: "/tasks/graph/",
+            success: function(data){
+            var json = JSON.stringify(data);
+                alert(json);
+                preparegraph(data,"Tasks states graph");
+                $('#myModal').modal('show');
+            },
+            error: function(){
+                alert("error");
+            }
+        });
+    });
+});
+
+$(document).ready(function(){
+    $("#priority").click(function(){
+        $.ajax({
+            type: "GET",
+            url: "/tasks/prioritygraph/",
+            success: function(data){
+            var json = JSON.stringify(data);
+                alert(json);
+                preparegraph(data,"Tasks priority graph");
+                $('#myModal').modal('show');
+            },
+            error: function(){
+                alert("error");
+            }
+        });
+    });
+});
+
+$(document).ready(function(){
+    $("#resolve").click(function(){
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            data : {
+            	'pk' : $("#pk").val()
+            },
+            url: "/tasks/resolvegraph/",
+            success: function(data){
+            var json = JSON.stringify(data);
+                alert(json);
+                preparegraph(data,"Tasks resolved graph");
+                $('#myModal').modal('show');
+            },
+            error: function(){
+                alert("error");
+            }
+        });
+    });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
