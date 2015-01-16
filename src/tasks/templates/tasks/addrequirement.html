@@ -1,20 +1,20 @@
 {% extends "tasks/base.html" %}
-{% block title %}Edit Milestone{% endblock %}
+{% block title %}Edit Requirement{% endblock %}
 
 {% block content %}
 
 	<div class="jumbotron">
-    	<h2>Update milestone</h2>
+    	<h2>Update requirement</h2>
     </div>
 	
-	<div class="bs-callout bs-callout-primary">
+	<div class="bs-callout bs-callout-success">
 	<form action="" method="post" role="form">{% csrf_token %}
 		<table class="table table-hover">
 	    	{{ form.as_table }}
 	    </table>
-	    <button type="submit" class="btn btn-primary">
-        Update
-        <span class="glyphicon glyphicon-ok"></span>
+	    <button type="submit" class="btn btn-success">
+        Add
+        <span class="glyphicon glyphicon-plus"></span>
         </button>
 	</form>
 	</div>

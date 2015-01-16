@@ -11,7 +11,7 @@
         	<div class="row">
             	<div class="col-lg-12">	
             		<div class="page-header">
-       					<h2><span class="glyphicon glyphicon-flag"></span> Milestones</h2>
+       					<h2><span class="glyphicon glyphicon-list-alt"></span> Requirements</h2>
     				</div>
 					<ul class="list-group">
 						{% for publisher in object_list %}
@@ -20,9 +20,8 @@
 							<li class="list-group-item">
 							<span class="badge"><span class="glyphicon glyphicon-tasks"></span> {{publisher.task_set.all.count}}</span>
 							<span class="badge"><span class="glyphicon glyphicon-comment"></span> {{publisher|commnets}}</span>
-							<a href="{% url 'mdetail' publisher.pk %}">{{publisher.name}}</a>
+							<a href="{% url 'rdetail' publisher.pk %}">{{publisher.name}}</a>
 							</p>
-							
 							<div class="progress">
 								<div class="progress-bar progress-bar-striped" role="progressbar" aria-valuenow="{{publisher|closedtasks}}" aria-valuemin="0" 
 								aria-valuemax="{{publisher.task_set.all.count}}"  style="width:{{publisher|percentage}}%">
@@ -51,9 +50,9 @@
             </li>
 			<li>
 				<b>
-					<a href="{% url 'addmilestone' %}">
+					<a href="{% url 'addrequirement' %}">
 						<span class="glyphicon glyphicon-file"></span>
-						Add new milestone
+						Add new requirement
 					</a>
 				</b>
 			</li>
@@ -65,7 +64,7 @@
 					</a>
 				</b>
 			</li>
-
+			
 			<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">
 			<span class="glyphicon glyphicon-stats"></span>
 			Statistics

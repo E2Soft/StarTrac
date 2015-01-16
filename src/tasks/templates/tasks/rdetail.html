@@ -3,15 +3,18 @@
 
 {% block content %}
 <div class="jumbotron">
-<h2>{{milestone}}</h2>
+<h2>{{requirement}}</h2>
 
 <div class="bs-callout bs-callout-default">
 <ul class="list-group">
-	<li class="list-group-item"><span class="glyphicon glyphicon-calendar"></span> Date: {{milestone.date_created}}</li>
-	<li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> Summry: {{milestone.summry}}</li>
+	<li class="list-group-item"><span class="glyphicon glyphicon-calendar"></span> Date: {{requirement.pub_date}}</li>
+	<li class="list-group-item"><span class="glyphicon glyphicon-cog"></span> State: {{requirement.getstate}}</li>
+	<li class="list-group-item"><span class="glyphicon glyphicon-user"></span> User: {{requirement.project_tast_user}}</li>
+	<li class="list-group-item"><span class="glyphicon glyphicon-signal"></span> Priority: {{requirement.getpriority}}</li>
+	<li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> Content: {{requirement.content}}</li>
+	<li class="list-group-item"><span class="glyphicon glyphicon-tag"></span> Resolve: {{requirement.getresolve}}</li>
 </ul>
 </div>
-
 </div>
 
 <ul class="nav nav-tabs" role="tablist">
@@ -22,10 +25,10 @@
 <div class="tab-content">
 	<div id="pane1" class="tab-pane active">
 		<div class="bs-callout bs-callout-warning">
-		<form method="post" id="form" role="form">{% csrf_token %}
-				<input type='hidden' name='pk' value='{{milestone.pk}}' id="pk" />
+		<form method="post" id="formreq" role="form">{% csrf_token %}
+				<input type='hidden' name='pk' value='{{requirement.pk}}' id="pk" />
 				<div class="form-group has-error has-feedback" id="err">
-					<textarea rows="5" cols="50" form="usrform" id="ccontent" class="form-control"
+					<textarea rows="5" cols="50" form="usrform" id="ccontent" class="form-control" 
 					placeholder="Share your thoughts"></textarea>
 				</div>
 				<!--<input type="submit" value="Comment" class="save btn btn-default" />-->
@@ -37,7 +40,7 @@
 		</div>
 		
 		<ul id="rez" class="list-group">
-			{% for event in milestone.event_set.all %}
+			{% for event in requirement.event_set.all %}
 				{% if event.iscomment %}
 				<li class="list-group-item">
 					<span class="glyphicon glyphicon-comment"></span> {{event.comment.content}}
@@ -48,7 +51,7 @@
 			{% endfor %}
 		</ul>
 	</div>
-
+	
 	<div id="pane2" class="tab-pane">
 		<div class="bs-callout bs-callout-success">
 		<button type="submit" class="btn btn-success" id="addtask">
@@ -58,13 +61,13 @@
         </div>
         
 		<ul class="list-group">
-			{% for event in milestone.task_set.all %}
+			{% for event in requirement.task_set.all %}
 					<li class="list-group-item">{{event.task.name}}</li>
 			{% endfor %}
 		</ul>
 	</div>
 </div>
-		
+
 {% endblock %}
 
 {% block sidebar %}
@@ -86,7 +89,7 @@
 			</li>
 			<li>
 				<b>
-					<a href="{% url 'medit' milestone.pk %}">
+					<a href="{% url 'redit' requirement.pk %}">
 						<span class="glyphicon glyphicon-pencil"></span>
 						Edit
 					</a>
