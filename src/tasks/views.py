@@ -77,7 +77,9 @@ def rcomment(request):
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 def testgraphpriority(request):
-    milestone = get_object_or_404(Milestone,pk=1)
+    request_pk = request.GET["pk"]   
+    print("REQ PK:{}".format(request_pk))
+    milestone = get_object_or_404(Milestone,pk=request_pk)
     
     critical_tasks = milestone.task_set.filter(priority_lvl="C").count()
     high_tasks = milestone.task_set.filter(priority_lvl="H").count()
@@ -121,8 +123,9 @@ def testgraphpriority(request):
     return HttpResponse(json.dumps(resp_list), content_type="application/json")
 
 def testgraph(request):
-    
-    milestone = get_object_or_404(Milestone,pk=1)
+    request_pk = request.GET["pk"]
+    print("REQ PK:{}".format(request_pk))   
+    milestone = get_object_or_404(Milestone,pk=request_pk)
     
     closed_tasks = milestone.task_set.filter(state_kind="Z").count()
     onwait_tasks = milestone.task_set.filter(state_kind="O").count()
@@ -165,8 +168,10 @@ def testgraph(request):
     
     return HttpResponse(json.dumps(resp_list), content_type="application/json")
     
+    
 def resolvegraph(request):
-    request_pk = request.GET["pk"]   
+    request_pk = request.GET["pk"]
+    print("REQ PK:{}".format(request_pk))   
     milestone = get_object_or_404(Milestone,pk=request_pk)
     
     none_tasks = milestone.task_set.filter(resolve_type="N").count()
@@ -228,3 +233,163 @@ def resolvegraph(request):
     
     return HttpResponse(json.dumps(resp_list), content_type="application/json")
     
+    
+def reqgraph(request):
+    request_pk = request.GET["pk"]
+    print("REQ PK:{}".format(request_pk))
+    requirement = get_object_or_404(Requirement,pk=request_pk)
+    
+    closed_tasks = requirement.task_set.filter(state_kind="Z").count()
+    onwait_tasks = requirement.task_set.filter(state_kind="O").count()
+    accepted_tasks = requirement.task_set.filter(state_kind="P").count()
+    created_tasks = requirement.task_set.filter(state_kind="C").count()
+    
+    resp_list = []
+    
+    resp_obj = {}
+    resp_obj['value'] = closed_tasks
+    resp_obj['color'] = "#F7464A"
+    resp_obj['highlight'] = "#FF5A5E"
+    resp_obj['label'] = "Closed"
+    
+    resp_list.append(resp_obj)
+    
+    resp_obj1 = {}
+    resp_obj1['value'] = onwait_tasks
+    resp_obj1['color'] = "#46BFBD"
+    resp_obj1['highlight'] = "#5AD3D1"
+    resp_obj1['label'] = "On wait"
+    
+    resp_list.append(resp_obj1)
+    
+    resp_obj2 = {}
+    resp_obj2['value'] = accepted_tasks
+    resp_obj2['color'] = "#FDB45C"
+    resp_obj2['highlight'] = "#FFC870"
+    resp_obj2['label'] = "Accepted"
+    
+    resp_list.append(resp_obj2)
+    
+    resp_obj3 = {}
+    resp_obj3['value'] = created_tasks
+    resp_obj3['color'] = "#949FB1"
+    resp_obj3['highlight'] = "#A8B3C5"
+    resp_obj3['label'] = "Created"
+    
+    resp_list.append(resp_obj3)
+    
+    return HttpResponse(json.dumps(resp_list), content_type="application/json")
+
+
+def reqtestgraphpriority(request):
+    request_pk = request.GET["pk"]   
+    print("REQ PK:{}".format(request_pk))
+    requirement = get_object_or_404(Requirement,pk=request_pk)
+    
+    critical_tasks = requirement.task_set.filter(priority_lvl="C").count()
+    high_tasks = requirement.task_set.filter(priority_lvl="H").count()
+    medium_tasks = requirement.task_set.filter(priority_lvl="M").count()
+    low_tasks = requirement.task_set.filter(priority_lvl="L").count()
+    
+    resp_list = []
+    
+    resp_obj = {}
+    resp_obj['value'] = critical_tasks
+    resp_obj['color'] = "#F7464A"
+    resp_obj['highlight'] = "#FF5A5E"
+    resp_obj['label'] = "Critical"
+    
+    resp_list.append(resp_obj)
+    
+    resp_obj1 = {}
+    resp_obj1['value'] = high_tasks
+    resp_obj1['color'] = "#46BFBD"
+    resp_obj1['highlight'] = "#5AD3D1"
+    resp_obj1['label'] = "High"
+    
+    resp_list.append(resp_obj1)
+    
+    resp_obj2 = {}
+    resp_obj2['value'] = medium_tasks
+    resp_obj2['color'] = "#FDB45C"
+    resp_obj2['highlight'] = "#FFC870"
+    resp_obj2['label'] = "Medium"
+    
+    resp_list.append(resp_obj2)
+    
+    resp_obj3 = {}
+    resp_obj3['value'] = low_tasks
+    resp_obj3['color'] = "#949FB1"
+    resp_obj3['highlight'] = "#A8B3C5"
+    resp_obj3['label'] = "Low"
+    
+    resp_list.append(resp_obj3)
+    
+    return HttpResponse(json.dumps(resp_list), content_type="application/json")
+
+
+def reqresolvegraph(request):
+    request_pk = request.GET["pk"]
+    print("REQ PK:{}".format(request_pk))   
+    requirement = get_object_or_404(Requirement,pk=request_pk)
+    
+    none_tasks = requirement.task_set.filter(resolve_type="N").count()
+    fixed_tasks = requirement.task_set.filter(resolve_type="F").count()
+    invalid_tasks = requirement.task_set.filter(resolve_type="I").count()
+    wontfix_tasks = requirement.task_set.filter(resolve_type="W").count()
+    duplicate_tasks = requirement.task_set.filter(resolve_type="D").count()
+    worksforme_tasks = requirement.task_set.filter(resolve_type="R").count()
+    
+    resp_list = []
+
+    resp_obj = {}
+    resp_obj['value'] = none_tasks
+    resp_obj['color'] = "#F7464A"
+    resp_obj['highlight'] = "#FF5A5E"
+    resp_obj['label'] = "None"
+    
+    resp_list.append(resp_obj)
+    
+    resp_obj1 = {}
+    resp_obj1['value'] = fixed_tasks
+    resp_obj1['color'] = "#46BFBD"
+    resp_obj1['highlight'] = "#5AD3D1"
+    resp_obj1['label'] = "Fixed"
+    
+    resp_list.append(resp_obj1)
+    
+    resp_obj2 = {}
+    resp_obj2['value'] = invalid_tasks
+    resp_obj2['color'] = "#FDB45C"
+    resp_obj2['highlight'] = "#FFC870"
+    resp_obj2['label'] = "Invalid"
+    
+    resp_list.append(resp_obj2)
+    
+    resp_obj3 = {}
+    resp_obj3['value'] = wontfix_tasks
+    resp_obj3['color'] = "#949FB1"
+    resp_obj3['highlight'] = "#A8B3C5"
+    resp_obj3['label'] = "Won't fix"
+    
+    resp_list.append(resp_obj3)
+    
+    resp_obj4 = {}
+    resp_obj4['value'] = duplicate_tasks
+    resp_obj4['color'] = "#4D5360"
+    resp_obj4['highlight'] = "#616774"
+    resp_obj4['label'] = "Duplicate"
+    
+    resp_list.append(resp_obj4)
+    
+    resp_obj5 = {}
+    resp_obj5['value'] = worksforme_tasks
+    resp_obj5['color'] = "#4D5360"
+    resp_obj5['highlight'] = "#616774"
+    resp_obj5['label'] = "Works for me"
+    
+    resp_list.append(resp_obj5)
+    
+    return HttpResponse(json.dumps(resp_list), content_type="application/json")
+
+

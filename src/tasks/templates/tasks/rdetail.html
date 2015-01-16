@@ -1,6 +1,10 @@
 {% extends "tasks/base.html" %}
 {% block title %}Detail Page{% endblock %}
 
+{% block modal%}
+{{block.super}}
+{% endblock %}
+
 {% block content %}
 <div class="jumbotron">
 <h2>{{requirement}}</h2>
@@ -101,9 +105,9 @@
 			Statistics
 			<span class="caret"></span></a>
 	          <ul class="dropdown-menu">
-	            <li><a href="#">Page 1-1</a></li>
-	            <li><a href="#">Page 1-2</a></li>
-	            <li><a href="#">Page 1-3</a></li>
+	            <li id="reqgraph"><a href="#">Tasks states stats</a></li>
+	            <li id="reqpriority"><a href="#">Tasks priority stats</a></li>
+	            <li id="reqresolve"><a href="#">Tasks resolved stats</a></li>
 	          </ul>
 	        </li>
 			

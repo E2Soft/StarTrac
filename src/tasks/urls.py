@@ -30,4 +30,8 @@ urlpatterns = patterns('',
     url(r'^graph/$', views.testgraph, name='graph'),
     url(r'^prioritygraph/$', views.testgraphpriority, name='prioritygraph'),
     url(r'^resolvegraph/$', views.resolvegraph, name='resolvegraph'),
+    
+    url(r'^reqgraph/$', views.reqgraph, name='reqgraph'),
+    url(r'^reqprioritygraph/$', views.reqtestgraphpriority, name='reqprioritygraph'),
+    url(r'^reqresolvegraph/$', views.reqresolvegraph, name='reqresolvegraph'),
 )

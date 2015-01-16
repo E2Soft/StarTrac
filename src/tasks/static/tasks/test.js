@@ -127,6 +127,10 @@ $(document).ready(function(){
     $("#graph").click(function(){
         $.ajax({
             type: "GET",
+            dataType: "json",
+            data : {
+            	'pk' : $("#pk").val()
+            },
             url: "/tasks/graph/",
             success: function(data){
             var json = JSON.stringify(data);
@@ -145,6 +149,10 @@ $(document).ready(function(){
     $("#priority").click(function(){
         $.ajax({
             type: "GET",
+            dataType: "json",
+            data : {
+            	'pk' : $("#pk").val()
+            },
             url: "/tasks/prioritygraph/",
             success: function(data){
             var json = JSON.stringify(data);
@@ -181,9 +189,71 @@ $(document).ready(function(){
     });
 });
 
+$(document).ready(function(){
+    $("#reqgraph").click(function(){
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            data : {
+            	'pk' : $("#pk").val()
+            },
+            url: "/tasks/reqgraph/",
+            success: function(data){
+            var json = JSON.stringify(data);
+                alert(json);
+                preparegraph(data,"Requirement tasks states graph");
+                $('#myModal').modal('show');
+            },
+            error: function(){
+                alert("error");
+            }
+        });
+    });
+});
 
+$(document).ready(function(){
+    $("#reqpriority").click(function(){
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            data : {
+            	'pk' : $("#pk").val()
+            },
+            url: "/tasks/reqprioritygraph/",
+            success: function(data){
+            var json = JSON.stringify(data);
+                alert(json);
+                preparegraph(data,"Requirement priority graph");
+                $('#myModal').modal('show');
+            },
+            error: function(){
+                alert("error");
+            }
+        });
+    });
+});
 
-
+$(document).ready(function(){
+    $("#reqresolve").click(function(){
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            data : {
+            	'pk' : $("#pk").val()
+            },
+            url: "/tasks/reqresolvegraph/",
+            success: function(data){
+            var json = JSON.stringify(data);
+                alert(json);
+                preparegraph(data,"Requirement resolve graph");
+                $('#myModal').modal('show');
+            },
+            error: function(){
+                alert("error");
+            }
+        });
+    });
+});
 
 
 
