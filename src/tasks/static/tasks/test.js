@@ -5,10 +5,10 @@
             url: "/tasks/mstnscmt/",
             success: function(data){
             var json = JSON.stringify(data);
-                alert(json);
+                //alert(json);
             },
             error: function(){
-                alert("error");
+                //alert("error");
             }
         });
     });
@@ -41,7 +41,7 @@ $(document).ready(function(){
             },
             
             error: function(){
-                alert("error");
+                //alert("error");
             }
         });
         return false;
@@ -54,7 +54,7 @@ $(document).ready(function() {
 
 $(document).ready(function() {
     $('#addtask').click(function(){
-        alert("TREBA DODATI LINK!");
+        //alert("TREBA DODATI LINK!");
     });
 });
 
@@ -85,7 +85,7 @@ $(document).ready(function(){
             },
             
             error: function(){
-                alert("error");
+                //alert("error");
             }
         });
         return false;
@@ -134,7 +134,7 @@ $(document).ready(function(){
             url: "/tasks/graph/",
             success: function(data){
             var json = JSON.stringify(data);
-                alert(json);
+                //alert(json);
                 preparegraph(data,"Tasks states graph");
                 $('#myModal').modal('show');
             },
@@ -156,7 +156,7 @@ $(document).ready(function(){
             url: "/tasks/prioritygraph/",
             success: function(data){
             var json = JSON.stringify(data);
-                alert(json);
+                //alert(json);
                 preparegraph(data,"Tasks priority graph");
                 $('#myModal').modal('show');
             },
@@ -178,7 +178,7 @@ $(document).ready(function(){
             url: "/tasks/resolvegraph/",
             success: function(data){
             var json = JSON.stringify(data);
-                alert(json);
+                //alert(json);
                 preparegraph(data,"Tasks resolved graph");
                 $('#myModal').modal('show');
             },
@@ -200,7 +200,7 @@ $(document).ready(function(){
             url: "/tasks/reqgraph/",
             success: function(data){
             var json = JSON.stringify(data);
-                alert(json);
+                //alert(json);
                 preparegraph(data,"Requirement tasks states graph");
                 $('#myModal').modal('show');
             },
@@ -222,7 +222,7 @@ $(document).ready(function(){
             url: "/tasks/reqprioritygraph/",
             success: function(data){
             var json = JSON.stringify(data);
-                alert(json);
+                //alert(json);
                 preparegraph(data,"Requirement priority graph");
                 $('#myModal').modal('show');
             },
@@ -244,7 +244,7 @@ $(document).ready(function(){
             url: "/tasks/reqresolvegraph/",
             success: function(data){
             var json = JSON.stringify(data);
-                alert(json);
+                //alert(json);
                 preparegraph(data,"Requirement resolve graph");
                 $('#myModal').modal('show');
             },
@@ -271,7 +271,7 @@ jQuery(document).ready(function($) {
             url: "/tasks/eventinfo/",
             success: function(data){
             	var json = JSON.stringify(data);
-                alert(json);
+                //alert(json);
                 
                 $( "#dialog-3" ).html("<ul class=\"list-group\" id=\"jumps\"></ul>");
                 for(var i = 0; i < data.length; i++) {
@@ -288,8 +288,7 @@ jQuery(document).ready(function($) {
 		               draggable: false,
 		               title : "Choose where to go"
 		            });
-		            
-		            
+
 		            $( "#dialog-3" ).dialog( "open" );
 		         });
                 
