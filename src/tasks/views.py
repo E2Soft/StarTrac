@@ -7,7 +7,7 @@ from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 
 from tasks.forms import MilestoneForm
-from tasks.models import Comment, Requirement
+from tasks.models import Comment, Requirement, Event, Task
 from tasks.models import Milestone
 
 
@@ -391,5 +391,50 @@ def reqresolvegraph(request):
     resp_list.append(resp_obj5)
     
     return HttpResponse(json.dumps(resp_list), content_type="application/json")
+
+
+def eventinfo(request):
+    #print(request.GET["pk"])
+    
+    request_pk = request.GET["pk"]
+    event = get_object_or_404(Event,pk=request_pk)
+    
+    ret_list = []
+    
+    if(event.milestone):
+        mstone_dict = {}
+        mstone_dict["name"] = event.milestone.name
+        mstone_dict["glyph"] = "glyphicon glyphicon-flag"
+        mstone_dict["url"] = "/tasks/mdetail/{}".format(event.milestone.pk)
+        ret_list.append(mstone_dict)
+    else:
+        try:
+            mstone_dict = {}
+            mstone_dict["name"] = "{}".format(event.requirement_task.task.name)
+            mstone_dict["glyph"] = "glyphicon glyphicon-tasks"
+            mstone_dict["url"] = "/tasks/tdetail/{}".format(event.requirement_task.task.pk)
+            ret_list.append(mstone_dict)
+        except:
+            pass
+        
+        try:
+            mstone_dict = {}
+            mstone_dict["name"] = "{}".format(event.requirement_task.requirement.name)
+            mstone_dict["glyph"] = "glyphicon glyphicon-list-alt"
+            mstone_dict["url"] = "/tasks/rdetail/{}".format(event.requirement_task.requirement.pk)
+            ret_list.append(mstone_dict)
+        except:
+            pass
+        
+        try:
+            mstone_dict = {}
+            mstone_dict["name"] = "{}".format(event.requirement_task.task.milestone.name)
+            mstone_dict["glyph"] = "glyphicon glyphicon-flag"
+            mstone_dict["url"] = "/tasks/mdetail/{}".format(event.requirement_task.task.milestone.pk)
+            ret_list.append(mstone_dict)
+        except:
+            pass
+
+    return HttpResponse(json.dumps(ret_list), content_type="application/json")
 
 

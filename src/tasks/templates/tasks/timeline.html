@@ -1,6 +1,12 @@
 {% extends "tasks/base.html" %}
 {% block title %}Timeline{% endblock %}
 
+{% block modal %}
+
+<div id="dialog-3"></div>
+
+{% endblock %}
+
 {% block content %}
 	<div id="page-content-wrapper">
     	<div class="container-fluid">
@@ -9,23 +15,26 @@
             		<div class="page-header">
        					<h2><span class="glyphicon glyphicon-time"></span> Timeline</h2>
     				</div>
-					<ul class="list-group">
-						{% for publisher in object_list %}
-							<div class="bs-callout bs-callout-primary">
-							<ul class="list-group">
+					{% for publisher in object_list %}
+						<div class="bs-callout bs-callout-primary">
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th><span class="glyphicon glyphicon-calendar"></span> {{publisher.0.date_created}}</th>
+									</tr>
+								</thead>
+								<tbody>
 									{% for obj in publisher %}
-										{% if forloop.first %}
-											<ul class="list-group"><h4><span class="glyphicon glyphicon-calendar"></span> {{obj.date_created}}</h4></ul>
-										{% endif %}
-										<li class="list-group-item">
-											<p><span class="glyphicon glyphicon-cog"></span>{{obj.geteventkind}}</p>
-											<span class="glyphicon glyphicon-user"></span> {{obj.event_user}}
-										</li>
+										<tr>
+											<td class='clickableRow' id="{{obj.pk}}"><span class="glyphicon glyphicon-cog"></span> {{obj.geteventkind}}</td>
+											<td><a href="{% url 'udetail' %}"><span class="glyphicon glyphicon-user"></span> {{obj.event_user}}</a></td>
+											<td>{{obj.pk}}</td>
+										</tr>
 									{% endfor %}
-								</ul>
-							</div>
-						{% endfor %}
-					</ul>
+								</tbody>
+							</table>
+						</div>
+					{% endfor %}
 				</div>
 			</div>
 		</div>

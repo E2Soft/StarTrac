@@ -255,7 +255,51 @@ $(document).ready(function(){
     });
 });
 
-
+jQuery(document).ready(function($) {
+      $(".clickableRow").click(function() {
+      		
+      		var x = $(this).offset().left;
+  			var y = $(this).offset().top;
+  			var target = $(this);
+      		
+            $.ajax({
+            type: "GET",
+            dataType: "json",
+            data : {
+            	'pk' : $(this).attr('id')
+            },
+            url: "/tasks/eventinfo/",
+            success: function(data){
+            	var json = JSON.stringify(data);
+                alert(json);
+                
+                $( "#dialog-3" ).html("<ul class=\"list-group\" id=\"jumps\"></ul>");
+                for(var i = 0; i < data.length; i++) {
+				    $( "#jumps" ).append("<li class='list-group-item'><a href='"+ data[i].url +"'>"+"<span class='"+ data[i].glyph +"'></span> "+data[i].name+"</a></li>");
+				}
+                
+                $(function() {
+		            $( "#dialog-3" ).dialog({
+		               autoOpen: false, 
+		               hide: "puff",
+		               show : "slide",
+		               position: {my: 'bottom', at: 'bottom', of: target},
+		               //modal : true,
+		               draggable: false,
+		               title : "Choose where to go"
+		            });
+		            
+		            
+		            $( "#dialog-3" ).dialog( "open" );
+		         });
+                
+            },
+            error: function(){
+                alert("error");
+            }
+        });
+      });
+});
 
 
 
