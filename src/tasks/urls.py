@@ -36,4 +36,6 @@ urlpatterns = patterns('',
     url(r'^reqgraph/$', views.reqgraph, name='reqgraph'),
     url(r'^reqprioritygraph/$', views.reqtestgraphpriority, name='reqprioritygraph'),
     url(r'^reqresolvegraph/$', views.reqresolvegraph, name='reqresolvegraph'),
+    
+    url(r'^author/(?P<pk>\d+)/$', views.userview, name='author'),
 )

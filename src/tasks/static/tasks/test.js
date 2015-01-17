@@ -284,7 +284,7 @@ jQuery(document).ready(function($) {
 		               hide: "puff",
 		               show : "slide",
 		               position: {my: 'bottom', at: 'bottom', of: target},
-		               //modal : true,
+		               modal : true,
 		               draggable: false,
 		               title : "Choose where to go"
 		            });

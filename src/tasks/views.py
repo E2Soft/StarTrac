@@ -1,5 +1,6 @@
 import json
 
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.http.response import HttpResponseRedirect
@@ -438,3 +439,15 @@ def eventinfo(request):
     return HttpResponse(json.dumps(ret_list), content_type="application/json")
 
 
+def userview(request,pk):
+    user = get_object_or_404(User,pk=pk)
+    
+    back = ""
+    try:
+        back = request.META["HTTP_REFERER"]
+    except(KeyError):
+        back="/"
+    
+    context = {"user":user,"back":back}
+    
+    return render(request,"tasks/author.html", context)
