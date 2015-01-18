@@ -1,5 +1,6 @@
 {% extends "tasks/base.html" %}
 {% block title %}Detail Page{% endblock %}
+{% load commnets from task_extras %}
 
 {% block content %}
 <div class="jumbotron">
@@ -24,7 +25,10 @@
 	<div id="pane1" class="tab-pane active">
 		<ul class="list-group">
 			{% for task in tasks %}
-					<li class="list-group-item">{{task.name}}</li>
+				<li class="list-group-item">
+					<span class="badge"><span class="glyphicon glyphicon-comment"></span> {{task|commnets}}</span>
+					{{task.name}}
+				</li>
 			{% endfor %}
 		</ul>
 	</div>

@@ -1,5 +1,6 @@
 {% extends "tasks/base.html" %}
 {% block title %}Detail Page{% endblock %}
+{% load commnets from task_extras %}
 
 {% block modal%}
 {{block.super}}
@@ -63,7 +64,10 @@
         
 		<ul class="list-group">
 			{% for event in milestone.task_set.all %}
-					<li class="list-group-item">{{event.task.name}}</li>
+					<li class="list-group-item">
+					<span class="badge"><span class="glyphicon glyphicon-comment"></span> {{event.task|commnets}}</span>
+					{{event.task.name}}
+					</li>
 			{% endfor %}
 		</ul>
 	</div>
