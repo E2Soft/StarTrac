@@ -34,12 +34,12 @@ RESOLVE_TYPE = (
 
 class RequirementTask(models.Model):
     name = models.CharField(max_length=70, default="")
-    state_kind = models.CharField(max_length=1, choices=STATE_KIND, default="K")
+    state_kind = models.CharField(max_length=1, choices=STATE_KIND, default="C")
     project_tast_user = models.ForeignKey(User)
     priority_lvl = models.CharField(max_length=1, choices=PRIORITY_LVL, default="L")
     pub_date = models.DateTimeField('date published')
     content = models.CharField(max_length=100, default="")
-    resolve_type = models.CharField(max_length=1, choices=RESOLVE_TYPE, default="F")
+    resolve_type = models.CharField(max_length=1, choices=RESOLVE_TYPE, default="N")
     
     class Meta:
         abstract = False

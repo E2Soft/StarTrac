@@ -9,7 +9,7 @@ from django.utils import timezone
 
 from tasks.forms import MilestoneForm
 from tasks.models import Comment, Requirement, Event, Task
-from tasks.models import Milestone
+from tasks.models import Milestone, RequirementTask
 
 
 # Create your views here.
@@ -441,6 +441,7 @@ def eventinfo(request):
 
 def userview(request,pk):
     user = get_object_or_404(User,pk=pk)
+    tasks_user = Task.objects.filter(assigned_to=user, resolve_type="N")#taskovi na kojima je aktivan korisnik
     
     back = ""
     try:
@@ -448,6 +449,6 @@ def userview(request,pk):
     except(KeyError):
         back="/"
     
-    context = {"user":user,"back":back}
+    context = {"user":user,"back":back, "tasks":tasks_user}
     
     return render(request,"tasks/author.html", context)

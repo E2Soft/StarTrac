@@ -11,7 +11,23 @@
 	<li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> Summry: {{user.last_name}}</li>
 	<li class="list-group-item"><span class="glyphicon glyphicon-envelope"></span> Summry: {{user.email}}</li>
 </ul>
+
 </div>
+</div>
+
+
+<ul class="nav nav-tabs" role="tablist">
+	<li><a href="#pane1" data-toggle="tab"><span class="glyphicon glyphicon-tasks"></span> Tasks</a></li>        
+</ul>
+
+<div class="tab-content">
+	<div id="pane1" class="tab-pane active">
+		<ul class="list-group">
+			{% for task in tasks %}
+					<li class="list-group-item">{{task.name}}</li>
+			{% endfor %}
+		</ul>
+	</div>
 </div>
 {% endblock %}
 
