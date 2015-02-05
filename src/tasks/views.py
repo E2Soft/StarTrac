@@ -11,10 +11,16 @@ from tasks.models import Comment, Requirement, Task
 from tasks.models import Milestone
 
 
-# Create your views here.
+    # Create your views here.
 def index(request):
     if request.user.is_authenticated():
-        context = {"isadmin":request.user.is_superuser,"username":request.user.username}
+        tasks = Task.objects.order_by('state_kind')
+        ret_dict={"O":[],"C":[],"P":[],"Z":[]}
+        
+        for task in tasks:
+            ret_dict[task.state_kind].append(task)
+        
+        context = {"isadmin":request.user.is_superuser,"username":request.user.username, "tasks":ret_dict}
         
         return render(request,'tasks/logged.html',context)
     else:

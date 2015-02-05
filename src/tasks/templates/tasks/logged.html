@@ -4,9 +4,10 @@
 {% load paintborder from task_extras %}
 
 {% block content %}
-<div class="jumbotron">
-    <h1>My first Bootstrap website!</h1>
-  </div>
+	</br>
+	<div class="page-header">
+    	<a href="#"><h2><span class="glyphicon glyphicon-th"></span> Hit there {{username}}...this is our progress so far</h2></a>
+    </div>
 {% endblock %}
 
 {% block sidebar %}
@@ -39,5 +40,31 @@
     </div>
   </div>
 </nav>
+
+{% endblock %}
+
+{% block canban %}
+
+<div style="width:100%;">
+	{% for key,value in tasks.items %}
+		<div class='cellContainer' >
+			<div class="title">
+				<h4 >{{key|showname}}</h4>
+			</div>
+			<div class="box" id="{{key}}" >
+				{% for task in value %}
+					<div id="{{task.pk}}" class="shadow" style="border-left: 6pt solid {{task.priority_lvl|paintborder}};">
+						<ul class="list">
+						  <li align="center"><span class="glyphicon glyphicon-tasks"></span> <b><i>{{task.name}}</i></b></li>
+						  <li ><span class="glyphicon glyphicon-folder-open"></span> {{task.content}}</li>
+						  <li id="user{{task.pk}}"><span class="glyphicon glyphicon-user"></span> {{task.assigned_to}}</li>
+						  <li ><span class="glyphicon glyphicon-calendar"></span> {{task.pub_date}}</li>
+						</ul>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+	{% endfor %}
+</div>
 
 {% endblock %}
