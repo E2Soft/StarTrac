@@ -24,4 +24,6 @@ urlpatterns = patterns('',
     url(r'^redit/(?P<pk>\d+)/$', RequirementUpdate.as_view(), name='redit'),
     url(r'^addrequirement/$', RequiremenCreate.as_view(), name='addrequirement'),
     url(r'^rcomment/$', views.rcomment, name='rcomment'),
+    
+    url(r'^kanban/$', views.kanban, name='kanban'),
 )

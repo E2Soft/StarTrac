@@ -7,7 +7,7 @@ from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 
 from tasks.forms import MilestoneForm
-from tasks.models import Comment, Requirement
+from tasks.models import Comment, Requirement, Task
 from tasks.models import Milestone
 
 
@@ -76,3 +76,26 @@ def rcomment(request):
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 
+def kanban(request):
+    rid = request.GET["id"]
+    box = request.GET["box"]
+    
+    print("ID:{} BOX:{}".format(rid, box))
+    task = get_object_or_404(Task,pk=rid)
+    task.state_kind = box
+    
+    if(task.state_kind == "P"):
+        task.assigned_to = request.user
+    
+    task.save()
+    
+    key_dict ={'C':'#ce2b37','H': '#ee6c3a','M': '#41783f','L': '#3d70b6'}
+    
+    ret_dict={}
+    ret_dict["status"] = "Ok"
+    ret_dict["data"] = {}
+    ret_dict["code"] = "200"
+    ret_dict["message"] = key_dict[task.priority_lvl]
+    ret_dict["explaination"]= request.user.username
+    
+    return HttpResponse(json.dumps(ret_dict), content_type="application/json")
