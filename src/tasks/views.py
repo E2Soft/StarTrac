@@ -7,7 +7,7 @@ from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 
 from tasks.forms import MilestoneForm
-from tasks.models import Comment, Requirement, Task
+from tasks.models import Comment, Requirement, Task, StateChange
 from tasks.models import Milestone
 
 
@@ -86,12 +86,20 @@ def kanban(request):
     rid = request.GET["id"]
     box = request.GET["box"]
     
-    print("ID:{} BOX:{}".format(rid, box))
+    #print("ID:{} BOX:{}".format(rid, box))
+    
+    #proveri task i kako ga sacuvati
     task = get_object_or_404(Task,pk=rid)
     task.state_kind = box
     
     if(task.state_kind == "P"):
         task.assigned_to = request.user
+    
+    #promena stanja    
+    state_change = StateChange(event_user=request.user, event_kind="S",
+                                           date_created=timezone.now(),requirement_task=task,
+                                           milestone=task.milestone,new_state=box)
+    state_change.save()
     
     task.save()
     
