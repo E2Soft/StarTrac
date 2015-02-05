@@ -1,0 +1,40 @@
+
+.shadow{
+	border: 1px solid #f7f6f6;
+    box-shadow: 1px 1px 1px #888888;
+    margin-bottom: 2px;
+    background-color: #ffffff;
+}
+
+.cellContainer {
+	width: 25%;
+    float: left;
+}	
+	
+.title{
+    text-align: center;
+    background-color: #dfe3ee;
+	border: 1px solid #a1a1a1;
+	border-radius: 3px;
+	margin-left: 5px;
+	margin-right: 5px;
+	margin-bottom: 0;
+}
+
+.box{
+	margin-left: 5px;
+	margin-right: 5px; 
+	background-color: #dfe3ee;
+	border-right: 1px solid #a1a1a1;
+	border-left: 1px solid #a1a1a1;
+	border-radius: 3px;
+	height: 100%;
+}
+
+.list
+{
+    list-style-type: none;
+    padding: 3;
+	margin: 0;
+    text-align: left;
+}
