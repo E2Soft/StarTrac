@@ -14,12 +14,19 @@ from django.contrib import auth
 from django.shortcuts import render
 
 from StarTrac.forms import RegistrationForm
+from tasks.models import Task
 
 
 def home(request):
     if request.user.is_authenticated():
-        context = {"isadmin":request.user.is_superuser,"username":request.user.username}
+        tasks = Task.objects.order_by('state_kind')
+        ret_dict={"O":[],"C":[],"P":[],"Z":[]}
         
+        for task in tasks:
+            ret_dict[task.state_kind].append(task)
+        
+        context = {"isadmin":request.user.is_superuser,"username":request.user.username, "tasks":ret_dict}
+
         return render(request,'tasks/logged.html',context)
     else:
         return render(request,'tasks/index.html')
@@ -42,7 +49,14 @@ def login(request):
     
     if user is not None:
         auth.login(request, user)
-        context = {"isadmin":user.is_superuser,"username":username}
+
+        tasks = Task.objects.order_by('state_kind')
+        ret_dict={"O":[],"C":[],"P":[],"Z":[]}
+        
+        for task in tasks:
+            ret_dict[task.state_kind].append(task)
+        
+        context = {"isadmin":request.user.is_superuser,"username":request.user.username, "tasks":ret_dict}
         
         return render(request,'tasks/logged.html',context)
     else:
