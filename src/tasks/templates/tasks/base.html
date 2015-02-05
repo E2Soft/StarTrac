@@ -1,9 +1,12 @@
 
 <html lang="en">
 <head>
-	{% load staticfiles %}
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
 	
-	<script type="text/javascript" src="{% static 'tasks/jquery-1.11.2.min.js' %}" ></script>
+	{% load staticfiles %}
 	<script type="text/javascript" src="{% static 'tasks/test.js' %}" ></script>
 	<script type="text/javascript" src="{% static 'tasks/Chart.js' %}" ></script>
 	
@@ -16,17 +19,14 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 	
-	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
-	<script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
-	
 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 	
 	<!-- Latest compiled JavaScript -->
 	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-
 	
     <title>{% block title %}StarTrack{% endblock %}</title>
+    
 </head>
 
 <body>
@@ -76,10 +76,11 @@
      {% endblock %}
      
      {% block content %}{% endblock %}
+     
     </div>
     </div>
     
-    {% block canban%} {% endblock %}
-    
+     {% block canban%} {% endblock %}
+     
 </body>
 </html>

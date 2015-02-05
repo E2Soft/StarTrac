@@ -15,6 +15,14 @@ from tasks.models import Milestone, RequirementTask
 # Create your views here.
 def index(request):
     if request.user.is_authenticated():
+        """tasks = Task.objects.order_by('state_kind')
+        ret_dict={"O":[],"C":[],"P":[],"Z":[]}
+        
+        for task in tasks:
+            ret_dict[task.state_kind].append(task)
+        
+        context = {"isadmin":request.user.is_superuser,"username":request.user.username, "tasks":ret_dict}"""
+        
         context = {"isadmin":request.user.is_superuser,"username":request.user.username}
         
         return render(request,'tasks/logged.html',context)
@@ -79,7 +87,7 @@ def rcomment(request):
 
 def testgraphpriority(request):
     request_pk = request.GET["pk"]   
-    print("REQ PK:{}".format(request_pk))
+    #print("REQ PK:{}".format(request_pk))
     milestone = get_object_or_404(Milestone,pk=request_pk)
     
     critical_tasks = milestone.task_set.filter(priority_lvl="C").count()
@@ -125,7 +133,7 @@ def testgraphpriority(request):
 
 def testgraph(request):
     request_pk = request.GET["pk"]
-    print("REQ PK:{}".format(request_pk))   
+    #print("REQ PK:{}".format(request_pk))   
     milestone = get_object_or_404(Milestone,pk=request_pk)
     
     closed_tasks = milestone.task_set.filter(state_kind="Z").count()
@@ -172,7 +180,7 @@ def testgraph(request):
     
 def resolvegraph(request):
     request_pk = request.GET["pk"]
-    print("REQ PK:{}".format(request_pk))   
+    #print("REQ PK:{}".format(request_pk))   
     milestone = get_object_or_404(Milestone,pk=request_pk)
     
     none_tasks = milestone.task_set.filter(resolve_type="N").count()
@@ -237,7 +245,7 @@ def resolvegraph(request):
     
 def reqgraph(request):
     request_pk = request.GET["pk"]
-    print("REQ PK:{}".format(request_pk))
+    #print("REQ PK:{}".format(request_pk))
     requirement = get_object_or_404(Requirement,pk=request_pk)
     
     closed_tasks = requirement.task_set.filter(state_kind="Z").count()
@@ -284,7 +292,7 @@ def reqgraph(request):
 
 def reqtestgraphpriority(request):
     request_pk = request.GET["pk"]   
-    print("REQ PK:{}".format(request_pk))
+    #print("REQ PK:{}".format(request_pk))
     requirement = get_object_or_404(Requirement,pk=request_pk)
     
     critical_tasks = requirement.task_set.filter(priority_lvl="C").count()
@@ -331,7 +339,7 @@ def reqtestgraphpriority(request):
 
 def reqresolvegraph(request):
     request_pk = request.GET["pk"]
-    print("REQ PK:{}".format(request_pk))   
+    #print("REQ PK:{}".format(request_pk))   
     requirement = get_object_or_404(Requirement,pk=request_pk)
     
     none_tasks = requirement.task_set.filter(resolve_type="N").count()
