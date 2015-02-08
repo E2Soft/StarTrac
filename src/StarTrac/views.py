@@ -11,7 +11,7 @@ Created on Dec 21, 2014
 """
 
 from django.contrib import auth
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from StarTrac.forms import RegistrationForm
 from tasks.models import Task
@@ -42,6 +42,11 @@ def home(request):
     render sam po sebi salje taj token
 """    
 def login(request):
+    if request.user.is_authenticated():
+        context = {"isadmin":request.user.is_superuser,"username":request.user.username}
+        
+        return render(request,'tasks/logged.html',context)
+        
     username = request.POST.get("username","")
     password = request.POST.get("password","")
     
