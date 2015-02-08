@@ -1,0 +1,58 @@
+{% extends "tasks/base.html" %}
+{% block title %}Detail Page{% endblock %}
+{% load commnets from task_extras %}
+
+{% block content %}
+<div class="jumbotron">
+<h2>{{user}}</h2>
+
+<div class="bs-callout bs-callout-default">
+<ul class="list-group">
+	<li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> Date: {{user.first_name}}</li>
+	<li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> Summry: {{user.last_name}}</li>
+	<li class="list-group-item"><span class="glyphicon glyphicon-envelope"></span> Summry: {{user.email}}</li>
+</ul>
+
+</div>
+</div>
+
+
+<ul class="nav nav-tabs" role="tablist">
+	<li><a href="#pane1" data-toggle="tab"><span class="glyphicon glyphicon-tasks"></span> Tasks</a></li>        
+</ul>
+
+<div class="tab-content">
+	<div id="pane1" class="tab-pane active">
+		<ul class="list-group">
+			{% for task in tasks %}
+				<li class="list-group-item">
+					<span class="badge"><span class="glyphicon glyphicon-comment"></span> {{task|commnets}}</span>
+					{{task.name}}
+				</li>
+			{% endfor %}
+		</ul>
+	</div>
+</div>
+{% endblock %}
+
+{% block sidebar %}
+<div id="sidebar-wrapper">
+    	<ul class="sidebar-nav">
+        	<li class="sidebar-brand">
+            	<p>
+            		<span class="glyphicon glyphicon-road"></span>
+            		StarTrac
+            	</p>
+            </li>
+			<li>
+				<b>
+					<a href="{{back}}">
+						<span class="glyphicon glyphicon-chevron-left"></span>
+						Back
+					</a>
+				</b>
+			</li>
+			{{block.super}}
+		</ul>
+	</div>
+{% endblock %}
