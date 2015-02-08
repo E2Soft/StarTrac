@@ -1,4 +1,4 @@
-{% extends "tasks/base.html" %}
+{% extends "tasks/page_template.html" %}
 {% block title %}Milestones Page{% endblock %}
 {% load commnets from task_extras %}
 {% load closedtasks from task_extras %}
@@ -39,44 +39,23 @@
 		
 {% endblock %}
 
-{% block sidebar %}
-	<div id="sidebar-wrapper">
-    	<ul class="sidebar-nav">
-        	<li class="sidebar-brand">
-            	<p>
-            		<span class="glyphicon glyphicon-road"></span>
-            		StarTrac
-            	</p>
-            </li>
-			<li>
-				<b>
-					<a href="{% url 'addrequirement' %}">
-						<span class="glyphicon glyphicon-file"></span>
-						Add new requirement
-					</a>
-				</b>
-			</li>
-			<li>
-				<b>
-					<a href="/tasks">
-						<span class="glyphicon glyphicon-chevron-left"></span>
-						Back
-					</a>
-				</b>
-			</li>
-			
-			<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">
-			<span class="glyphicon glyphicon-stats"></span>
-			Statistics
-			<span class="caret"></span></a>
-	          <ul class="dropdown-menu">
-	            <li><a href="#">Page 1-1</a></li>
-	            <li><a href="#">Page 1-2</a></li>
-	            <li><a href="#">Page 1-3</a></li>
-	          </ul>
-	        </li>
-			
-			{{block.super}}
-		</ul>
-	</div>
+{% block sidebar_content %}
+	<li>
+		<b>
+			<a href="{% url 'addrequirement' %}">
+				<span class="glyphicon glyphicon-file"></span>
+				Add new requirement
+			</a>
+		</b>
+	</li>
+	<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">
+	<span class="glyphicon glyphicon-stats"></span>
+	Statistics
+	<span class="caret"></span></a>
+      <ul class="dropdown-menu">
+        <li><a href="#">Page 1-1</a></li>
+        <li><a href="#">Page 1-2</a></li>
+        <li><a href="#">Page 1-3</a></li>
+      </ul>
+    </li>
 {% endblock %}

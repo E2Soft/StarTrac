@@ -1,4 +1,4 @@
-{% extends "tasks/base.html" %}
+{% extends "tasks/page_template.html" %}
 {% block title %}Detail Page{% endblock %}
 {% load commnets from task_extras %}
 
@@ -75,44 +75,24 @@
 		
 {% endblock %}
 
-{% block sidebar %}
-<div id="sidebar-wrapper">
-    	<ul class="sidebar-nav">
-        	<li class="sidebar-brand">
-            	<p>
-            		<span class="glyphicon glyphicon-road"></span>
-            		StarTrac
-            	</p>
-            </li>
-			<li>
-				<b>
-					<a href="{{back}}">
-						<span class="glyphicon glyphicon-chevron-left"></span>
-						Back
-					</a>
-				</b>
-			</li>
-			<li>
-				<b>
-					<a href="{% url 'medit' milestone.pk %}">
-						<span class="glyphicon glyphicon-pencil"></span>
-						Edit
-					</a>
-				</b>
-			</li>
-			
-			<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">
-			<span class="glyphicon glyphicon-stats"></span>
-			Statistics
-			<span class="caret"></span></a>
-	          <ul class="dropdown-menu">
-	            <li id="graph"><a href="#">Tasks states stats</a></li>
-	            <li id="priority"><a href="#">Tasks priority stats</a></li>
-	            <li id="resolve"><a href="#">Tasks resolved stats</a></li>
-	          </ul>
-	        </li>
-			
-			{{block.super}}
-		</ul>
-	</div>
+{% block sidebar_content %}
+	<li>
+		<b>
+			<a href="{% url 'medit' milestone.pk %}">
+				<span class="glyphicon glyphicon-pencil"></span>
+				Edit
+			</a>
+		</b>
+	</li>
+	
+	<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">
+	<span class="glyphicon glyphicon-stats"></span>
+	Statistics
+	<span class="caret"></span></a>
+      <ul class="dropdown-menu">
+        <li id="graph"><a href="#">Tasks states stats</a></li>
+        <li id="priority"><a href="#">Tasks priority stats</a></li>
+        <li id="resolve"><a href="#">Tasks resolved stats</a></li>
+      </ul>
+    </li>
 {% endblock %}

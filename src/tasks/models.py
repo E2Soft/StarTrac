@@ -93,7 +93,7 @@ class Event(models.Model):
                 return t[1]
 
 class Task(RequirementTask):
-    projects = models.ForeignKey(Requirement, null=True, blank=True)
+    requirement = models.ForeignKey(Requirement, null=True, blank=True)
     milestone = models.ForeignKey(Milestone, null=True, blank=True)
     assigned_to = models.ForeignKey(User, null=True, blank=True)
 

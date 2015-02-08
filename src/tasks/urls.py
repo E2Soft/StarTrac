@@ -9,6 +9,7 @@ from tasks import views
 from tasks.forms import MilestonesList, MilestoneDetail, MilestoneUpdate, \
     RequirementsList, RequirementDetail, RequirementUpdate, RequiremenCreate, \
     TimelineList
+from tasks.views import TaskList, TaskDetail, TaskUpdate, TaskCreate
 
 
 urlpatterns = patterns('',
@@ -38,4 +39,11 @@ urlpatterns = patterns('',
     url(r'^reqresolvegraph/$', views.reqresolvegraph, name='reqresolvegraph'),
     
     url(r'^author/(?P<pk>\d+)/$', views.userview, name='author'),
+    
+    # tasks
+    url(r'^tasks/$', TaskList.as_view(), name='tasks'),
+    url(r'^tasks/(?P<pk>\d+)/$', TaskDetail.as_view(), name='task_detail'),
+    url(r'^tasks/update/(?P<pk>\d+)/$', TaskUpdate.as_view(), name='task_update'),
+    url(r'^tasks/create/$', TaskCreate.as_view(), name='task_create'),
+    #url(r'^task_comment/$', views.task_comment, name='task_comment'),
 )

@@ -1,0 +1,32 @@
+{% extends "tasks/base.html" %}
+
+{%block sidebar %}
+	<div id="sidebar-wrapper">
+    	<ul class="sidebar-nav">
+        	<li class="sidebar-brand">
+            	<p>
+            		<span class="glyphicon glyphicon-road"></span>
+            		StarTrac
+            	</p>
+            </li>
+     		{% block sidebar_content %}{% endblock %}
+     		<li>
+				<b>
+					<a href="/tasks">
+						<span class="glyphicon glyphicon-chevron-left"></span>
+						Back
+					</a>
+				</b>
+			</li>
+	     	<li>
+				<b>
+					<a href="/">
+						<span class="glyphicon glyphicon-home"></span>
+						Home
+					</a>
+				</b>
+			</li>
+		</ul>
+    </div>
+{% endblock %}
+

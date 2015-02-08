@@ -6,6 +6,9 @@ from django.http import HttpResponse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
+from django.views.generic.detail import DetailView
+from django.views.generic.edit import UpdateView, CreateView
+from django.views.generic.list import ListView
 
 from tasks.forms import MilestoneForm
 from tasks.models import Comment, Requirement, Event, Task
@@ -460,3 +463,60 @@ def userview(request,pk):
     context = {"user":user,"back":back, "tasks":tasks_user}
     
     return render(request,"tasks/author.html", context)
+
+class TaskList(ListView):
+    model = Task
+    
+    '''def get_queryset(self):
+        return Task.objects.all()'''
+    
+class TaskDetail(DetailView):
+    model = Task
+    
+    def get_context_data(self, **kwargs):
+        context = super(TaskDetail, self).get_context_data(**kwargs)
+        
+        #KeyError
+        try:
+            context["back"] = self.request.META["HTTP_REFERER"]
+        except(KeyError):
+            context["back"]="/"
+     
+        return context
+    
+class TaskUpdate(UpdateView):
+    model = Task
+    
+    #form_class = MilestoneForm
+    
+    def get_success_url(self):
+        return reverse('mdetail',args=(self.get_object().id,))
+    
+    def get_context_data(self, **kwargs):
+        context = super(TaskUpdate, self).get_context_data(**kwargs)
+        
+        #KeyError
+        try:
+            context["back"] = self.request.META["HTTP_REFERER"]
+        except(KeyError):
+            context["back"]="/"
+     
+        return context
+    
+class TaskCreate(CreateView):
+    model = Task
+    #form_class = RequirementForm
+    
+    '''def get_success_url(self):
+        return reverse('requirements')'''
+    
+    def get_context_data(self, **kwargs):
+        context = super(TaskCreate, self).get_context_data(**kwargs)
+        
+        #KeyError
+        try:
+            context["back"] = self.request.META["HTTP_REFERER"]
+        except(KeyError):
+            context["back"]="/"
+     
+        return context
