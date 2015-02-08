@@ -473,17 +473,6 @@ class TaskList(ListView):
 class TaskDetail(DetailView):
     model = Task
     
-    def get_context_data(self, **kwargs):
-        context = super(TaskDetail, self).get_context_data(**kwargs)
-        
-        #KeyError
-        try:
-            context["back"] = self.request.META["HTTP_REFERER"]
-        except(KeyError):
-            context["back"]="/"
-     
-        return context
-    
 class TaskUpdate(UpdateView):
     model = Task
     
@@ -492,31 +481,9 @@ class TaskUpdate(UpdateView):
     def get_success_url(self):
         return reverse('mdetail',args=(self.get_object().id,))
     
-    def get_context_data(self, **kwargs):
-        context = super(TaskUpdate, self).get_context_data(**kwargs)
-        
-        #KeyError
-        try:
-            context["back"] = self.request.META["HTTP_REFERER"]
-        except(KeyError):
-            context["back"]="/"
-     
-        return context
-    
 class TaskCreate(CreateView):
     model = Task
     #form_class = RequirementForm
     
     '''def get_success_url(self):
         return reverse('requirements')'''
-    
-    def get_context_data(self, **kwargs):
-        context = super(TaskCreate, self).get_context_data(**kwargs)
-        
-        #KeyError
-        try:
-            context["back"] = self.request.META["HTTP_REFERER"]
-        except(KeyError):
-            context["back"]="/"
-     
-        return context
