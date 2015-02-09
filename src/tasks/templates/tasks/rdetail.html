@@ -32,6 +32,7 @@
 		<div class="bs-callout bs-callout-warning">
 		<form method="post" id="formreq" role="form">{% csrf_token %}
 				<input type='hidden' name='pk' value='{{requirement.pk}}' id="pk" />
+				<input type='hidden' name='comment_ajax_url' value="{% url 'rcomment' %}" id="comment_ajax_url" />
 				<div class="form-group has-error has-feedback" id="err">
 					<textarea rows="5" cols="50" form="usrform" id="ccontent" class="form-control" 
 					placeholder="Share your thoughts"></textarea>

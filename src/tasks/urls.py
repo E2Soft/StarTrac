@@ -9,6 +9,7 @@ from tasks import views
 from tasks.forms import MilestonesList, MilestoneDetail, MilestoneUpdate, \
     RequirementsList, RequirementDetail, RequirementUpdate, RequiremenCreate, \
     TimelineList
+from tasks.models import Task, Requirement, Milestone
 from tasks.views import TaskList, TaskDetail, TaskUpdate, TaskCreate
 
 
@@ -19,13 +20,13 @@ urlpatterns = patterns('',
     url(r'^mdetail/(?P<pk>\d+)/$', MilestoneDetail.as_view(), name='mdetail'),
     url(r'^medit/(?P<pk>\d+)/$', MilestoneUpdate.as_view(), name='medit'),
     url(r'^addmilestone/$', views.addmilestone, name='addmilestone'),
-    url(r'^mcomment/$', views.mcomment, name='mcomment'),
+    url(r'^mcomment/$', views.ajax_comment, name='mcomment', kwargs={'object_type':Milestone}),
     
     url(r'^requirements/$', RequirementsList.as_view(), name='requirements'),
     url(r'^rdetail/(?P<pk>\d+)/$', RequirementDetail.as_view(), name='rdetail'),
     url(r'^redit/(?P<pk>\d+)/$', RequirementUpdate.as_view(), name='redit'),
     url(r'^addrequirement/$', RequiremenCreate.as_view(), name='addrequirement'),
-    url(r'^rcomment/$', views.rcomment, name='rcomment'),
+    url(r'^rcomment/$', views.ajax_comment, name='rcomment', kwargs={'object_type':Requirement}),
     
     url(r'^timeline/$', TimelineList.as_view(), name='timeline'),
     url(r'^eventinfo/$', views.eventinfo, name='eventinfo'),
@@ -45,5 +46,6 @@ urlpatterns = patterns('',
     url(r'^tasks/(?P<pk>\d+)/$', TaskDetail.as_view(), name='task_detail'),
     url(r'^tasks/update/(?P<pk>\d+)/$', TaskUpdate.as_view(), name='task_update'),
     url(r'^tasks/create/$', TaskCreate.as_view(), name='task_create'),
+    url(r'^task_ajax_comment/$', views.ajax_comment, name='task_ajax_comment', kwargs={'object_type':Task}),
     #url(r'^task_comment/$', views.task_comment, name='task_comment'),
 )

@@ -12,7 +12,7 @@ from django.views.generic.list import ListView
 
 from tasks.forms import MilestoneForm
 from tasks.models import Comment, Requirement, Event, Task
-from tasks.models import Milestone, RequirementTask
+from tasks.models import Milestone
 
 
 # Create your views here.
@@ -68,25 +68,6 @@ def addmilestone(request):
         
     return render(request,'tasks/addmilestone.html',{"form":form,
                                                      "back":back})
-
-def rcomment(request):
-    if request.POST:
-        content = request.POST.get("content","")
-        requirement_id = request.POST.get("pk","")
-        date = timezone.now()
-        requirement = get_object_or_404(Requirement,pk=requirement_id)
-
-        comment = Comment(event_user=request.user,content=content,
-                                  date_created=date,
-                                  requirement_task=requirement,event_kind="K")
-        comment.save()                                                         
-    
-    response_data = {}
-    response_data['content'] = content
-    response_data['date'] = date.__str__()
-    response_data['user'] = request.user.username
-    
-    return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 def testgraphpriority(request):
     request_pk = request.GET["pk"]   
@@ -487,3 +468,31 @@ class TaskCreate(CreateView):
     
     '''def get_success_url(self):
         return reverse('requirements')'''
+
+def ajax_comment(request, object_type):
+    if request.POST:
+        content = request.POST.get("content","")
+        obj_id = request.POST.get("pk","")
+        date = timezone.now()
+        milestone=None
+        requirement_task=None
+
+        if object_type == Milestone:
+            milestone = get_object_or_404(object_type,pk=obj_id)
+        else:
+            requirement_task = get_object_or_404(object_type,pk=obj_id)
+
+        comment = Comment(event_user=request.user,content=content,
+                                  date_created=date,
+                                  requirement_task=requirement_task,
+                                  milestone=milestone,
+                                  event_kind="K")
+        comment.save()                                                         
+    
+    response_data = {}
+    response_data['content'] = content
+    response_data['date'] = date.__str__()
+    response_data['user'] = request.user.username
+    
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
+

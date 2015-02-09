@@ -1,0 +1,64 @@
+{% extends "tasks/page_template.html" %}
+{% block title %}Detail Page{% endblock %}
+{% load commnets from task_extras %}
+
+{% block content %}
+<div class="jumbotron">
+	<h2><span class="glyphicon glyphicon-tasks"></span> {{task}}</h2>
+	
+	<div class="bs-callout bs-callout-default">
+		<ul class="list-group">
+			<li class="list-group-item"><span class="glyphicon glyphicon-cog"></span> State: {{task.getstate}}</li>
+			<li class="list-group-item"><span class="glyphicon glyphicon-user"></span> Created by: <a href="{% url 'author' task.project_tast_user.pk %}">{{task.project_tast_user}}</a></li>
+			<li class="list-group-item"><span class="glyphicon glyphicon-signal"></span> Priority: {{task.getpriority}}</li>
+			<li class="list-group-item"><span class="glyphicon glyphicon-calendar"></span> Published on: {{task.pub_date}}</li>
+			<li class="list-group-item"><span class="glyphicon glyphicon-tag"></span> Resolved: {{task.getresolve}}</li>
+			<li class="list-group-item"><span class="glyphicon glyphicon-list-alt"></span> Requirement: <a href="{% url 'rdetail' task.requirement.pk %}">{{task.requirement}}</a></li>
+			<li class="list-group-item"><span class="glyphicon glyphicon-flag"></span> Milestone: <a href="{% url 'mdetail' task.milestone.pk %}">{{task.milestone}}</a></li>
+			<li class="list-group-item"><span class="glyphicon glyphicon-user"></span> Assigned to: <a href="{% url 'author' task.assigned_to.pk %}">{{task.assigned_to}}</a></li>
+			<li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> Content: <p>{{task.content}}</p></li>
+		</ul>
+	</div>
+</div>
+
+<div class="container-fluid">
+	<div class="bs-callout bs-callout-warning">
+		<form method="post" id="formreq" role="form">{% csrf_token %}
+			<input type='hidden' name='pk' value='{{task.pk}}' id="pk" />
+			<input type='hidden' name='comment_ajax_url' value="{% url 'task_ajax_comment' %}" id="comment_ajax_url" />	
+			<div class="form-group has-error has-feedback" id="err">
+				<textarea rows="5" cols="50" form="usrform" id="ccontent" class="form-control" 
+				placeholder="Share your thoughts"></textarea>
+			</div>
+			<!--<input type="submit" value="Comment" class="save btn btn-default" />-->
+			<button type="submit" class="btn btn-warning disabled" id="btncomment">
+				Comment
+				<span class="glyphicon glyphicon-comment"></span>
+			</button>
+		</form>
+	</div>
+	
+	<ul id="rez" class="list-group">
+		{% for event in task.event_set.all %}
+			{% if event.iscomment %}
+			<li class="list-group-item">
+				<span class="glyphicon glyphicon-comment"></span> {{event.comment.content}}
+				<p><span class="glyphicon glyphicon-user"></span> {{event.comment.event_user.username}}</p>
+				<span class="glyphicon glyphicon-calendar"></span> {{event.comment.date_created}}
+			</li>
+			{% endif %}
+		{% endfor %}
+	</ul>
+</div>
+{% endblock %}
+
+{% block sidebar_content %}
+	<li>
+		<b>
+			<a href="{% url 'task_update' task.pk %}">
+				<span class="glyphicon glyphicon-pencil"></span>
+				Edit
+			</a>
+		</b>
+	</li>
+{% endblock %}

@@ -27,8 +27,9 @@
 <div class="tab-content">
 	<div id="pane1" class="tab-pane active">
 		<div class="bs-callout bs-callout-warning">
-		<form method="post" id="form" role="form">{% csrf_token %}
+		<form method="post" id="formreq" role="form">{% csrf_token %}
 				<input type='hidden' name='pk' value='{{milestone.pk}}' id="pk" />
+				<input type='hidden' name='comment_ajax_url' value="{% url 'mcomment' %}" id="comment_ajax_url" />
 				<div class="form-group has-error has-feedback" id="err">
 					<textarea rows="5" cols="50" form="usrform" id="ccontent" class="form-control"
 					placeholder="Share your thoughts"></textarea>
