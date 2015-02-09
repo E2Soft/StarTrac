@@ -1,0 +1,22 @@
+<div id="page-content-wrapper">
+	<div class="container-fluid">
+    	<div class="row">
+        	<div class="col-lg-12">	
+        		<div class="page-header">
+   					<h2><span class="glyphicon glyphicon-tasks"></span> Tasks</h2>
+				</div>
+				<ul class="list-group">
+					{% for task in task_list %}
+						{% if filter_kind == task.state_kind or filter_kind == "all" %}
+							<div class="bs-callout bs-callout-primary">
+								<li class="list-group-item">
+									<p><a href="{% url 'task_detail' task.pk %}">{{task.name}}</a></p>
+								</li>
+							</div>
+						{% endif %}
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
