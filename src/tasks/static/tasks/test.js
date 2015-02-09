@@ -2,7 +2,7 @@
     $("#comment").click(function(){
         $.ajax({
             type: "GET",
-            url: "/tasks/mstnscmt/",
+            url: "/mstnscmt/",
             success: function(data){
             var json = JSON.stringify(data);
                 //alert(json);
@@ -97,7 +97,7 @@ $(document).ready(function(){
             data : {
             	'pk' : $("#pk").val()
             },
-            url: "/tasks/graph/",
+            url: reversed_urls.graph,
             success: function(data){
             var json = JSON.stringify(data);
                 //alert(json);
@@ -119,7 +119,7 @@ $(document).ready(function(){
             data : {
             	'pk' : $("#pk").val()
             },
-            url: "/tasks/prioritygraph/",
+            url: reversed_urls.prioritygraph,
             success: function(data){
             var json = JSON.stringify(data);
                 //alert(json);
@@ -141,7 +141,7 @@ $(document).ready(function(){
             data : {
             	'pk' : $("#pk").val()
             },
-            url: "/tasks/resolvegraph/",
+            url: reversed_urls.resolvegraph,
             success: function(data){
             var json = JSON.stringify(data);
                 //alert(json);
@@ -163,7 +163,7 @@ $(document).ready(function(){
             data : {
             	'pk' : $("#pk").val()
             },
-            url: "/tasks/reqgraph/",
+            url: reversed_urls.reqgraph,
             success: function(data){
             var json = JSON.stringify(data);
                 //alert(json);
@@ -185,7 +185,7 @@ $(document).ready(function(){
             data : {
             	'pk' : $("#pk").val()
             },
-            url: "/tasks/reqprioritygraph/",
+            url: reversed_urls.reqprioritygraph,
             success: function(data){
             var json = JSON.stringify(data);
                 //alert(json);
@@ -207,7 +207,7 @@ $(document).ready(function(){
             data : {
             	'pk' : $("#pk").val()
             },
-            url: "/tasks/reqresolvegraph/",
+            url: reversed_urls.reqresolvegraph,
             success: function(data){
             var json = JSON.stringify(data);
                 //alert(json);
@@ -234,7 +234,7 @@ jQuery(document).ready(function($) {
             data : {
             	'pk' : $(this).attr('id')
             },
-            url: "/tasks/eventinfo/",
+            url: reversed_urls.eventinfo,
             success: function(data){
             	var json = JSON.stringify(data);
                 //alert(json);

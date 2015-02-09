@@ -29,24 +29,6 @@ def index(request):
         return render(request,'tasks/logged.html',context)
     else:
         return render(request,'tasks/index.html')
-    
-def mcomment(request):
-    if request.POST:
-        content = request.POST.get("content","")
-        milestone_id = request.POST.get("pk","")
-        date = timezone.now()
-        milestone = get_object_or_404(Milestone,pk=milestone_id)
-
-        comment = Comment(event_user=request.user,content=content,
-                                  date_created=date,
-                                  milestone=milestone,event_kind="K")
-        comment.save()                                                         
-    
-    response_data = {}
-    response_data['content'] = content
-    response_data['date'] = date.__str__()
-    response_data['user'] = request.user.username
-    return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 def addmilestone(request):
     if request.POST:
@@ -396,14 +378,14 @@ def eventinfo(request):
         mstone_dict = {}
         mstone_dict["name"] = event.milestone.name
         mstone_dict["glyph"] = "glyphicon glyphicon-flag"
-        mstone_dict["url"] = "/tasks/mdetail/{}".format(event.milestone.pk)
+        mstone_dict["url"] = reverse('mdetail', args=[event.milestone.pk])
         ret_list.append(mstone_dict)
     else:
         try:
             mstone_dict = {}
             mstone_dict["name"] = "{}".format(event.requirement_task.task.name)
             mstone_dict["glyph"] = "glyphicon glyphicon-tasks"
-            mstone_dict["url"] = "/tasks/tdetail/{}".format(event.requirement_task.task.pk)
+            mstone_dict["url"] = reverse('tdetail', args=[event.requirement_task.task.pk])
             ret_list.append(mstone_dict)
         except:
             pass
@@ -412,7 +394,7 @@ def eventinfo(request):
             mstone_dict = {}
             mstone_dict["name"] = "{}".format(event.requirement_task.requirement.name)
             mstone_dict["glyph"] = "glyphicon glyphicon-list-alt"
-            mstone_dict["url"] = "/tasks/rdetail/{}".format(event.requirement_task.requirement.pk)
+            mstone_dict["url"] = reverse('rdetail', args=[event.requirement_task.requirement.pk])
             ret_list.append(mstone_dict)
         except:
             pass
@@ -421,7 +403,7 @@ def eventinfo(request):
             mstone_dict = {}
             mstone_dict["name"] = "{}".format(event.requirement_task.task.milestone.name)
             mstone_dict["glyph"] = "glyphicon glyphicon-flag"
-            mstone_dict["url"] = "/tasks/mdetail/{}".format(event.requirement_task.task.milestone.pk)
+            mstone_dict["url"] = reverse('mdetail', args=[event.requirement_task.task.milestone.pk])
             ret_list.append(mstone_dict)
         except:
             pass
