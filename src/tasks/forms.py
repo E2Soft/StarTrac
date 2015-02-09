@@ -15,7 +15,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView, CreateView
 from django.views.generic.list import ListView
 
-from tasks.models import Milestone, Requirement, StateChange, Event
+from tasks.models import Milestone, Requirement, StateChange, Event, Task
 
 
 class MilestoneForm(forms.ModelForm):
@@ -134,6 +134,25 @@ class TimelineList(ListView):
         #results = Event.objects.values('date_created').annotate(dcount=Count('date_created'))
         
         entities = Event.objects.order_by('date_created')
-        list_of_lists = [list(g) for t, g in groupby(entities, key=extract_date)]
+        list_of_lists = [list(g) for _, g in groupby(entities, key=extract_date)]
 
         return list_of_lists
+    
+class TaskCreateForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ['name', 'priority_lvl', 'requirement', 'milestone', 'assigned_to', 'content']
+    
+    content = forms.CharField(widget=forms.Textarea)
+    
+class TaskUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ['name', 'priority_lvl', 'requirement', 'milestone', 'assigned_to', 'resolve_type', 'content']
+    
+    content = forms.CharField(widget=forms.Textarea)
+    
+    
+    
+
+

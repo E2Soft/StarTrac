@@ -4,13 +4,15 @@ Created on Dec 21, 2014
 @author: Milos
 '''
 from django.conf.urls import patterns, url
+from django.views.generic.detail import DetailView
+from django.views.generic.list import ListView
 
 from tasks import views
 from tasks.forms import MilestonesList, MilestoneDetail, MilestoneUpdate, \
     RequirementsList, RequirementDetail, RequirementUpdate, RequiremenCreate, \
     TimelineList
 from tasks.models import Task, Requirement, Milestone
-from tasks.views import TaskList, TaskDetail, TaskUpdate, TaskCreate
+from tasks.views import TaskUpdate, TaskCreate
 
 
 urlpatterns = patterns('',
@@ -42,8 +44,8 @@ urlpatterns = patterns('',
     url(r'^author/(?P<pk>\d+)/$', views.userview, name='author'),
     
     # tasks
-    url(r'^tasks/$', TaskList.as_view(), name='tasks'),
-    url(r'^tasks/(?P<pk>\d+)/$', TaskDetail.as_view(), name='task_detail'),
+    url(r'^tasks/$', ListView.as_view(model=Task), name='tasks'),
+    url(r'^tasks/(?P<pk>\d+)/$', DetailView.as_view(model=Task), name='tdetail'),
     url(r'^tasks/update/(?P<pk>\d+)/$', TaskUpdate.as_view(), name='task_update'),
     url(r'^tasks/create/$', TaskCreate.as_view(), name='task_create'),
     url(r'^task_ajax_comment/$', views.ajax_comment, name='task_ajax_comment', kwargs={'object_type':Task}),

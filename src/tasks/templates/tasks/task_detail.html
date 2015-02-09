@@ -12,9 +12,9 @@
 			<li class="list-group-item"><span class="glyphicon glyphicon-signal"></span> Priority: {{task.getpriority}}</li>
 			<li class="list-group-item"><span class="glyphicon glyphicon-calendar"></span> Published on: {{task.pub_date}}</li>
 			<li class="list-group-item"><span class="glyphicon glyphicon-tag"></span> Resolved: {{task.getresolve}}</li>
-			<li class="list-group-item"><span class="glyphicon glyphicon-list-alt"></span> Requirement: <a href="{% url 'rdetail' task.requirement.pk %}">{{task.requirement}}</a></li>
-			<li class="list-group-item"><span class="glyphicon glyphicon-flag"></span> Milestone: <a href="{% url 'mdetail' task.milestone.pk %}">{{task.milestone}}</a></li>
-			<li class="list-group-item"><span class="glyphicon glyphicon-user"></span> Assigned to: <a href="{% url 'author' task.assigned_to.pk %}">{{task.assigned_to}}</a></li>
+			<li class="list-group-item"><span class="glyphicon glyphicon-list-alt"></span> Requirement: {% if task.requirement != None %}<a href="{% url 'rdetail' task.requirement.pk %}">{{task.requirement}}</a>{% endif %}</li>
+			<li class="list-group-item"><span class="glyphicon glyphicon-flag"></span> Milestone: {% if task.milestone != None %}<a href="{% url 'mdetail' task.milestone.pk %}">{{task.milestone}}</a>{% endif %}</li>
+			<li class="list-group-item"><span class="glyphicon glyphicon-user"></span> Assigned to: {% if task.assigned_to != None %}<a href="{% url 'author' task.assigned_to.pk %}">{{task.assigned_to}}</a>{% endif %}</li>
 			<li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> Content: <p>{{task.content}}</p></li>
 		</ul>
 	</div>
