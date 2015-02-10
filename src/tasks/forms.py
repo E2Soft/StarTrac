@@ -140,18 +140,13 @@ class TimelineList(ListView):
 
 def determine_task_state(on_wait, assigned, resolved):
     if resolved:
-        # Closed
-        return 'Z'
+        return 'Z' # Closed
+    elif assigned:
+        return 'P' # Accepted
+    elif on_wait:
+        return 'O' # On wait
     else:
-        if on_wait:
-            # On wait
-            return 'O'
-        elif assigned:
-            # Accepted
-            return 'P'
-        else:
-            # Created
-            return 'C'
+        return 'C' # Created
     
 class TaskCreateForm(forms.ModelForm):
     class Meta:
