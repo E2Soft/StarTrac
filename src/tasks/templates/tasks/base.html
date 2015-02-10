@@ -1,7 +1,19 @@
 
 <html lang="en">
 <head>
-
+	
+	<!-- reversed urls for java script -->
+	<script type="text/javascript">
+		var reversed_urls = new Object();
+		reversed_urls.graph = '{% url 'graph' %}';
+		reversed_urls.prioritygraph = '{% url 'prioritygraph' %}';
+		reversed_urls.resolvegraph = '{% url 'resolvegraph' %}';
+		reversed_urls.reqgraph = '{% url 'reqgraph' %}';
+		reversed_urls.reqprioritygraph = '{% url 'reqprioritygraph' %}';
+		reversed_urls.reqresolvegraph = '{% url 'reqresolvegraph' %}';
+		reversed_urls.eventinfo = '{% url 'eventinfo' %}';
+	</script>
+	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" />
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
@@ -64,18 +76,9 @@
 	<div class="container">
 	<div id="wrapper">
 	
-     {% block sidebar %}
-     	<li>
-			<b>
-				<a href="/">
-					<span class="glyphicon glyphicon-home"></span>
-					Home
-				</a>
-			</b>
-		</li>
-     {% endblock %}
-     
-     {% block content %}{% endblock %}
+	{% block sidebar %}{% endblock %}
+    
+    {% block content %}{% endblock %}
      
     </div>
     </div>
