@@ -439,11 +439,12 @@ class TaskCreate(CreateView):
     model = Task
     form_class = TaskCreateForm
     
-    def form_valid(self, form):
-        form.instance.project_tast_user = self.request.user
-        return super(TaskCreate, self).form_valid(form)
-    
     get_success_url = get_tasks_success_url
+    
+    def get_form_kwargs(self):
+        kwargs = super(TaskCreate, self).get_form_kwargs()
+        kwargs['current_user'] = self.request.user
+        return kwargs
 
 def ajax_comment(request, object_type):
     if request.POST:

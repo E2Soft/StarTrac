@@ -161,11 +161,15 @@ class TaskCreateForm(forms.ModelForm):
     content = forms.CharField(widget=forms.Textarea)
     is_on_wait = forms.BooleanField(initial=False, required=False)
     
+    def __init__(self, current_user, *args, **kwargs):
+        super(TaskCreateForm, self).__init__(*args, **kwargs)
+        self.current_user = current_user
+    
     def save(self, commit=True):
         instance = super(TaskCreateForm, self).save(commit=False)
         
         instance.pub_date = timezone.now()
-        
+        instance.project_tast_user = self.current_user
         instance.state_kind = determine_task_state(on_wait=self.cleaned_data.get('is_on_wait'),
                                                    assigned=self.cleaned_data.get('assigned_to'),
                                                    resolved=False)
