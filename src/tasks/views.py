@@ -424,31 +424,16 @@ def userview(request,pk):
     context = {"user":user,"back":back, "tasks":tasks_user}
     
     return render(request,"tasks/author.html", context)
-    
+
+def get_tasks_success_url(self):
+    return reverse('tasks')
+
 class TaskUpdate(UpdateView):
     model = Task
     form_class = TaskUpdateForm
     template_name_suffix = '_update_form'
     
-    def form_valid(self, form):
-        if form.instance.resolve_type == 'N':
-            if form.data.get('is_on_wait'):
-                # state = Created
-                form.instance.state_kind = 'O'
-            elif form.instance.assigned_to is None:
-                # state = Created
-                form.instance.state_kind = 'C'
-            else:
-                # state = Accepted
-                form.instance.state_kind = 'P'
-        else:
-            # state = Closed
-            form.instance.state_kind = 'Z'
-            
-        return super(TaskUpdate, self).form_valid(form)
-    
-    def get_success_url(self):
-        return reverse('tasks')
+    get_success_url = get_tasks_success_url
     
 class TaskCreate(CreateView):
     model = Task
@@ -456,21 +441,9 @@ class TaskCreate(CreateView):
     
     def form_valid(self, form):
         form.instance.project_tast_user = self.request.user
-        form.instance.pub_date = timezone.now()
-        if form.data.get('is_on_wait'):
-            # state = Created
-            form.instance.state_kind = 'O'
-        elif form.instance.assigned_to is None:
-            # state = Created
-            form.instance.state_kind = 'C'
-        else:
-            # state = Accepted
-            form.instance.state_kind = 'P'
-            
         return super(TaskCreate, self).form_valid(form)
     
-    def get_success_url(self):
-        return reverse('tasks')
+    get_success_url = get_tasks_success_url
 
 def ajax_comment(request, object_type):
     if request.POST:

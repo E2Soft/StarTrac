@@ -137,6 +137,21 @@ class TimelineList(ListView):
         list_of_lists = [list(g) for _, g in groupby(entities, key=extract_date)]
 
         return list_of_lists
+
+def determine_task_state(on_wait, assigned, resolved):
+    if resolved:
+        # Closed
+        return 'Z'
+    else:
+        if on_wait:
+            # On wait
+            return 'O'
+        elif assigned:
+            # Accepted
+            return 'P'
+        else:
+            # Created
+            return 'C'
     
 class TaskCreateForm(forms.ModelForm):
     class Meta:
@@ -145,6 +160,19 @@ class TaskCreateForm(forms.ModelForm):
     
     content = forms.CharField(widget=forms.Textarea)
     is_on_wait = forms.BooleanField(initial=False, required=False)
+    
+    def save(self, commit=True):
+        instance = super(TaskCreateForm, self).save(commit=False)
+        
+        instance.pub_date = timezone.now()
+        
+        instance.state_kind = determine_task_state(on_wait=self.cleaned_data.get('is_on_wait'),
+                                                   assigned=self.cleaned_data.get('assigned_to'),
+                                                   resolved=False)
+        
+        if commit:
+            instance.save()
+        return instance
     
 class TaskUpdateForm(forms.ModelForm):
     class Meta:
@@ -157,5 +185,16 @@ class TaskUpdateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(TaskUpdateForm, self).__init__(*args, **kwargs)
         self.fields["is_on_wait"].initial = (self.instance.state_kind == 'O')
+    
+    def save(self, commit=True):
+        instance = super(TaskUpdateForm, self).save(commit=False)
+        
+        instance.state_kind = determine_task_state(on_wait=self.cleaned_data.get('is_on_wait'),
+                                                   assigned=self.cleaned_data.get('assigned_to'),
+                                                   resolved=self.cleaned_data.get('resolve_type') != 'N') # 'N' = Open
+        
+        if commit:
+            instance.save()
+        return instance
 
 
