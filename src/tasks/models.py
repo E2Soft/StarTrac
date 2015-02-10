@@ -24,7 +24,7 @@ PRIORITY_LVL= (
     )
 
 RESOLVE_TYPE = (
-        ('N', 'None'),
+        ('N', 'Open'),
         ('F', 'Fixed'),
         ('I', 'Invalid'),
         ('W', 'Wontfix'),
