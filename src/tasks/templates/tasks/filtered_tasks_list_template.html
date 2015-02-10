@@ -21,7 +21,7 @@
 						{% if filter_kind == task.state_kind or filter_kind == "all" %}
 							<tr class="bs-callout {% task_priority_style task %}">
 								<td><p><a href="{% url 'tdetail' task.pk %}">{{task.name}}</a></p></td>
-								<td>{{task.assigned_to}}</td>
+								<td>{% if task.assigned_to != None %}<a href="{% url 'author' task.assigned_to.pk %}">{{task.assigned_to}}</a>{% endif %}</td>
 								<td>{{task.getpriority}}</td>
 								{% if filter_kind == "all" %}
 								<td>{{task.getstate}}</td>
