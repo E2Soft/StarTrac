@@ -432,7 +432,10 @@ class TaskUpdate(UpdateView):
     
     def form_valid(self, form):
         if form.instance.resolve_type == 'N':
-            if form.instance.assigned_to is None:
+            if form.data.get('is_on_wait'):
+                # state = Created
+                form.instance.state_kind = 'O'
+            elif form.instance.assigned_to is None:
                 # state = Created
                 form.instance.state_kind = 'C'
             else:
@@ -454,7 +457,10 @@ class TaskCreate(CreateView):
     def form_valid(self, form):
         form.instance.project_tast_user = self.request.user
         form.instance.pub_date = timezone.now()
-        if form.instance.assigned_to is None:
+        if form.data.get('is_on_wait'):
+            # state = Created
+            form.instance.state_kind = 'O'
+        elif form.instance.assigned_to is None:
             # state = Created
             form.instance.state_kind = 'C'
         else:

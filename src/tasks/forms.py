@@ -141,18 +141,21 @@ class TimelineList(ListView):
 class TaskCreateForm(forms.ModelForm):
     class Meta:
         model = Task
-        fields = ['name', 'priority_lvl', 'requirement', 'milestone', 'assigned_to', 'content']
+        fields = ['name', 'priority_lvl', 'requirement', 'milestone', 'assigned_to', 'is_on_wait', 'content']
     
     content = forms.CharField(widget=forms.Textarea)
+    is_on_wait = forms.BooleanField(initial=False, required=False)
     
 class TaskUpdateForm(forms.ModelForm):
     class Meta:
         model = Task
-        fields = ['name', 'priority_lvl', 'requirement', 'milestone', 'assigned_to', 'resolve_type', 'content']
+        fields = ['name', 'priority_lvl', 'requirement', 'milestone', 'assigned_to', 'resolve_type', 'is_on_wait', 'content']
     
     content = forms.CharField(widget=forms.Textarea)
+    is_on_wait = forms.BooleanField(required=False)
     
-    
-    
+    def __init__(self, *args, **kwargs):
+        super(TaskUpdateForm, self).__init__(*args, **kwargs)
+        self.fields["is_on_wait"].initial = (self.instance.state_kind == 'O')
 
 
