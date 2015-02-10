@@ -186,12 +186,15 @@ class TaskUpdateForm(forms.ModelForm):
     content = forms.CharField(widget=forms.Textarea)
     is_on_wait = forms.BooleanField(required=False)
     
-    def __init__(self, *args, **kwargs):
+    def __init__(self, current_user, *args, **kwargs):
         super(TaskUpdateForm, self).__init__(*args, **kwargs)
         self.fields["is_on_wait"].initial = (self.instance.state_kind == 'O')
+        self.current_user = current_user
     
     def save(self, commit=True):
         instance = super(TaskUpdateForm, self).save(commit=False)
+        
+        old_state = get_object_or_404(Task,pk=instance.pk).state_kind
         
         instance.state_kind = determine_task_state(on_wait=self.cleaned_data.get('is_on_wait'),
                                                    assigned=self.cleaned_data.get('assigned_to'),
@@ -199,6 +202,9 @@ class TaskUpdateForm(forms.ModelForm):
         
         if commit:
             instance.save()
+            if old_state != instance.state_kind:
+                StateChange(new_state=instance.state_kind, event_user=self.current_user, event_kind='S', date_created=timezone.now(), requirement_task=instance).save()
+        
         return instance
 
 

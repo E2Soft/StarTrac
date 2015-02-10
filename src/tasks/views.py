@@ -435,6 +435,11 @@ class TaskUpdate(UpdateView):
     
     get_success_url = get_tasks_success_url
     
+    def get_form_kwargs(self):
+        kwargs = super(TaskUpdate, self).get_form_kwargs()
+        kwargs['current_user'] = self.request.user
+        return kwargs
+    
 class TaskCreate(CreateView):
     model = Task
     form_class = TaskCreateForm
