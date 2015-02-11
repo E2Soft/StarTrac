@@ -139,16 +139,6 @@ class TimelineList(ListView):
         list_of_lists = [list(g) for _, g in groupby(entities, key=extract_date)]
 
         return list_of_lists
-
-def determine_task_state(on_wait, assigned, resolved):
-    if resolved:
-        return 'Z' # Closed
-    elif assigned:
-        return 'P' # Accepted
-    elif on_wait:
-        return 'O' # On wait
-    else:
-        return 'C' # Created
     
 class TaskCreateForm(forms.ModelForm):
     class Meta:
@@ -158,23 +148,9 @@ class TaskCreateForm(forms.ModelForm):
     content = forms.CharField(widget=forms.Textarea)
     is_on_wait = forms.BooleanField(initial=False, required=False)
     
-    def __init__(self, current_user, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(TaskCreateForm, self).__init__(*args, **kwargs)
-        self.current_user = current_user
-    
-    def save(self, commit=True):
-        instance = super(TaskCreateForm, self).save(commit=False)
-        
-        instance.pub_date = timezone.now()
-        instance.project_tast_user = self.current_user
-        instance.state_kind = determine_task_state(on_wait=self.cleaned_data.get('is_on_wait'),
-                                                   assigned=self.cleaned_data.get('assigned_to'),
-                                                   resolved=False)
-        
-        if commit:
-            instance.save()
-        return instance
-    
+
 class TaskUpdateForm(forms.ModelForm):
     class Meta:
         model = Task
@@ -183,25 +159,8 @@ class TaskUpdateForm(forms.ModelForm):
     content = forms.CharField(widget=forms.Textarea)
     is_on_wait = forms.BooleanField(required=False)
     
-    def __init__(self, current_user, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(TaskUpdateForm, self).__init__(*args, **kwargs)
         self.fields["is_on_wait"].initial = (self.instance.state_kind == 'O')
-        self.current_user = current_user
-    
-    def save(self, commit=True):
-        instance = super(TaskUpdateForm, self).save(commit=False)
-        
-        old_state = get_object_or_404(Task,pk=instance.pk).state_kind
-        
-        instance.state_kind = determine_task_state(on_wait=self.cleaned_data.get('is_on_wait'),
-                                                   assigned=self.cleaned_data.get('assigned_to'),
-                                                   resolved=self.cleaned_data.get('resolve_type') != 'N') # 'N' = Open
-        
-        if commit:
-            instance.save()
-            if old_state != instance.state_kind:
-                StateChange(new_state=instance.state_kind, event_user=self.current_user, event_kind='S', date_created=timezone.now(), requirement_task=instance).save()
-        
-        return instance
 
 
