@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.views.generic.edit import UpdateView, CreateView
 
 from tasks.forms import MilestoneForm, TaskCreateForm, TaskUpdateForm
-from tasks.models import Comment, Requirement, Event, Task
+from tasks.models import Comment, Requirement, Event, Task, StateChange
 from tasks.models import Milestone
 
 
@@ -34,6 +34,7 @@ def addmilestone(request):
     if request.POST:
         form = MilestoneForm(request.POST)
         if form.is_valid():
+            form.instance.date_created = timezone.now()
             form.save()
             
             return HttpResponseRedirect(reverse('milestones'))
@@ -425,31 +426,54 @@ def userview(request,pk):
     
     return render(request,"tasks/author.html", context)
 
-def get_tasks_success_url(self):
-    return reverse('tasks')
+def determine_task_state(on_wait, assigned, resolved):
+    if resolved:
+        return 'Z' # Closed
+    elif assigned:
+        return 'P' # Accepted
+    elif on_wait:
+        return 'O' # On wait
+    else:
+        return 'C' # Created
 
 class TaskUpdate(UpdateView):
     model = Task
     form_class = TaskUpdateForm
     template_name_suffix = '_update_form'
     
-    get_success_url = get_tasks_success_url
+    def get_success_url(self):
+        return reverse('tdetail',args=(self.get_object().id,))
     
-    def get_form_kwargs(self):
-        kwargs = super(TaskUpdate, self).get_form_kwargs()
-        kwargs['current_user'] = self.request.user
-        return kwargs
-    
+    def form_valid(self, form):
+
+        old_state = get_object_or_404(Task,pk=form.instance.pk).state_kind
+        
+        form.instance.state_kind = determine_task_state(on_wait=form.cleaned_data.get('is_on_wait'),
+                                                   assigned=form.cleaned_data.get('assigned_to'),
+                                                   resolved=form.cleaned_data.get('resolve_type') != 'N') # 'N' = Open
+        
+        response = super(TaskUpdate, self).form_valid(form)
+        
+        if old_state != form.instance.state_kind:
+            StateChange(new_state=form.instance.state_kind, event_user=self.request.user, event_kind='S', date_created=timezone.now(), requirement_task=form.instance).save()
+        
+        return response
+
 class TaskCreate(CreateView):
     model = Task
     form_class = TaskCreateForm
     
-    get_success_url = get_tasks_success_url
+    def get_success_url(self):
+        return reverse('tasks')
     
-    def get_form_kwargs(self):
-        kwargs = super(TaskCreate, self).get_form_kwargs()
-        kwargs['current_user'] = self.request.user
-        return kwargs
+    def form_valid(self, form):
+        form.instance.pub_date = timezone.now()
+        form.instance.project_tast_user = self.request.user
+        form.instance.state_kind = determine_task_state(on_wait=form.cleaned_data.get('is_on_wait'),
+                                                   assigned=form.cleaned_data.get('assigned_to'),
+                                                   resolved=False)
+    
+        return super(TaskCreate, self).form_valid(form)
 
 def ajax_comment(request, object_type):
     if request.POST:
