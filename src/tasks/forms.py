@@ -30,16 +30,6 @@ class MilestoneForm(forms.ModelForm):
         self.fields["summry"].widget.attrs['rows']='5'
         
         self.fields["name"].widget.attrs['class']='form-control'
-    
-    def save(self, commit=True):
-        instance = super(MilestoneForm, self).save(commit=False)
-        
-        if instance.date_created is None:
-            instance.date_created = timezone.now()
-        
-        if commit:
-            instance.save()
-        return instance
 
 class MilestonesList(ListView):
     model = Milestone
@@ -55,7 +45,7 @@ class MilestoneDetail(DetailView):
     
 class MilestoneUpdate(UpdateView):
     model = Milestone
-    fields = ["date_created", "name", "summry"]
+    fields = ["name", "summry"]
     template_name = 'tasks/mupdate.html'
     form_class = MilestoneForm
     
@@ -65,22 +55,21 @@ class MilestoneUpdate(UpdateView):
 class RequirementForm(forms.ModelForm):
     class Meta:
         model = Requirement
-        fields = ["name", "state_kind", "project_tast_user", "priority_lvl", "pub_date", "content", "resolve_type"]
+        fields = ["name", "state_kind", "priority_lvl", "content", "resolve_type"]
     
     def __init__(self, *args, **kwargs):
         super(RequirementForm, self).__init__(*args, **kwargs)
-        self.fields['pub_date'].widget.attrs['class'] = 'form-control'
-        self.fields["pub_date"].widget.attrs['id']='datepicker'
         
         self.fields["content"].widget = widgets.AdminTextareaWidget()
-        self.fields["content"].widget.attrs['class']='form-control'
         self.fields["content"].widget.attrs['rows']='5'
         
-        self.fields["name"].widget.attrs['class']='form-control'
-        self.fields["state_kind"].widget.attrs['class']='form-control'
-        self.fields["project_tast_user"].widget.attrs['class']='form-control'
-        self.fields["priority_lvl"].widget.attrs['class']='form-control'
-        self.fields["resolve_type"].widget.attrs['class']='form-control'
+        for field in self.fields.values():
+            field.widget.attrs['class']='form-control'
+
+class RequirementCreateForm(RequirementForm):
+    class Meta:
+        model = Requirement
+        fields = ["name", "state_kind", "priority_lvl", "content"]
             
 class RequirementsList(ListView):
     model = Requirement
@@ -96,7 +85,6 @@ class RequirementDetail(DetailView):
     
 class RequirementUpdate(UpdateView):
     model = Requirement
-    fields = ["name", "state_kind", "project_tast_user", "priority_lvl", "pub_date", "content", "resolve_type"]
     template_name = 'tasks/rupdate.html'
     form_class = RequirementForm
     
@@ -124,11 +112,17 @@ class RequirementUpdate(UpdateView):
 class RequiremenCreate(CreateView):
     model = Requirement
     template_name = 'tasks/addrequirement.html'
-    form_class = RequirementForm
+    form_class = RequirementCreateForm
     
     def get_success_url(self):
         return reverse('requirements')
-
+    
+    def form_valid(self, form):
+        form.instance.pub_date = timezone.now()
+        form.instance.project_tast_user = self.request.user
+        
+        return super(RequiremenCreate, self).form_valid(form)
+    
 def extract_date(entity):
     'extracts the starting date from an entity'
     return entity.date_created.date()

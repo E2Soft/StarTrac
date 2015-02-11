@@ -34,6 +34,7 @@ def addmilestone(request):
     if request.POST:
         form = MilestoneForm(request.POST)
         if form.is_valid():
+            form.instance.date_created = timezone.now()
             form.save()
             
             return HttpResponseRedirect(reverse('milestones'))
@@ -425,15 +426,13 @@ def userview(request,pk):
     
     return render(request,"tasks/author.html", context)
 
-def get_tasks_success_url(self):
-    return reverse('tasks')
-
 class TaskUpdate(UpdateView):
     model = Task
     form_class = TaskUpdateForm
     template_name_suffix = '_update_form'
     
-    get_success_url = get_tasks_success_url
+    def get_success_url(self):
+        return reverse('tdetail',args=(self.get_object().id,))
     
     def get_form_kwargs(self):
         kwargs = super(TaskUpdate, self).get_form_kwargs()
@@ -444,7 +443,8 @@ class TaskCreate(CreateView):
     model = Task
     form_class = TaskCreateForm
     
-    get_success_url = get_tasks_success_url
+    def get_success_url(self):
+        return reverse('tasks')
     
     def get_form_kwargs(self):
         kwargs = super(TaskCreate, self).get_form_kwargs()
