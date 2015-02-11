@@ -1,0 +1,89 @@
+
+<html lang="en">
+<head>
+	
+	<!-- reversed urls for java script -->
+	<script type="text/javascript">
+		var reversed_urls = new Object();
+		reversed_urls.graph = '{% url 'graph' %}';
+		reversed_urls.prioritygraph = '{% url 'prioritygraph' %}';
+		reversed_urls.resolvegraph = '{% url 'resolvegraph' %}';
+		reversed_urls.reqgraph = '{% url 'reqgraph' %}';
+		reversed_urls.reqprioritygraph = '{% url 'reqprioritygraph' %}';
+		reversed_urls.reqresolvegraph = '{% url 'reqresolvegraph' %}';
+		reversed_urls.eventinfo = '{% url 'eventinfo' %}';
+	</script>
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+	
+	{% load staticfiles %}
+	<script type="text/javascript" src="{% static 'tasks/test.js' %}" ></script>
+	<script type="text/javascript" src="{% static 'tasks/Chart.js' %}" ></script>
+	
+	<link rel="stylesheet" href="{% static 'tasks/callout.css' %}">
+	<link rel="stylesheet" href="{% static 'tasks/theme.css' %}">
+	
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	
+	<!-- Latest compiled JavaScript -->
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+	
+    <title>{% block title %}StarTrack{% endblock %}</title>
+    
+</head>
+
+<body>
+	
+	{% block modal %}
+	
+	<!-- Modal -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" 
+	   aria-labelledby="myModalLabel" aria-hidden="true">
+	   <div class="modal-dialog">
+	      <div class="modal-content">
+	         <div class="modal-header">
+	            <button type="button" class="close" 
+	               data-dismiss="modal" aria-hidden="true">
+	                  &times;
+	            </button>
+	            <h4 class="modal-title" id="myModalLabel">
+	               This Modal title
+	            </h4>
+	         </div>
+	         <div class="modal-body" id="content">
+	            <canvas id="canvas" height="450" width="600"></canvas>
+	         </div>
+	         <div class="modal-footer">
+	            <button type="button" class="btn btn-default" 
+	               data-dismiss="modal">Close
+	            </button>
+	         </div>
+	      </div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div><!-- /.modal -->
+	
+	{% endblock %}
+	
+	<div class="container">
+	<div id="wrapper">
+	
+	{% block sidebar %}{% endblock %}
+    
+    {% block content %}{% endblock %}
+     
+    </div>
+    </div>
+    
+     {% block canban%} {% endblock %}
+     
+</body>
+</html>

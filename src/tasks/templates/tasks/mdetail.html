@@ -1,0 +1,99 @@
+{% extends "tasks/page_template.html" %}
+{% block title %}Detail Page{% endblock %}
+{% load commnets from task_extras %}
+
+{% block modal%}
+{{block.super}}
+{% endblock %}
+
+{% block content %}
+<div class="jumbotron">
+<h2>{{milestone}}</h2>
+
+<div class="bs-callout bs-callout-default">
+<ul class="list-group">
+	<li class="list-group-item"><span class="glyphicon glyphicon-calendar"></span> Date: {{milestone.date_created}}</li>
+	<li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> Summary: {{milestone.summary}}</li>
+</ul>
+</div>
+
+</div>
+
+<ul class="nav nav-tabs" role="tablist">
+	<li class="active"><a href="#pane1" data-toggle="tab"><span class="glyphicon glyphicon-comment"></span> Comments</a></li>
+	<li><a href="#pane2" data-toggle="tab"><span class="glyphicon glyphicon-tasks"></span> Tasks</a></li>        
+</ul>
+
+<div class="tab-content">
+	<div id="pane1" class="tab-pane active">
+		<div class="bs-callout bs-callout-warning">
+		<form method="post" id="formreq" role="form">{% csrf_token %}
+				<input type='hidden' name='pk' value='{{milestone.pk}}' id="pk" />
+				<input type='hidden' name='comment_ajax_url' value="{% url 'mcomment' %}" id="comment_ajax_url" />
+				<div class="form-group has-error has-feedback" id="err">
+					<textarea rows="5" cols="50" form="usrform" id="ccontent" class="form-control"
+					placeholder="Share your thoughts"></textarea>
+				</div>
+				<!--<input type="submit" value="Comment" class="save btn btn-default" />-->
+				<button type="submit" class="btn btn-warning disabled" id="btncomment">
+					Comment
+					<span class="glyphicon glyphicon-comment"></span>
+				</button>
+		</form>
+		</div>
+		
+		<ul id="rez" class="list-group">
+			{% for event in milestone.event_set.all %}
+				{% if event.iscomment %}
+				<li class="list-group-item">
+					<span class="glyphicon glyphicon-comment"></span> {{event.comment.content}}
+					<p><span class="glyphicon glyphicon-user"></span> {{event.comment.event_user.username}}</p>
+					<span class="glyphicon glyphicon-calendar"></span> {{event.comment.date_created}}
+				</li>
+				{% endif %}
+			{% endfor %}
+		</ul>
+	</div>
+
+	<div id="pane2" class="tab-pane">
+		<div class="bs-callout bs-callout-success">
+		<a href="{% url 'task_create' %}" class="btn btn-success" id="addtask">
+	        Add
+	        <span class="glyphicon glyphicon-plus"></span>
+        </a>
+        </div>
+        
+		<ul class="list-group">
+			{% for event in milestone.task_set.all %}
+					<li class="list-group-item">
+					<span class="badge"><span class="glyphicon glyphicon-comment"></span> {{event.task|commnets}}</span>
+					{{event.task.name}}
+					</li>
+			{% endfor %}
+		</ul>
+	</div>
+</div>
+		
+{% endblock %}
+
+{% block sidebar_content %}
+	<li>
+		<b>
+			<a href="{% url 'medit' milestone.pk %}">
+				<span class="glyphicon glyphicon-pencil"></span>
+				Edit
+			</a>
+		</b>
+	</li>
+	
+	<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">
+	<span class="glyphicon glyphicon-stats"></span>
+	Statistics
+	<span class="caret"></span></a>
+      <ul class="dropdown-menu">
+        <li id="graph"><a href="#">Tasks states stats</a></li>
+        <li id="priority"><a href="#">Tasks priority stats</a></li>
+        <li id="resolve"><a href="#">Tasks resolved stats</a></li>
+      </ul>
+    </li>
+{% endblock %}

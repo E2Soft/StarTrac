@@ -1,0 +1,27 @@
+{% extends "tasks/page_template.html" %}
+{% block title %}Detail Page{% endblock %}
+
+{% block content %}
+<div class="jumbotron">
+<h2>{{user}}</h2>
+
+<div class="bs-callout bs-callout-default">
+<ul class="list-group">
+	<li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> First name: {{user.first_name}}</li>
+	<li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> Last name: {{user.last_name}}</li>
+	<li class="list-group-item"><span class="glyphicon glyphicon-envelope"></span> E-mail: {{user.email}}</li>
+</ul>
+</div>
+</div>
+{% endblock %}
+
+{% block sidebar_content %}
+	<li>
+		<b>
+			<a href="{% url 'uedit' user.pk %}">
+				<span class="glyphicon glyphicon-pencil"></span>
+				Edit
+			</a>
+		</b>
+	</li>
+{% endblock %}

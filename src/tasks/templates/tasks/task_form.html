@@ -1,0 +1,20 @@
+{% extends "tasks/page_template.html" %}
+{% block title %}Add Task {% endblock %}
+
+{% block content %}
+	<div class="jumbotron">
+    	<h2>Add new task</h2>
+    </div>
+    
+    <div class="bs-callout bs-callout-success">
+    <form method="POST" class="post-form" role="form">{% csrf_token %}
+    	<table class="table table-hover">
+        {{ form.as_table }}
+        </table>
+        <button type="submit" class="btn btn-success">
+        Add
+        <span class="glyphicon glyphicon-plus"></span>
+        </button>
+    </form>
+    </div>
+{% endblock %}

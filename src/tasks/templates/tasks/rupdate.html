@@ -1,0 +1,22 @@
+{% extends "tasks/page_template.html" %}
+{% block title %}Edit Requirement{% endblock %}
+
+{% block content %}
+
+	<div class="jumbotron">
+    	<h2>Update requirement</h2>
+    </div>
+	
+	<div class="bs-callout bs-callout-primary">
+	<form action="" method="post" role="form">{% csrf_token %}
+		<table class="table table-hover">
+	    	{{ form.as_table }}
+	    </table>
+	    <button type="submit" class="btn btn-primary">
+        Update
+        <span class="glyphicon glyphicon-ok"></span>
+        </button>
+	</form>
+	</div>
+	
+{% endblock %}
