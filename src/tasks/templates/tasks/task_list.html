@@ -1,0 +1,45 @@
+{% extends "tasks/page_template.html" %}
+{% block title %}Tasks Page{% endblock %}
+
+{% block content %}
+
+</br>
+
+<ul class="nav nav-tabs" role="tablist">
+	<li class="active"><a href="#pane_all" data-toggle="tab"><span class="glyphicon glyphicon-tasks"></span> All</a></li>
+	<li><a href="#pane_Created" data-toggle="tab"><span class="glyphicon glyphicon-tasks"></span> Created</a></li>
+	<li><a href="#pane_Accepted" data-toggle="tab"><span class="glyphicon glyphicon-tasks"></span> Accepted</a></li>
+	<li><a href="#pane_On_Wait" data-toggle="tab"><span class="glyphicon glyphicon-tasks"></span> On Wait</a></li>
+	<li><a href="#pane_Closed" data-toggle="tab"><span class="glyphicon glyphicon-tasks"></span> Closed</a></li>
+</ul>
+
+<div class="tab-content">
+
+	<div id="pane_all" class="tab-pane active">
+		{% include "tasks/filtered_tasks_list_template.html" with filter_kind="all" %}
+	</div>
+	<div id="pane_Created" class="tab-pane">
+		{% include "tasks/filtered_tasks_list_template.html" with filter_kind="C" %}
+	</div>
+	<div id="pane_Accepted" class="tab-pane">
+		{% include "tasks/filtered_tasks_list_template.html" with filter_kind="P" %}
+	</div>
+	<div id="pane_On_Wait" class="tab-pane">
+		{% include "tasks/filtered_tasks_list_template.html" with filter_kind="O" %}
+	</div>
+	<div id="pane_Closed" class="tab-pane">
+		{% include "tasks/filtered_tasks_list_template.html" with filter_kind="Z" %}
+	</div>
+</div>
+{% endblock %}
+
+{% block sidebar_content %}
+	<li>
+		<b>
+			<a href="{% url 'task_create' %}">
+				<span class="glyphicon glyphicon-file"></span>
+				Add new task
+			</a>
+		</b>
+	</li>
+{% endblock %}

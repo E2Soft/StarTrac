@@ -1,4 +1,4 @@
-{% extends "tasks/base.html" %}
+{% extends "tasks/page_template.html" %}
 {% block title %}Detail Page{% endblock %}
 {% load commnets from task_extras %}
 
@@ -32,6 +32,7 @@
 		<div class="bs-callout bs-callout-warning">
 		<form method="post" id="formreq" role="form">{% csrf_token %}
 				<input type='hidden' name='pk' value='{{requirement.pk}}' id="pk" />
+				<input type='hidden' name='comment_ajax_url' value="{% url 'rcomment' %}" id="comment_ajax_url" />
 				<div class="form-group has-error has-feedback" id="err">
 					<textarea rows="5" cols="50" form="usrform" id="ccontent" class="form-control" 
 					placeholder="Share your thoughts"></textarea>
@@ -59,10 +60,10 @@
 	
 	<div id="pane2" class="tab-pane">
 		<div class="bs-callout bs-callout-success">
-		<button type="submit" class="btn btn-success" id="addtask">
+		<a href="{% url 'task_create' %}" class="btn btn-success" id="addtask">
 	        Add
 	        <span class="glyphicon glyphicon-plus"></span>
-        </button>
+        </a>
         </div>
         
 		<ul class="list-group">
@@ -78,44 +79,24 @@
 
 {% endblock %}
 
-{% block sidebar %}
-<div id="sidebar-wrapper">
-    	<ul class="sidebar-nav">
-        	<li class="sidebar-brand">
-            	<p>
-            		<span class="glyphicon glyphicon-road"></span>
-            		StarTrac
-            	</p>
-            </li>
-			<li>
-				<b>
-					<a href="{{back}}">
-						<span class="glyphicon glyphicon-chevron-left"></span>
-						Back
-					</a>
-				</b>
-			</li>
-			<li>
-				<b>
-					<a href="{% url 'redit' requirement.pk %}">
-						<span class="glyphicon glyphicon-pencil"></span>
-						Edit
-					</a>
-				</b>
-			</li>
-			
-			<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">
-			<span class="glyphicon glyphicon-stats"></span>
-			Statistics
-			<span class="caret"></span></a>
-	          <ul class="dropdown-menu">
-	            <li id="reqgraph"><a href="#">Tasks states stats</a></li>
-	            <li id="reqpriority"><a href="#">Tasks priority stats</a></li>
-	            <li id="reqresolve"><a href="#">Tasks resolved stats</a></li>
-	          </ul>
-	        </li>
-			
-			{{block.super}}
-		</ul>
-	</div>
+{% block sidebar_content %}
+	<li>
+		<b>
+			<a href="{% url 'redit' requirement.pk %}">
+				<span class="glyphicon glyphicon-pencil"></span>
+				Edit
+			</a>
+		</b>
+	</li>
+	
+	<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">
+	<span class="glyphicon glyphicon-stats"></span>
+	Statistics
+	<span class="caret"></span></a>
+      <ul class="dropdown-menu">
+        <li id="reqgraph"><a href="#">Tasks states stats</a></li>
+        <li id="reqpriority"><a href="#">Tasks priority stats</a></li>
+        <li id="reqresolve"><a href="#">Tasks resolved stats</a></li>
+      </ul>
+    </li>
 {% endblock %}

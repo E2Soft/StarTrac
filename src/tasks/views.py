@@ -6,8 +6,9 @@ from django.http import HttpResponse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
+from django.views.generic.edit import UpdateView, CreateView
 
-from tasks.forms import MilestoneForm
+from tasks.forms import MilestoneForm, TaskUpdateForm, TaskCreateForm
 from tasks.models import Comment, Requirement, Task, StateChange, Event
 from tasks.models import Milestone, RequirementTask
 
@@ -450,14 +451,14 @@ def eventinfo(request):
         mstone_dict = {}
         mstone_dict["name"] = event.milestone.name
         mstone_dict["glyph"] = "glyphicon glyphicon-flag"
-        mstone_dict["url"] = "/tasks/mdetail/{}".format(event.milestone.pk)
+        mstone_dict["url"] = reverse('mdetail', args=[event.milestone.pk])
         ret_list.append(mstone_dict)
     else:
         try:
             mstone_dict = {}
             mstone_dict["name"] = "{}".format(event.requirement_task.task.name)
             mstone_dict["glyph"] = "glyphicon glyphicon-tasks"
-            mstone_dict["url"] = "/tasks/tdetail/{}".format(event.requirement_task.task.pk)
+            mstone_dict["url"] = reverse('tdetail', args=[event.requirement_task.task.pk])
             ret_list.append(mstone_dict)
         except:
             pass
@@ -466,7 +467,7 @@ def eventinfo(request):
             mstone_dict = {}
             mstone_dict["name"] = "{}".format(event.requirement_task.requirement.name)
             mstone_dict["glyph"] = "glyphicon glyphicon-list-alt"
-            mstone_dict["url"] = "/tasks/rdetail/{}".format(event.requirement_task.requirement.pk)
+            mstone_dict["url"] = reverse('rdetail', args=[event.requirement_task.requirement.pk])
             ret_list.append(mstone_dict)
         except:
             pass
@@ -475,7 +476,7 @@ def eventinfo(request):
             mstone_dict = {}
             mstone_dict["name"] = "{}".format(event.requirement_task.task.milestone.name)
             mstone_dict["glyph"] = "glyphicon glyphicon-flag"
-            mstone_dict["url"] = "/tasks/mdetail/{}".format(event.requirement_task.task.milestone.pk)
+            mstone_dict["url"] = reverse('mdetail', args=[event.requirement_task.task.milestone.pk])
             ret_list.append(mstone_dict)
         except:
             pass
@@ -496,3 +497,57 @@ def userview(request,pk):
     context = {"user":user,"back":back, "tasks":tasks_user}
     
     return render(request,"tasks/author.html", context)
+
+def get_tasks_success_url(self):
+    return reverse('tasks')
+
+class TaskUpdate(UpdateView):
+    model = Task
+    form_class = TaskUpdateForm
+    template_name_suffix = '_update_form'
+    
+    get_success_url = get_tasks_success_url
+    
+    def get_form_kwargs(self):
+        kwargs = super(TaskUpdate, self).get_form_kwargs()
+        kwargs['current_user'] = self.request.user
+        return kwargs
+    
+class TaskCreate(CreateView):
+    model = Task
+    form_class = TaskCreateForm
+    
+    get_success_url = get_tasks_success_url
+    
+    def get_form_kwargs(self):
+        kwargs = super(TaskCreate, self).get_form_kwargs()
+        kwargs['current_user'] = self.request.user
+        return kwargs
+
+def ajax_comment(request, object_type):
+    if request.POST:
+        content = request.POST.get("content","")
+        obj_id = request.POST.get("pk","")
+        date = timezone.now()
+        milestone=None
+        requirement_task=None
+
+        if object_type == Milestone:
+            milestone = get_object_or_404(object_type,pk=obj_id)
+        else:
+            requirement_task = get_object_or_404(object_type,pk=obj_id)
+
+        comment = Comment(event_user=request.user,content=content,
+                                  date_created=date,
+                                  requirement_task=requirement_task,
+                                  milestone=milestone,
+                                  event_kind="K")
+        comment.save()                                                         
+    
+    response_data = {}
+    response_data['content'] = content
+    response_data['date'] = date.__str__()
+    response_data['user'] = request.user.username
+    
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
+

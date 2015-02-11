@@ -1,4 +1,4 @@
-{% extends "tasks/base.html" %}
+{% extends "tasks/page_template.html" %}
 {% block title %}Timeline{% endblock %}
 
 {% block modal %}
@@ -39,26 +39,4 @@
 		</div>
 	</div>
 		
-{% endblock %}
-
-{% block sidebar %}
-	<div id="sidebar-wrapper">
-    	<ul class="sidebar-nav">
-        	<li class="sidebar-brand">
-            	<p>
-            		<span class="glyphicon glyphicon-road"></span>
-            		StarTrac
-            	</p>
-            </li>
-			<li>
-				<b>
-					<a href="/tasks">
-						<span class="glyphicon glyphicon-chevron-left"></span>
-						Back
-					</a>
-				</b>
-			</li>
-			{{block.super}}
-		</ul>
-	</div>
 {% endblock %}

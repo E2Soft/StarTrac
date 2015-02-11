@@ -8,10 +8,6 @@ from itertools import groupby
 from django import forms
 from django.contrib.admin import widgets
 from django.core.urlresolvers import reverse
-from django.db.models import Count
-from django.db.models.query import QuerySet
-from django.forms.models import modelform_factory
-from django.forms.widgets import Textarea
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -19,7 +15,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView, CreateView
 from django.views.generic.list import ListView
 
-from tasks.models import Milestone, Requirement, StateChange, Comment, Event
+from tasks.models import Milestone, Requirement, StateChange, Event, Task
 
 
 class MilestoneForm(forms.ModelForm):
@@ -44,27 +40,10 @@ class MilestonesList(ListView):
     def get_queryset(self):
         return Milestone.objects.all()
     
-    """def get_context_data(self, **kwargs):
-        context = super(MilestonesList, self).get_context_data(**kwargs)
-        
-        context["back"] = self.request.META["HTTP_REFERER"]      
-        return context"""
-    
 class MilestoneDetail(DetailView):
     model = Milestone
     template_name = 'tasks/mdetail.html'
     context_object_name='milestone'
-    
-    def get_context_data(self, **kwargs):
-        context = super(MilestoneDetail, self).get_context_data(**kwargs)
-        
-        #KeyError
-        try:
-            context["back"] = self.request.META["HTTP_REFERER"]
-        except(KeyError):
-            context["back"]="/"
-     
-        return context
     
 class MilestoneUpdate(UpdateView):
     model = Milestone
@@ -74,17 +53,6 @@ class MilestoneUpdate(UpdateView):
     
     def get_success_url(self):
         return reverse('mdetail',args=(self.get_object().id,))
-    
-    def get_context_data(self, **kwargs):
-        context = super(MilestoneUpdate, self).get_context_data(**kwargs)
-        
-        #KeyError
-        try:
-            context["back"] = self.request.META["HTTP_REFERER"]
-        except(KeyError):
-            context["back"]="/"
-     
-        return context
     
 class RequirementForm(forms.ModelForm):
     class Meta:
@@ -118,17 +86,6 @@ class RequirementDetail(DetailView):
     template_name = 'tasks/rdetail.html'
     context_object_name='requirement'
     
-    def get_context_data(self, **kwargs):
-        context = super(RequirementDetail, self).get_context_data(**kwargs)
-        
-        #KeyError
-        try:
-            context["back"] = self.request.META["HTTP_REFERER"]
-        except(KeyError):
-            context["back"]="/"
-     
-        return context
-    
 class RequirementUpdate(UpdateView):
     model = Requirement
     fields = ["name", "state_kind", "project_tast_user", "priority_lvl", "pub_date", "content", "resolve_type"]
@@ -156,18 +113,6 @@ class RequirementUpdate(UpdateView):
         
         return HttpResponseRedirect(self.get_success_url())
 
-    
-    def get_context_data(self, **kwargs):
-        context = super(RequirementUpdate, self).get_context_data(**kwargs)
-        
-        #KeyError
-        try:
-            context["back"] = self.request.META["HTTP_REFERER"]
-        except(KeyError):
-            context["back"]="/"
-     
-        return context
-
 class RequiremenCreate(CreateView):
     model = Requirement
     template_name = 'tasks/addrequirement.html'
@@ -175,17 +120,6 @@ class RequiremenCreate(CreateView):
     
     def get_success_url(self):
         return reverse('requirements')
-    
-    def get_context_data(self, **kwargs):
-        context = super(RequiremenCreate, self).get_context_data(**kwargs)
-        
-        #KeyError
-        try:
-            context["back"] = self.request.META["HTTP_REFERER"]
-        except(KeyError):
-            context["back"]="/"
-     
-        return context
 
 def extract_date(entity):
     'extracts the starting date from an entity'
@@ -200,6 +134,72 @@ class TimelineList(ListView):
         #results = Event.objects.values('date_created').annotate(dcount=Count('date_created'))
         
         entities = Event.objects.order_by('date_created')
-        list_of_lists = [list(g) for t, g in groupby(entities, key=extract_date)]
+        list_of_lists = [list(g) for _, g in groupby(entities, key=extract_date)]
 
         return list_of_lists
+
+def determine_task_state(on_wait, assigned, resolved):
+    if resolved:
+        return 'Z' # Closed
+    elif assigned:
+        return 'P' # Accepted
+    elif on_wait:
+        return 'O' # On wait
+    else:
+        return 'C' # Created
+    
+class TaskCreateForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ['name', 'priority_lvl', 'requirement', 'milestone', 'assigned_to', 'is_on_wait', 'content']
+    
+    content = forms.CharField(widget=forms.Textarea)
+    is_on_wait = forms.BooleanField(initial=False, required=False)
+    
+    def __init__(self, current_user, *args, **kwargs):
+        super(TaskCreateForm, self).__init__(*args, **kwargs)
+        self.current_user = current_user
+    
+    def save(self, commit=True):
+        instance = super(TaskCreateForm, self).save(commit=False)
+        
+        instance.pub_date = timezone.now()
+        instance.project_tast_user = self.current_user
+        instance.state_kind = determine_task_state(on_wait=self.cleaned_data.get('is_on_wait'),
+                                                   assigned=self.cleaned_data.get('assigned_to'),
+                                                   resolved=False)
+        
+        if commit:
+            instance.save()
+        return instance
+    
+class TaskUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ['name', 'priority_lvl', 'requirement', 'milestone', 'assigned_to', 'resolve_type', 'is_on_wait', 'content']
+    
+    content = forms.CharField(widget=forms.Textarea)
+    is_on_wait = forms.BooleanField(required=False)
+    
+    def __init__(self, current_user, *args, **kwargs):
+        super(TaskUpdateForm, self).__init__(*args, **kwargs)
+        self.fields["is_on_wait"].initial = (self.instance.state_kind == 'O')
+        self.current_user = current_user
+    
+    def save(self, commit=True):
+        instance = super(TaskUpdateForm, self).save(commit=False)
+        
+        old_state = get_object_or_404(Task,pk=instance.pk).state_kind
+        
+        instance.state_kind = determine_task_state(on_wait=self.cleaned_data.get('is_on_wait'),
+                                                   assigned=self.cleaned_data.get('assigned_to'),
+                                                   resolved=self.cleaned_data.get('resolve_type') != 'N') # 'N' = Open
+        
+        if commit:
+            instance.save()
+            if old_state != instance.state_kind:
+                StateChange(new_state=instance.state_kind, event_user=self.current_user, event_kind='S', date_created=timezone.now(), requirement_task=instance).save()
+        
+        return instance
+
+
