@@ -21,13 +21,13 @@ from tasks.models import Milestone, Requirement, StateChange, Event, Task
 class MilestoneForm(forms.ModelForm):
     class Meta:
         model = Milestone
-        fields = ["name", "summry"]
+        fields = ["name", "summary"]
     
     def __init__(self, *args, **kwargs):
         super(MilestoneForm, self).__init__(*args, **kwargs)
-        self.fields["summry"].widget = widgets.AdminTextareaWidget()
-        self.fields["summry"].widget.attrs['class']='form-control'
-        self.fields["summry"].widget.attrs['rows']='5'
+        self.fields["summary"].widget = widgets.AdminTextareaWidget()
+        self.fields["summary"].widget.attrs['class']='form-control'
+        self.fields["summary"].widget.attrs['rows']='5'
         
         self.fields["name"].widget.attrs['class']='form-control'
 
@@ -45,7 +45,7 @@ class MilestoneDetail(DetailView):
     
 class MilestoneUpdate(UpdateView):
     model = Milestone
-    fields = ["name", "summry"]
+    fields = ["name", "summary"]
     template_name = 'tasks/mupdate.html'
     form_class = MilestoneForm
     
