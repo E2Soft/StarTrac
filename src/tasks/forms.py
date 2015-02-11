@@ -21,17 +21,25 @@ from tasks.models import Milestone, Requirement, StateChange, Event, Task
 class MilestoneForm(forms.ModelForm):
     class Meta:
         model = Milestone
-        fields = ["date_created", "name", "summry"]
+        fields = ["name", "summry"]
     
     def __init__(self, *args, **kwargs):
         super(MilestoneForm, self).__init__(*args, **kwargs)
-        self.fields['date_created'].widget.attrs['class'] = 'form-control'
         self.fields["summry"].widget = widgets.AdminTextareaWidget()
         self.fields["summry"].widget.attrs['class']='form-control'
         self.fields["summry"].widget.attrs['rows']='5'
         
         self.fields["name"].widget.attrs['class']='form-control'
-        self.fields["date_created"].widget.attrs['id']='datepicker'
+    
+    def save(self, commit=True):
+        instance = super(MilestoneForm, self).save(commit=False)
+        
+        if instance.date_created is None:
+            instance.date_created = timezone.now()
+        
+        if commit:
+            instance.save()
+        return instance
 
 class MilestonesList(ListView):
     model = Milestone
