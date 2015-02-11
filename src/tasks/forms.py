@@ -150,6 +150,8 @@ class TaskCreateForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
         super(TaskCreateForm, self).__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class']='form-control'
 
 class TaskUpdateForm(forms.ModelForm):
     class Meta:
@@ -162,5 +164,7 @@ class TaskUpdateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(TaskUpdateForm, self).__init__(*args, **kwargs)
         self.fields["is_on_wait"].initial = (self.instance.state_kind == 'O')
-
+        for field in self.fields.values():
+            field.widget.attrs['class']='form-control'
+        self.fields["is_on_wait"].widget.attrs['class']=''
 
