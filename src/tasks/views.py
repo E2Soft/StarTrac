@@ -146,6 +146,7 @@ def kanban(request):
     box = request.GET["box"]
     
     task = get_object_or_404(Task,pk=rid)
+    ret_dict={}
     
     #if current state is not accepted it can't be closed!
     if task.state_kind != "P" and box == "Z":
@@ -164,16 +165,27 @@ def kanban(request):
                                            date_created=timezone.now(),requirement_task=task,
                                            milestone=task.milestone,new_state=box)
     state_change.save()
-    task.save()
     
+    #colors that represents priority
     key_dict ={'C':'#ce2b37','H': '#ee6c3a','M': '#41783f','L': '#3d70b6'}
     
-    ret_dict={}
+    #states that can be in cloed task
+    closed_dict={'F': 'Fixed','I': 'Invalid','W': 'Wontfix','D': 'Duplicate','R': 'Worksforme'}
+    
     ret_dict["status"] = "Ok"
     ret_dict["data"] = {}
     ret_dict["code"] = "200"
     ret_dict["message"] = key_dict[task.priority_lvl]
     ret_dict["explaination"]= request.user.username
+    ret_dict["created"]= "false"
+    
+    if task.state_kind ==  "Z":
+        ret_dict["created"]= "true"
+        ret_dict["closedlist"]=closed_dict
+        task.resolve_type = "R"
+        
+    #update current task    
+    task.save()
     
     return HttpResponse(json.dumps(ret_dict), content_type="application/json")
 
@@ -560,4 +572,24 @@ def ajax_comment(request, object_type):
     response_data['user'] = request.user.username
     
     return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+
+def resolve(request):
+    
+    rid = request.GET["resolveid"]
+    box = request.GET["taskid"]
+    
+    task = get_object_or_404(Task,pk=box)
+    task.resolve_type = rid
+    task.save()
+    
+    #print("bla bla {} {}".format(rid, box))
+    
+    ret_dict={}
+    ret_dict["status"] = "Ok"
+    ret_dict["data"] = {}
+    ret_dict["code"] = "200"
+    
+    return HttpResponse(json.dumps(ret_dict), content_type="application/json")
+
 
