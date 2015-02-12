@@ -21,17 +21,15 @@ from tasks.models import Milestone, Requirement, StateChange, Event, Task
 class MilestoneForm(forms.ModelForm):
     class Meta:
         model = Milestone
-        fields = ["date_created", "name", "summry"]
+        fields = ["name", "summary"]
     
     def __init__(self, *args, **kwargs):
         super(MilestoneForm, self).__init__(*args, **kwargs)
-        self.fields['date_created'].widget.attrs['class'] = 'form-control'
-        self.fields["summry"].widget = widgets.AdminTextareaWidget()
-        self.fields["summry"].widget.attrs['class']='form-control'
-        self.fields["summry"].widget.attrs['rows']='5'
+        self.fields["summary"].widget = widgets.AdminTextareaWidget()
+        self.fields["summary"].widget.attrs['class']='form-control'
+        self.fields["summary"].widget.attrs['rows']='5'
         
         self.fields["name"].widget.attrs['class']='form-control'
-        self.fields["date_created"].widget.attrs['id']='datepicker'
 
 class MilestonesList(ListView):
     model = Milestone
@@ -47,7 +45,7 @@ class MilestoneDetail(DetailView):
     
 class MilestoneUpdate(UpdateView):
     model = Milestone
-    fields = ["date_created", "name", "summry"]
+    fields = ["name", "summary"]
     template_name = 'tasks/mupdate.html'
     form_class = MilestoneForm
     
@@ -57,22 +55,21 @@ class MilestoneUpdate(UpdateView):
 class RequirementForm(forms.ModelForm):
     class Meta:
         model = Requirement
-        fields = ["name", "state_kind", "project_tast_user", "priority_lvl", "pub_date", "content", "resolve_type"]
+        fields = ["name", "state_kind", "priority_lvl", "content", "resolve_type"]
     
     def __init__(self, *args, **kwargs):
         super(RequirementForm, self).__init__(*args, **kwargs)
-        self.fields['pub_date'].widget.attrs['class'] = 'form-control'
-        self.fields["pub_date"].widget.attrs['id']='datepicker'
         
         self.fields["content"].widget = widgets.AdminTextareaWidget()
-        self.fields["content"].widget.attrs['class']='form-control'
         self.fields["content"].widget.attrs['rows']='5'
         
-        self.fields["name"].widget.attrs['class']='form-control'
-        self.fields["state_kind"].widget.attrs['class']='form-control'
-        self.fields["project_tast_user"].widget.attrs['class']='form-control'
-        self.fields["priority_lvl"].widget.attrs['class']='form-control'
-        self.fields["resolve_type"].widget.attrs['class']='form-control'
+        for field in self.fields.values():
+            field.widget.attrs['class']='form-control'
+
+class RequirementCreateForm(RequirementForm):
+    class Meta:
+        model = Requirement
+        fields = ["name", "state_kind", "priority_lvl", "content"]
             
 class RequirementsList(ListView):
     model = Requirement
@@ -88,7 +85,6 @@ class RequirementDetail(DetailView):
     
 class RequirementUpdate(UpdateView):
     model = Requirement
-    fields = ["name", "state_kind", "project_tast_user", "priority_lvl", "pub_date", "content", "resolve_type"]
     template_name = 'tasks/rupdate.html'
     form_class = RequirementForm
     
@@ -116,11 +112,17 @@ class RequirementUpdate(UpdateView):
 class RequiremenCreate(CreateView):
     model = Requirement
     template_name = 'tasks/addrequirement.html'
-    form_class = RequirementForm
+    form_class = RequirementCreateForm
     
     def get_success_url(self):
         return reverse('requirements')
-
+    
+    def form_valid(self, form):
+        form.instance.pub_date = timezone.now()
+        form.instance.project_tast_user = self.request.user
+        
+        return super(RequiremenCreate, self).form_valid(form)
+    
 def extract_date(entity):
     'extracts the starting date from an entity'
     return entity.date_created.date()
@@ -137,16 +139,6 @@ class TimelineList(ListView):
         list_of_lists = [list(g) for _, g in groupby(entities, key=extract_date)]
 
         return list_of_lists
-
-def determine_task_state(on_wait, assigned, resolved):
-    if resolved:
-        return 'Z' # Closed
-    elif assigned:
-        return 'P' # Accepted
-    elif on_wait:
-        return 'O' # On wait
-    else:
-        return 'C' # Created
     
 class TaskCreateForm(forms.ModelForm):
     class Meta:
@@ -156,23 +148,12 @@ class TaskCreateForm(forms.ModelForm):
     content = forms.CharField(widget=forms.Textarea)
     is_on_wait = forms.BooleanField(initial=False, required=False)
     
-    def __init__(self, current_user, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(TaskCreateForm, self).__init__(*args, **kwargs)
-        self.current_user = current_user
-    
-    def save(self, commit=True):
-        instance = super(TaskCreateForm, self).save(commit=False)
-        
-        instance.pub_date = timezone.now()
-        instance.project_tast_user = self.current_user
-        instance.state_kind = determine_task_state(on_wait=self.cleaned_data.get('is_on_wait'),
-                                                   assigned=self.cleaned_data.get('assigned_to'),
-                                                   resolved=False)
-        
-        if commit:
-            instance.save()
-        return instance
-    
+        for field in self.fields.values():
+            field.widget.attrs['class']='form-control'
+        self.fields["is_on_wait"].widget.attrs['class']=''
+
 class TaskUpdateForm(forms.ModelForm):
     class Meta:
         model = Task
@@ -181,25 +162,10 @@ class TaskUpdateForm(forms.ModelForm):
     content = forms.CharField(widget=forms.Textarea)
     is_on_wait = forms.BooleanField(required=False)
     
-    def __init__(self, current_user, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(TaskUpdateForm, self).__init__(*args, **kwargs)
         self.fields["is_on_wait"].initial = (self.instance.state_kind == 'O')
-        self.current_user = current_user
-    
-    def save(self, commit=True):
-        instance = super(TaskUpdateForm, self).save(commit=False)
-        
-        old_state = get_object_or_404(Task,pk=instance.pk).state_kind
-        
-        instance.state_kind = determine_task_state(on_wait=self.cleaned_data.get('is_on_wait'),
-                                                   assigned=self.cleaned_data.get('assigned_to'),
-                                                   resolved=self.cleaned_data.get('resolve_type') != 'N') # 'N' = Open
-        
-        if commit:
-            instance.save()
-            if old_state != instance.state_kind:
-                StateChange(new_state=instance.state_kind, event_user=self.current_user, event_kind='S', date_created=timezone.now(), requirement_task=instance).save()
-        
-        return instance
-
+        for field in self.fields.values():
+            field.widget.attrs['class']='form-control'
+        self.fields["is_on_wait"].widget.attrs['class']=''
 

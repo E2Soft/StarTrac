@@ -69,7 +69,7 @@ class Requirement(RequirementTask):
 class Milestone(models.Model):
     date_created = models.DateTimeField('date published')
     name = models.CharField(max_length=70, default="")
-    summry =  models.CharField(max_length=300)
+    summary =  models.CharField(max_length=300)
     
     def __str__(self):
         return self.name 
