@@ -3,7 +3,7 @@ import json
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
-from django.http.response import HttpResponseRedirect
+from django.http.response import HttpResponseRedirect, HttpResponseServerError
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 from django.views.generic.edit import UpdateView, CreateView
@@ -134,15 +134,26 @@ def testgraphpriority(request):
     
     return HttpResponse(json.dumps(resp_list), content_type="application/json")
 
+class MyError(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+
 
 def kanban(request):
     rid = request.GET["id"]
     box = request.GET["box"]
     
+    task = get_object_or_404(Task,pk=rid)
+    
+    #if current state is not accepted it can't be closed!
+    if task.state_kind != "P" and box == "Z":
+        return HttpResponseServerError("Closed can only be accepted task!")
+    
     #print("ID:{} BOX:{}".format(rid, box))
     
     #proveri task i kako ga sacuvati
-    task = get_object_or_404(Task,pk=rid)
     task.state_kind = box
     
     if(task.state_kind == "P"):
@@ -153,7 +164,6 @@ def kanban(request):
                                            date_created=timezone.now(),requirement_task=task,
                                            milestone=task.milestone,new_state=box)
     state_change.save()
-    
     task.save()
     
     key_dict ={'C':'#ce2b37','H': '#ee6c3a','M': '#41783f','L': '#3d70b6'}

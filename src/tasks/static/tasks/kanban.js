@@ -12,7 +12,7 @@ $(document).ready(function() {
             var box = $(this).attr('id');
 			
 			$.ajax({
-                url: '/tasks/kanban/',
+                url: '/kanban/',
                 type: 'GET',
                 data: {
                     'id' : id,
@@ -31,9 +31,17 @@ $(document).ready(function() {
 		            });
 		            $(this).css('min-height' , 'auto');
                 },
-                error: function(){
-                	alert("error");
+                error: function(jqXHR, exception){
+                	//alert("error");
+                	//alert(jqXHR.responseText);
+                	$("#alertdiv").html(
+                		"<div class='alert alert-danger'>"+
+						   "<a class='close' data-dismiss='alert' href='#' aria-hidden='true'>&times;</a>"+
+						   "<strong>Error!</strong>  "+jqXHR.responseText+
+						"</div>"
+                	);
             	}
+            	
             });
 			
             /*$("#"+id).remove();

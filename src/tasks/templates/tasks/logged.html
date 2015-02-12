@@ -37,6 +37,11 @@
 	    </div>
 	  </div>
 	</nav>
+	
+<div id="alertdiv">	
+	
+</div>
+	
 {% endblock %}
 
 {% block canban %}
@@ -51,7 +56,7 @@
 				{% for task in value %}
 					<div id="{{task.pk}}" class="shadow" style="border-left: 6pt solid {{task.priority_lvl|paintborder}};">
 						<ul class="list">
-						  <li align="center"><a href="#"><span class="glyphicon glyphicon-tasks"></span><b><i> {{task.name}}</i></b></li></a>
+						  <li align="center"><a href="{% url 'tdetail' task.pk %}"><span class="glyphicon glyphicon-tasks"></span><b><i> {{task.name}}</i></b></li></a>
 						  <li ><span class="glyphicon glyphicon-folder-open"></span> {{task.content}}</li>
 						  <li id="user{{task.pk}}"><span class="glyphicon glyphicon-user"></span> {{task.assigned_to}}</li>
 						  <li ><span class="glyphicon glyphicon-calendar"></span> {{task.pub_date}}</li>
