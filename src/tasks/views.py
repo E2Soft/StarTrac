@@ -150,8 +150,8 @@ def kanban(request):
     ret_dict={}
     
     #if current state is not accepted it can't be closed!
-    if task.state_kind != "P" and box == "Z":
-        return HttpResponseServerError("Closed can only be accepted task!")
+    """if task.state_kind != "P" and box == "Z":
+        return HttpResponseServerError("Closed can only be accepted task!")"""
     
     #print("ID:{} BOX:{}".format(rid, box))
     
