@@ -15,6 +15,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView, CreateView
 from django.views.generic.list import ListView
 
+from gitvcs.repository import update_commit_events
 from tasks.models import Milestone, Requirement, StateChange, Event, Task
 
 
@@ -133,7 +134,7 @@ class TimelineList(ListView):
     
     def get_queryset(self):
         
-        #results = Event.objects.values('date_created').annotate(dcount=Count('date_created'))
+        update_commit_events(self.request.user)
         
         entities = Event.objects.order_by('date_created')
         list_of_lists = [list(g) for _, g in groupby(entities, key=extract_date)]

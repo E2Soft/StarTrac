@@ -106,5 +106,6 @@ class StateChange(Event):
 class Commit(Event):
     hex_sha = models.CharField(max_length=40)
     message = models.CharField(max_length=300)
-    committed_date = models.DateTimeField('date committed')
+    committer_name = models.CharField(max_length=70, null=True, blank=True)
+    committer_user = models.ForeignKey(User, null=True)
     
