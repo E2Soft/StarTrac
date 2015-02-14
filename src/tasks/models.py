@@ -32,6 +32,26 @@ RESOLVE_TYPE = (
         ('R', 'Worksforme'),
     )
 
+class UserExtend(models.Model):
+    
+    ''' 
+    veza 1-1 da bi mogli lakse da pristupimo slici: 
+    # npr. user.UserExtend.picture 
+    '''
+    user = models.OneToOneField(User)
+    
+    '''
+    slika moze biti null, u tom slucaju korisniku dodeljujemo
+    neku podrazumevanu sliku
+    '''
+    picture = models.ImageField(upload_to='static/album', blank = True, null = True)
+    
+    '''
+    user toString()
+    '''
+    def __str__(self):
+        return self.user.username
+
 class RequirementTask(models.Model):
     name = models.CharField(max_length=70, default="")
     state_kind = models.CharField(max_length=1, choices=STATE_KIND, default="C")
