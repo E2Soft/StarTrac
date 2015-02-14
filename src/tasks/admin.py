@@ -10,3 +10,4 @@ admin.site.register(models.Milestone)
 
 admin.site.register(models.Comment)
 admin.site.register(models.StateChange)
+admin.site.register(models.Commit)# Ovde mi je bio error ???!!

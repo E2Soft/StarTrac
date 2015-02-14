@@ -19,14 +19,13 @@ from tasks.models import Task
 
 def home(request):
     if request.user.is_authenticated():
-        """tasks = Task.objects.order_by('state_kind')
+        tasks = Task.objects.order_by('state_kind')
         ret_dict={"O":[],"C":[],"P":[],"Z":[]}
         
         for task in tasks:
             ret_dict[task.state_kind].append(task)
         
-        context = {"isadmin":request.user.is_superuser,"username":request.user.username, "tasks":ret_dict}"""
-        context = {"isadmin":request.user.is_superuser,"username":request.user.username}
+        context = {"isadmin":request.user.is_superuser,"username":request.user.username, "tasks":ret_dict}
 
         return render(request,'tasks/logged.html',context)
     else:
@@ -55,7 +54,14 @@ def login(request):
     
     if user is not None:
         auth.login(request, user)
-        context = {"isadmin":user.is_superuser,"username":username}
+
+        tasks = Task.objects.order_by('state_kind')
+        ret_dict={"O":[],"C":[],"P":[],"Z":[]}
+        
+        for task in tasks:
+            ret_dict[task.state_kind].append(task)
+        
+        context = {"isadmin":request.user.is_superuser,"username":request.user.username, "tasks":ret_dict}
         
         return render(request,'tasks/logged.html',context)
     else:
@@ -81,23 +87,26 @@ def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         formExtend = UserExtendForm(request.POST, request.FILES)
+     
         if form.is_valid() and formExtend.is_valid():
+    
             '''
             snimi korisnika u bazu
             '''
+            
             user = form.save()
-            
-            
+             
             userExtend = formExtend.save(commit=False)
             userExtend.user = user
-            
+    
             if 'picture' in request.FILES:
+     
                 userExtend.picture = request.FILES['picture']
-                
+     
             userExtend.save()
             
+     
 #             registered = True
-            
             context = {'message': "User registred, now login..."}
             return render(request, 'tasks/index.html',context)
         """else:
@@ -106,7 +115,6 @@ def register(request):
     else:
         form = RegistrationForm()
         formExtend = UserExtendForm()
-        
     
     back = ""
     try:
