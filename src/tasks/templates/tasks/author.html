@@ -8,9 +8,26 @@
 
 <div class="bs-callout bs-callout-default">
 <ul class="list-group">
-	<li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> First Name: {{user.first_name}}</li>
+	
+	{% if user.userextend.picture != '' %}
+	
+	<li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> Profile picture: 
+	<br/><br/>&nbsp;
+		<img src="{{APP_URL}}../{{user.userextend.picture}}" width="100" height="100" />
+	</li>
+
+	{% else %}
+	
+	<li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> Profile picture: 
+		<img src="http://127.0.0.1:8000/tasks/static/album/user.jpg" width="100" height="100" />
+	</li>
+	
+	{% endif %}
+	
+	<li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> First name: {{user.first_name}}</li>
 	<li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> Last name: {{user.last_name}}</li>
 	<li class="list-group-item"><span class="glyphicon glyphicon-envelope"></span> E-mail: {{user.email}}</li>
+
 </ul>
 
 </div>

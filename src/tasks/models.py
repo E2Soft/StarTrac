@@ -44,7 +44,7 @@ class UserExtend(models.Model):
     slika moze biti null, u tom slucaju korisniku dodeljujemo
     neku podrazumevanu sliku
     '''
-    picture = models.ImageField(upload_to='static/album', blank = True, null = True)
+    picture = models.ImageField(upload_to='tasks/static/album', blank = True, null = True)
     
     '''
     user toString()

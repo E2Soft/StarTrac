@@ -11,6 +11,17 @@ from django.shortcuts import get_object_or_404
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
 
+from tasks.models import UserExtend
+
+'''
+Forma za eventualna prosirenja djangovog user-a
+'''
+class UserExtendForm(forms.ModelForm):
+    class Meta:
+        model = UserExtend
+        fields = ['picture']
+        
+        
 
 class RegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True)

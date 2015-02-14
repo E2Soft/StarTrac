@@ -81,4 +81,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/tasks/static/'
+'''
+URL za slike
+/tasks je zbog static foldera koji se nalazi u tasks
+'''
+APP_URL = 'http://127.0.0.1:8000/tasks'
