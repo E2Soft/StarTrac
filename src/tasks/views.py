@@ -3,7 +3,7 @@ import json
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
-from django.http.response import HttpResponseRedirect, HttpResponseServerError
+from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 from django.views.generic.edit import UpdateView, CreateView
@@ -11,6 +11,7 @@ from django.views.generic.edit import UpdateView, CreateView
 from tasks.forms import MilestoneForm, TaskUpdateForm, TaskCreateForm
 from tasks.models import Task, Milestone, Comment, Requirement, StateChange, \
     Event
+from django.views.generic.base import TemplateView
 
 
     # Create your views here.
@@ -616,4 +617,10 @@ def resolve(request):
     
     return HttpResponse(json.dumps(ret_dict), content_type="application/json")
 
-
+class StatisticsIndexView(TemplateView):
+    template_name = 'tasks/statistics.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super(StatisticsIndexView, self).get_context_data(**kwargs)
+        return context
+    

@@ -1,0 +1,50 @@
+{% extends "tasks/page_template.html" %}
+{% block title %}Statistics Page{% endblock %}
+
+{% block content %}
+	<div id="page-content-wrapper">
+    	<div class="container-fluid">
+        	<div class="row">
+            	<div class="col-lg-12">	
+            		<div class="page-header">
+       					<h2><span class="glyphicon glyphicon-stats"></span> Statistics</h2>
+    				</div>
+    				<ul class="nav nav-tabs">    	
+    				  <li class="active"><a id="tab1" href="#info" data-toggle="tab">Project Feed</a></li>   							
+					  <li><a id="tab2" href="#chart1"data-toggle="tab">Task Distribution</a></li>   												  
+					  <li><a id="tab3" href="#chart2" data-toggle="tab">Control Chart</a></li>
+					  <li><a id="tab4" href="#chart3" data-toggle="tab">Cumulative Flow</a></li>
+					</ul>					
+					<div class="tab-content">
+					  <div class="tab-pane active" id="info">
+					  </div>
+					  <div class="tab-pane" id="chart1">
+					     <div class="panel panel-default">
+ 							 <div class="panel-body">
+							 	<canvas id="myChart1" width="300" height="300" style="display: block; margin: 0 auto;"></canvas>
+								<div id="legend1"></div>								 
+					  		</div>
+						 </div>
+					  </div>					 
+					  <div class="tab-pane" id="chart2">
+					  	 <div class="panel panel-default">
+ 						 	<div class="panel-body">
+					  	  		<canvas id="myChart2" width="300" height="300" style="display: block; margin: 0 auto;"></canvas>
+						  		<div id="legend2"></div>					  							  
+					  		</div>
+					  	 </div>
+					  </div>
+					  <div class="tab-pane" id="chart3">
+					  	 <div class="panel panel-default">
+ 						 	<div class="panel-body">
+		   			        	<canvas id="myChart3" width="300" height="300" style="display: block; margin: 0 auto;"></canvas>
+				  	      		<div id="legend3"></div>					  							  					  
+					  		</div>
+					  	 </div>	
+					  </div>					
+					</div>	
+				</div>
+			</div>
+		</div>	
+	</div>
+{% endblock %}
