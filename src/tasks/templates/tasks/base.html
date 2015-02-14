@@ -20,10 +20,12 @@
 	
 	{% load staticfiles %}
 	<script type="text/javascript" src="{% static 'tasks/test.js' %}" ></script>
+	<script type="text/javascript" src="{% static 'tasks/kanban.js' %}" ></script>
 	<script type="text/javascript" src="{% static 'tasks/Chart.js' %}" ></script>
 	
 	<link rel="stylesheet" href="{% static 'tasks/callout.css' %}">
 	<link rel="stylesheet" href="{% static 'tasks/theme.css' %}">
+	<link rel="stylesheet" href="{% static 'tasks/kanban.css' %}">
 	
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -83,7 +85,7 @@
     </div>
     </div>
     
-     {% block canban%} {% endblock %}
+    {% block canban%} {% endblock %}
      
 </body>
 </html>

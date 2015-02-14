@@ -38,6 +38,20 @@ def percentage(milestone):
     
     return 0
 
+@register.filter
+def showname(keyvalue):
+    """filter koji za neku od prosledjenih kljuceva vraca vrednost"""
+    key_dict ={'P':'Accepted','C': 'Created','Z': 'Closed','O': 'On Wait'}
+    
+    return key_dict[keyvalue]
+
+@register.filter
+def paintborder(priority):
+    """filter koji dodaje boju za vaznost"""
+    key_dict ={'C':'#ce2b37','H': '#ee6c3a','M': '#41783f','L': '#3d70b6'}
+    
+    return key_dict[priority]
+
 @register.tag
 def task_priority_style(parser, token):
     '''

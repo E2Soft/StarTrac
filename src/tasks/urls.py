@@ -30,6 +30,9 @@ urlpatterns = patterns('',
     url(r'^addrequirement/$', RequiremenCreate.as_view(), name='addrequirement'),
     url(r'^rcomment/$', views.ajax_comment, name='rcomment', kwargs={'object_type':Requirement}),
     
+    url(r'^kanban/$', views.kanban, name='kanban'),
+    url(r'^resolve/$', views.resolve, name='resolve'),
+    
     url(r'^timeline/$', TimelineList.as_view(), name='timeline'),
     url(r'^eventinfo/$', views.eventinfo, name='eventinfo'),
     
