@@ -1,0 +1,47 @@
+{% extends "tasks/page_template.html" %}
+
+{% block head_includes %}
+	{% load staticfiles %}
+	<link rel="stylesheet" href="{% static 'nice_file_tree_view/css/file-tree.min.css' %}">
+	<script type="text/javascript" src="{% static 'nice_file_tree_view/js/file-tree.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'gitvcs/js/file_tree.js' %}"></script>
+{% endblock %}
+
+{% block title %}Browse source {% endblock %}
+
+{% block content %}
+
+<div id="page-content-wrapper">
+<h2><span class="glyphicon glyphicon-random"></span> {{branch_name}}</h2>
+</div>
+
+<div class="file-tree">
+	<div>
+		{{file_tree_data}}
+	</div>
+</div>
+
+{% endblock %}
+
+{% block sidebar_content %}
+	<li>
+		<b>
+			<a href="{% url 'diff' %}">
+				<span class="glyphicon glyphicon-transfer"></span>
+				Diff
+			</a>
+		</b>
+	</li>
+	<li class="dropdown">
+		<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+			<span class="glyphicon glyphicon-random"></span>
+			Branches
+			<span class="caret"></span>
+		</a>
+		<ul class="dropdown-menu">
+			{% for branch in all_branches %}
+				<li id="{{branch.name}}"><a href="{% url 'browse_source' %}?branch={{branch.name}}">{{branch.name}}</a></li>
+			{% endfor %}
+		</ul>
+    </li>
+{% endblock %}
