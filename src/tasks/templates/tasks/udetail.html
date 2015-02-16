@@ -1,8 +1,23 @@
 {% extends "tasks/page_template.html" %}
 {% block title %}Detail Page{% endblock %}
 
-
+{% block meta %}
+	{% if user.is_authenticated %}
+	    	<!-- Trenutno jedini nacin da se strana redirektuje ako korisnik nema pristup.
+	    		 Bolji nacin je ako se stavi dekorater @login_required.. u view.py na funkcije koje
+	    		 obradjuju zahtev (request); Trenutno ili nema svih funkcija ili ja ne mogu da ih nadjem :)
+	    		 Pa iz tog razloga resenje izgleda ovako.
+	    		 
+	    		 Ako ovde ovo ne stavimo a pogodimo stranicu : http://127.0.0.1:8000/uedit/2/
+	    		 dobijemo gresku na serveru : object has no attribute '_meta'
+	    	-->
+	    	{{ block.super }}
+	{% else %}
+			<meta http-equiv="REFRESH" content="0;url=http://127.0.0.1:8000/login/">
+	{% endif %}
+{% endblock %}
 {% block content %}
+{% if user.is_authenticated %}
 <div class="jumbotron">
 <h2>{{user}}</h2>
 
@@ -30,9 +45,11 @@
 </ul>
 </div>
 </div>
+{% endif %}
 {% endblock %}
 
 {% block sidebar_content %}
+{% if user.is_authenticated %}	
 	<li>
 		<b>
 			<a href="{% url 'uedit' user.pk %}">
@@ -41,4 +58,5 @@
 			</a>
 		</b>
 	</li>
+{% endif %}
 {% endblock %}
