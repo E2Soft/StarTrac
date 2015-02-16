@@ -63,13 +63,14 @@ class UserForm(forms.ModelForm):
         self.fields["last_name"].widget.attrs['class']='form-control'
         self.fields["username"].widget.attrs['class']='form-control'
         self.fields["email"].widget.attrs['class']='form-control'
+#         self.fields["userextend.picture"].widget.attrs['class']='form-control'
         
 class UserUpdate(UpdateView):
     model = User
     fields = ['first_name','last_name', 'username', 'email']
     template_name = 'tasks/uupdate.html'
     form_class = UserForm
-    
+#     form = UserExtend    
     def get_success_url(self):
         return reverse('udetail')
     

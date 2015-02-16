@@ -1,6 +1,6 @@
 {% extends "tasks/page_template.html" %}
 {% block title %}Edit User{% endblock %}
-
+{% load static %}
 {% block content %}
 
 	<div class="jumbotron">
@@ -11,7 +11,29 @@
 	<form action="" method="post" role="form">{% csrf_token %}
 		<table class="table table-hover">
 	    	{{ form.as_table }}
+	    	
+	    	 
 	    </table>
+	    <table class="table table-hover">
+	    <tr>
+	    	<th>
+	    	Profile picture:
+			</th>
+	    	<td>
+	    	{% if user.userextend.picture != '' %}
+	
+				<img style="border:1px solid gray;" src="{{APP_URL}}../{{user.userextend.picture}}" width="100" height="100" />
+		
+			{% else %}
+			
+				<img style="border:1px solid gray;" src="http://127.0.0.1:8000/tasks/static/album/user.jpg" width="100" height="100" />
+			
+			{% endif %}
+	    	<input type="file"/>
+	    	</td>
+	    </tr>
+	    </table>
+	    
 	    <button type="submit" class="btn btn-primary">
         Update
         <span class="glyphicon glyphicon-ok"></span>
