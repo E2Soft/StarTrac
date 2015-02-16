@@ -3,6 +3,7 @@ Created on Dec 21, 2014
 
 @author: Milos
 '''
+from django.contrib.auth.decorators import login_required
 """
     Stranica koja se prikazuje kada korisnik ode na root sajta
     Proverava da li ima autentifikovan korisnik, ako ima samo 
@@ -71,9 +72,13 @@ def login(request):
 """
     Stranica koja samo vrsi izbacivanje korisnika i vraca na login
     stranicu.Za sve potrebe rada sa korisnicima koristi se 
-    djangkov ugradjeni auth sistem da bi izbegli izmisljanje tocka
+    djangov ugradjeni auth sistem da bi izbegli izmisljanje tocka
     ponovo.
 """
+"""
+    logout ima smisla samo ako si registrovan
+"""
+@login_required
 def logout(request):
     auth.logout(request)
     return render(request, 'tasks/index.html')
