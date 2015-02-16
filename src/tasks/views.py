@@ -13,7 +13,6 @@ from tasks.models import Task, Milestone, Comment, Requirement, StateChange, \
     Event
 from django.views.generic.base import TemplateView
 
-
     # Create your views here.
 def index(request):
     if request.user.is_authenticated():
@@ -622,5 +621,50 @@ class StatisticsIndexView(TemplateView):
     
     def get_context_data(self, **kwargs):
         context = super(StatisticsIndexView, self).get_context_data(**kwargs)
+        context['closed_tasks'] = self.closed_tasks
+        context['created_tasks'] = self.created_tasks
+        context['onwait_tasks'] = self.onwait_tasks
+        context['accepted_tasks'] = self.accepted_tasks
+        context['data'] = self.cycle_time()
+        context['average_hours'] = self.average_hours()
+        context['bar_labels']=self.get_labels()
         return context
+    
+    closed_tasks = Task.objects.filter(state_kind="Z").count()
+    created_tasks = Task.objects.filter(state_kind="C").count() 
+    onwait_tasks = Task.objects.filter(state_kind="O").count()
+    accepted_tasks = Task.objects.filter(state_kind="P").count()
+        
+    def get_hours(self,time):
+        return time.total_seconds()/3600;
+
+    def cycle_time(self):        
+        data = []
+        tasks = Task.objects.filter(resolve_type="F", state_kind="Z")
+                
+        for task in tasks:
+            state_accepted = StateChange.objects.filter(requirement_task = task, new_state="P")
+            for p in state_accepted:
+                state_closed = StateChange.objects.filter(requirement_task = task, new_state="Z")
+                for z in state_closed:
+                    date = z.date_created - p.date_created
+                    hours = self.get_hours(date)
+                    data.append(round(hours,2))
+                    
+        return data
+           
+    def average_hours(self):
+        tasks = Task.objects.filter(resolve_type="F", state_kind="Z").count()
+        hours = self.cycle_time()     
+        average = sum(hours)/tasks
+        return round(average,2)
+    
+    def get_labels(self):
+        task = Task.objects.filter(resolve_type="F", state_kind="Z")
+        labels = []
+        for t in task:
+            labels.append(t.id)
+        return labels
+
+        
     
