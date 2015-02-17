@@ -1,0 +1,30 @@
+{% extends "tasks/page_template.html" %}
+{% load to_local_date from git_extras %}
+{% load shorter from git_extras %}
+{% load resolve_committer from git_extras %}
+
+{% block title %}Commit list {% endblock %}
+
+{% block content %}
+	<div id="page-content-wrapper">
+		<h2><span class="glyphicon glyphicon-option-vertical"></span> {{branch_name}}</h2>
+	</div>
+	
+	<table class="table">
+		<tr>
+			<th></th>
+			<th><span class="glyphicon glyphicon-comment"></span> Summary</th>
+			<th><span class="glyphicon glyphicon-user"></span> User</th>
+			<th><span class="glyphicon glyphicon-calendar"></span> Date</th>
+		</tr>
+		{% for commit in commits %}
+			<tr>
+				<td><p><a href="#">{{commit.hexsha|shorter}}</a></p></td>
+				<td>{{commit.summary}}</td>
+				<td>{% autoescape off %}{{commit.committer|resolve_committer}}{% endautoescape %}</td>
+				<td>{{commit.committed_date|to_local_date}}</td>
+			</tr>
+		{% endfor %}
+	</table>
+
+{% endblock %}

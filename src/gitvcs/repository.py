@@ -3,13 +3,13 @@ from time import mktime
 import time
 
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from django.utils import timezone
 from django.utils.datetime_safe import datetime
+from git.objects.commit import Commit
 
 from gitvcs import repo
 from tasks import models
-from django.core.urlresolvers import reverse
-
 
 def local_repo():
     return repo
@@ -18,25 +18,23 @@ def clear_commit_events():
     for commit in models.Commit.objects.all():
         commit.delete()
 
+def to_local_date(commit_date):
+    return timezone.make_aware(datetime.fromtimestamp(mktime(time.gmtime(commit_date))), timezone.get_default_timezone())
+
 def update_commit_events(current_user):
     
-    def process_commit(commit):
+    for commit in commits():
         
-        users = User.objects.filter(username=commit.committer)
+        if not len(models.Commit.objects.filter(hex_sha=commit.hexsha)) == 0:
+            break
+        
+        users = User.objects.filter(email=commit.committer.email)
         if users:
             user = users[0]
         else:
             user=None
         
-        date = timezone.make_aware(datetime.fromtimestamp(mktime(time.gmtime(commit.committed_date))), timezone.get_default_timezone())
-        
-        models.Commit(hex_sha=commit.hexsha, message=commit.message , date_created=date, event_user=current_user, event_kind='C', committer_name=commit.committer, committer_user=user).save()
-        
-    def should_stop(commit):
-        return not len(models.Commit.objects.filter(hex_sha=commit.hexsha)) == 0 # ako postoji vec u bazi
-    
-    procesor = BranchesProcessor(process_commit=process_commit, should_stop=should_stop)
-    procesor.traverse_branches(local_repo())
+        models.Commit(hex_sha=commit.hexsha, message=commit.message , date_created=to_local_date(commit.committed_date), event_user=current_user, event_kind='C', committer_name=commit.committer.name, committer_user=user).save()
 
 def tree_as_json(tree, branch_name):
     
@@ -59,26 +57,24 @@ def tree_as_json(tree, branch_name):
         return []
 
 def branches():
-    return local_repo().heads
-    
-class BranchesProcessor():
+    return local_repo().branches
 
-    def __init__(self, process_branch=None, process_commit=None, should_stop=None):
-        self.process_branch = process_branch if process_branch else lambda b: None
-        self.process_commit = process_commit if process_commit else lambda c: None
-        self.should_stop = should_stop if should_stop else lambda c: False
-
-    def traverse_branches(self, repo):
-        for head in repo.heads:
-            self.process_branch(head)
-            self.traverse_commit(head.commit)
+def _all_commits_generator():
+    current_commits = [head.commit for head in local_repo().heads] # take all head commits
     
-    def traverse_commit(self, commit):
-        if self.should_stop(commit):
-            return
-        self.process_commit(commit)
-        for parent in commit.parents:
-            self.traverse_commit(parent)
+    while current_commits: # while there are commits
+        current_commits.sort(key=lambda commit: commit.committed_date) # sort by date
+        commit = current_commits.pop() # take the newest
+        for parent in commit.parents: # add all parents
+            if parent not in current_commits: # that are not already added
+                current_commits.append(parent)
+        yield commit
+
+def commits(rev=None):
+    if rev:
+        return Commit.iter_items(local_repo(), rev)
+    else:
+        return _all_commits_generator()
 
 class TreeProcessor():
     

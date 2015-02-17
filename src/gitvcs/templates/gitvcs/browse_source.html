@@ -24,7 +24,7 @@
 {% endblock %}
 
 {% block sidebar_content %}
-	<li>
+	<li class="dropdown">
 		<b>
 			<a href="{% url 'diff' %}">
 				<span class="glyphicon glyphicon-transfer"></span>
@@ -32,7 +32,7 @@
 			</a>
 		</b>
 	</li>
-	<li class="dropdown">
+	<li>
 		<a class="dropdown-toggle" data-toggle="dropdown" href="#">
 			<span class="glyphicon glyphicon-random"></span>
 			Branches
@@ -40,8 +40,23 @@
 		</a>
 		<ul class="dropdown-menu">
 			{% for branch in all_branches %}
-				<li id="{{branch.name}}"><a href="{% url 'browse_source' %}?branch={{branch.name}}">{{branch.name}}</a></li>
+				<li><a href="{% url 'browse_source' %}?branch={{branch.name}}">{{branch.name}}</a></li>
 			{% endfor %}
 		</ul>
     </li>
+	<li class="dropdown">
+		<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+			<span class="glyphicon glyphicon-option-vertical"></span>
+			Commits
+			<span class="caret"></span>
+		</a>
+		<ul class="dropdown-menu">
+			<li><a href="{% url 'commit_list' %}">All</a></li>
+			<li role="presentation" class="divider"></li>
+			<li role="presentation" class="dropdown-header">For a branch:</li>
+			{% for branch in all_branches %}
+				<li><a href="{% url 'commit_list' %}?branch={{branch.name}}">{{branch.name}}</a></li>
+			{% endfor %}
+		</ul>
+	</li>
 {% endblock %}
