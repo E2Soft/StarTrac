@@ -59,7 +59,7 @@ class FileContentsView(TemplateView):
         
         commit, rev_type, rev_name = _get_rev(self.request.GET.get('branch'), self.request.GET.get('commit'))
         
-        context['file_contents'] = commit.tree[file_path].data_stream.read().decode('ascii')
+        context['file_contents'] = repository.get_blob_contents(commit.tree[file_path])
         context['file_path'] = file_path
         context['rev_name'] = rev_name
         context['rev_type'] = rev_type
@@ -131,5 +131,45 @@ class DiffListView(TemplateView):
         
         return context
     
+class DiffDetailView(TemplateView):
     
+    template_name = "gitvcs/diff_detail.html"
+    
+    def get_context_data(self, **kwargs):
+        context = super(DiffDetailView, self).get_context_data(**kwargs)
+        
+        file_path = self.request.GET.get('path')
+        if not file_path:
+            raise Http404("No file specified.")
+        
+        commit_a, rev_type_a, rev_name_a = _get_rev(self.request.GET.get('branch_a'), self.request.GET.get('commit_a'))
+        commit_b, rev_type_b, rev_name_b = _get_rev(self.request.GET.get('branch_b'), self.request.GET.get('commit_b'))
+        
+        diff_index = commit_a.diff(commit_b, create_patch=True)
+        
+        diff_info = repository.get_diff_by_path(diff_index, file_path)
+        if not diff_info:
+            raise Http404("Diff doesn't exist.")
+        
+        context['file_path'] = file_path
+        context['diff'] = diff_info
+        context['file_contents_a'] = repository.get_blob_contents(diff_info.a_blob) if not diff_info.new_file else None
+        context['file_contents_b'] = repository.get_blob_contents(diff_info.b_blob) if not diff_info.deleted_file else None
+        context['rev_type_a'] = rev_type_a
+        context['rev_type_b'] = rev_type_b
+        context['rev_name_a'] = rev_name_a
+        context['rev_name_b'] = rev_name_b
+        context['all_branches'] = repository.branches()
+        
+        return context
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
     

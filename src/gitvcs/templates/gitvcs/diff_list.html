@@ -42,19 +42,19 @@
 		{% if diff.new_file %}
 			<tr class="bs-callout bs-callout-success">
 				<td><span class="glyphicon glyphicon-plus"></span></td>
-				<td>{{diff.b_blob.path}}</td>
+				<td><a href="{% url 'diff_detail' %}?{{rev_type_a}}_a={{rev_name_a}}&{{rev_type_b}}_b={{rev_name_b}}&path={{diff.b_blob.path}}">{{diff.b_blob.path}}</a></td>
 				<td>{% if diff.renamed %}<span class="glyphicon glyphicon-ok">{% endif %}</td>
 			</tr>
 		{% elif diff.deleted_file %}
 			<tr class="bs-callout bs-callout-danger">
 				<td><span class="glyphicon glyphicon-minus"></span></td>
-				<td>{{diff.a_blob.path}}</td>
+				<td><a href="{% url 'diff_detail' %}?{{rev_type_a}}_a={{rev_name_a}}&{{rev_type_b}}_b={{rev_name_b}}&path={{diff.a_blob.path}}">{{diff.a_blob.path}}</a></td>
 				<td>{% if diff.renamed %}<span class="glyphicon glyphicon-ok">{% endif %}</td>
 			</tr>
 		{% else %}
 			<tr class="bs-callout bs-callout-info">
 				<td><span class="glyphicon glyphicon-edit"></span></td>
-				<td>{{diff.a_blob.path}}</td>
+				<td><a href="{% url 'diff_detail' %}?{{rev_type_a}}_a={{rev_name_a}}&{{rev_type_b}}_b={{rev_name_b}}&path={{diff.a_blob.path}}">{{diff.a_blob.path}}</a></td>
 				<td>{% if diff.renamed %}<span class="glyphicon glyphicon-ok">{% endif %}</td>
 			</tr>
 		{% endif %}

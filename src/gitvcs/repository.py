@@ -79,6 +79,19 @@ def commits(rev=None):
 def commit(sha):
     return next(commits(sha), None)
 
+def get_diff_by_path(diff_index, file_path):
+    for diff_info in diff_index:
+        if diff_info.new_file:
+            diff_path = diff_info.b_blob.path
+        else:
+            diff_path = diff_info.a_blob.path
+        if diff_path == file_path:
+            return diff_info
+
+def get_blob_contents(blob):
+    if blob is not None:
+        return blob.data_stream.read().decode('ascii')
+
 class TreeProcessor():
     
     def __init__(self, process_dir=None, process_file=None):
