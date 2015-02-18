@@ -36,7 +36,7 @@ def update_commit_events(current_user):
         
         models.Commit(hex_sha=commit.hexsha, message=commit.message , date_created=to_local_date(commit.committed_date), event_user=current_user, event_kind='C', committer_name=commit.committer.name, committer_user=user).save()
 
-def tree_as_json(tree, branch_name):
+def tree_as_json(tree, rev_type, rev_name):
     
     root_dir = {'children':[]}
     
@@ -46,7 +46,7 @@ def tree_as_json(tree, branch_name):
         return new_dir
     
     def process_file(parent_directory, file):
-        parent_directory['children'].append({'id':file.hexsha, 'name':file.name, 'type':'file', 'url':reverse('file_contents')+"?branch="+branch_name+"&path="+file.path})
+        parent_directory['children'].append({'id':file.hexsha, 'name':file.name, 'type':'file', 'url':reverse('file_contents')+"?"+rev_type+"="+rev_name+"&path="+file.path})
     
     processor = TreeProcessor(process_dir=process_dir, process_file=process_file)
     processor.traverse_tree(root_dir, tree)
@@ -75,6 +75,9 @@ def commits(rev=None):
         return Commit.iter_items(local_repo(), rev)
     else:
         return _all_commits_generator()
+    
+def commit(sha):
+    return next(commits(sha), None)
 
 class TreeProcessor():
     

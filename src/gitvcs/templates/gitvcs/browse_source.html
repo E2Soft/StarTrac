@@ -12,7 +12,7 @@
 {% block content %}
 
 <div id="page-content-wrapper">
-<h2><span class="glyphicon glyphicon-random"></span> {{branch_name}}</h2>
+<h2><span class="glyphicon {% if rev_type == 'branch' %}glyphicon-random{% elif rev_type == 'commit' %}glyphicon-record{% endif %}"></span> {{rev_name}}</h2>
 </div>
 
 <div class="file-tree">
@@ -24,39 +24,5 @@
 {% endblock %}
 
 {% block sidebar_content %}
-	<li class="dropdown">
-		<b>
-			<a href="{% url 'diff' %}">
-				<span class="glyphicon glyphicon-transfer"></span>
-				Diff
-			</a>
-		</b>
-	</li>
-	<li>
-		<a class="dropdown-toggle" data-toggle="dropdown" href="#">
-			<span class="glyphicon glyphicon-random"></span>
-			Branches
-			<span class="caret"></span>
-		</a>
-		<ul class="dropdown-menu">
-			{% for branch in all_branches %}
-				<li><a href="{% url 'browse_source' %}?branch={{branch.name}}">{{branch.name}}</a></li>
-			{% endfor %}
-		</ul>
-    </li>
-	<li class="dropdown">
-		<a class="dropdown-toggle" data-toggle="dropdown" href="#">
-			<span class="glyphicon glyphicon-option-vertical"></span>
-			Commits
-			<span class="caret"></span>
-		</a>
-		<ul class="dropdown-menu">
-			<li><a href="{% url 'commit_list' %}">All</a></li>
-			<li role="presentation" class="divider"></li>
-			<li role="presentation" class="dropdown-header">For a branch:</li>
-			{% for branch in all_branches %}
-				<li><a href="{% url 'commit_list' %}?branch={{branch.name}}">{{branch.name}}</a></li>
-			{% endfor %}
-		</ul>
-	</li>
+{% include "gitvcs/git_sidebar_contents.html" %}
 {% endblock %}

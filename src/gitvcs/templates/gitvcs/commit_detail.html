@@ -1,0 +1,30 @@
+{% extends "tasks/page_template.html" %}
+{% load to_local_date from git_extras %}
+{% load shorter from git_extras %}
+{% load resolve_committer from git_extras %}
+
+{% block title %}Commit details{% endblock %}
+
+{% block content %}
+<div id="page-content-wrapper">
+	<div class="jumbotron">
+		<h2><span class="glyphicon glyphicon-record"></span> Commit: {{commit.hexsha|shorter}}</h2>
+		
+		<div class="bs-callout bs-callout-default">
+			<ul class="list-group">
+				<li class="list-group-item"><span class="glyphicon glyphicon-barcode"></span> Sha: {{commit.hexsha}}</li>
+				<li class="list-group-item"><span class="glyphicon glyphicon-user"></span> User: {{commit.committer|resolve_committer}}</li>
+				<li class="list-group-item"><span class="glyphicon glyphicon-calendar"></span> Date: {{commit.committed_date|to_local_date}}</li>
+				<li class="list-group-item"><span class="glyphicon glyphicon-comment"></span> Message: <pre>{{commit.message}}</pre></li>
+			</ul>
+			
+			<a class="btn btn-default" href="{% url 'browse_source' %}?commit={{commit.hexsha}}"><span class="glyphicon glyphicon-folder-close"></span> Browse source<a/>
+			{% if commit.parents|length == 1 %}<a class="btn btn-default" href="{% url 'diff_list' %}?commit1={{commit.hexsha}}&commit2={{commit.parents.0.hexsha}}"><span class="glyphicon glyphicon-transfer"></span> Changes<a/>{% endif %}
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block sidebar_content %}
+{% include "gitvcs/git_sidebar_contents.html" %}
+{% endblock %}

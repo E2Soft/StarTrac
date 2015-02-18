@@ -7,7 +7,7 @@
 
 {% block content %}
 	<div id="page-content-wrapper">
-		<h2><span class="glyphicon glyphicon-option-vertical"></span> {{branch_name}}</h2>
+		<h2><span class="glyphicon glyphicon-option-vertical"></span> {{rev_name}}</h2>
 	</div>
 	
 	<table class="table">
@@ -19,12 +19,16 @@
 		</tr>
 		{% for commit in commits %}
 			<tr>
-				<td><p><a href="#">{{commit.hexsha|shorter}}</a></p></td>
+				<td><p><a href="{% url 'commit_detail' commit.hexsha %}">{{commit.hexsha|shorter}}</a></p></td>
 				<td>{{commit.summary}}</td>
-				<td>{% autoescape off %}{{commit.committer|resolve_committer}}{% endautoescape %}</td>
+				<td>{{commit.committer|resolve_committer}}</td>
 				<td>{{commit.committed_date|to_local_date}}</td>
 			</tr>
 		{% endfor %}
 	</table>
 
+{% endblock %}
+
+{% block sidebar_content %}
+{% include "gitvcs/git_sidebar_contents.html" %}
 {% endblock %}
