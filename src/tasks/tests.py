@@ -19,7 +19,7 @@ from tasks.models import Milestone
         ili desni klik na projekat > Django > run Django Django Tests
 """
 
-class PollsViewsTestCase(TestCase):
+class SimpleTestCase(TestCase):
     def setUp(self):
         milestone = Milestone.objects.create(date_created=timezone.now(),name="Test",summary="Test adding new Milestone")
     
