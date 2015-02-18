@@ -19,7 +19,7 @@
 			</ul>
 			
 			<a class="btn btn-default" href="{% url 'browse_source' %}?commit={{commit.hexsha}}"><span class="glyphicon glyphicon-folder-close"></span> Browse source<a/>
-			{% if commit.parents|length == 1 %}<a class="btn btn-default" href="{% url 'diff_list' %}?commit1={{commit.hexsha}}&commit2={{commit.parents.0.hexsha}}"><span class="glyphicon glyphicon-transfer"></span> Changes<a/>{% endif %}
+			{% if commit.parents|length == 1 %}<a class="btn btn-default" href="{% url 'diff_list' %}?commit_b={{commit.hexsha}}&commit_a={{commit.parents.0.hexsha}}"><span class="glyphicon glyphicon-transfer"></span> Changes<a/>{% endif %}
 		</div>
 	</div>
 </div>

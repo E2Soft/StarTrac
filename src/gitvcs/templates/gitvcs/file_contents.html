@@ -1,4 +1,5 @@
 {% extends "tasks/page_template.html" %}
+{% load shorter from git_extras %}
 
 {% block title %}File contents{% endblock %}
 
@@ -6,7 +7,7 @@
 
 <div id="page-content-wrapper">
 
-	<h2><span class="glyphicon glyphicon-file"></span> {{rev_name}} : {{file_path}}</h2>
+	<h2><span class="glyphicon glyphicon-file"></span> {% if rev_type == 'commit' %}{{rev_name|shorter}}{% else %}{{rev_name}}{% endif %} : {{file_path}}</h2>
 	
 	<pre style="tab-size: 4">{{file_contents}}</pre>
 	<br/><br/><br/>

@@ -1,11 +1,67 @@
 {% extends "tasks/page_template.html" %}
+{% load shorter from git_extras %}
 
 {% block title %}Diff list{% endblock %}
 
 {% block content %}
 
+<div id="page-content-wrapper">
 
+<h2>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-4">
+				{% if rev_type_a == 'branch' %}
+					<span class="glyphicon glyphicon-random"></span> <a href="{% url 'browse_source' %}?branch={{rev_name_a}}"> {{rev_name_a}} </a>
+				{% elif rev_type_a == 'commit' %}
+					<span class="glyphicon glyphicon-record"></span> <a href="{% url 'commit_detail' rev_name_a %}"> {{rev_name_a|shorter}} </a>
+				{% endif %}
+			</div>
+			<div class="col-md-4">
+				<div class="text-center"><span class="glyphicon glyphicon-transfer"></span></div>
+			</div>
+			<div class="col-md-4">
+				{% if rev_type_b == 'branch' %}
+					<span class="glyphicon glyphicon-random"></span> <a href="{% url 'browse_source' %}?branch={{rev_name_b}}"> {{rev_name_b}} </a>
+				{% elif rev_type_b == 'commit' %}
+					<span class="glyphicon glyphicon-record"></span> <a href="{% url 'commit_detail' rev_name_b %}"> {{rev_name_b|shorter}} </a>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</h2>
 
+<table class="table">
+	<tr>
+		<th></th>
+		<th><span class="glyphicon glyphicon-file"></span> File</th>
+		<th><span class="glyphicon glyphicon-text-background"></span> Renamed</th>
+	</tr>
+
+	{% for diff in diff_index %}
+		{% if diff.new_file %}
+			<tr class="bs-callout bs-callout-success">
+				<td><span class="glyphicon glyphicon-plus"></span></td>
+				<td>{{diff.b_blob.path}}</td>
+				<td>{% if diff.renamed %}<span class="glyphicon glyphicon-ok">{% endif %}</td>
+			</tr>
+		{% elif diff.deleted_file %}
+			<tr class="bs-callout bs-callout-danger">
+				<td><span class="glyphicon glyphicon-minus"></span></td>
+				<td>{{diff.a_blob.path}}</td>
+				<td>{% if diff.renamed %}<span class="glyphicon glyphicon-ok">{% endif %}</td>
+			</tr>
+		{% else %}
+			<tr class="bs-callout bs-callout-info">
+				<td><span class="glyphicon glyphicon-edit"></span></td>
+				<td>{{diff.a_blob.path}}</td>
+				<td>{% if diff.renamed %}<span class="glyphicon glyphicon-ok">{% endif %}</td>
+			</tr>
+		{% endif %}
+	{% endfor %}
+</table>
+
+</div>
 
 {% endblock %}
 

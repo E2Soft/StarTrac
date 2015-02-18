@@ -57,11 +57,12 @@ class FileContentsView(TemplateView):
         if not file_path:
             raise Http404("No file specified.")
         
-        commit, _, rev_name = _get_rev(self.request.GET.get('branch'), self.request.GET.get('commit'))
+        commit, rev_type, rev_name = _get_rev(self.request.GET.get('branch'), self.request.GET.get('commit'))
         
         context['file_contents'] = commit.tree[file_path].data_stream.read().decode('ascii')
         context['file_path'] = file_path
         context['rev_name'] = rev_name
+        context['rev_type'] = rev_type
         context['all_branches'] = repository.branches()
         
         return context
@@ -116,8 +117,16 @@ class DiffListView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(DiffListView, self).get_context_data(**kwargs)
         
+        commit_a, rev_type_a, rev_name_a = _get_rev(self.request.GET.get('branch_a'), self.request.GET.get('commit_a'))
+        commit_b, rev_type_b, rev_name_b = _get_rev(self.request.GET.get('branch_b'), self.request.GET.get('commit_b'))
         
+        diff_index = commit_a.diff(commit_b)
         
+        context['diff_index'] = diff_index
+        context['rev_type_a'] = rev_type_a
+        context['rev_type_b'] = rev_type_b
+        context['rev_name_a'] = rev_name_a
+        context['rev_name_b'] = rev_name_b
         context['all_branches'] = repository.branches()
         
         return context
