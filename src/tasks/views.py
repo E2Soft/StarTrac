@@ -567,8 +567,16 @@ class TaskCreate(CreateView):
         form.instance.state_kind = determine_task_state(on_wait=form.cleaned_data.get('is_on_wait'),
                                                    assigned=form.cleaned_data.get('assigned_to'),
                                                    resolved=False)
-    
-        return super(TaskCreate, self).form_valid(form)
+        
+        # snimi objekat
+        resp = super(TaskCreate, self).form_valid(form) 
+        
+        # snimi dogadjaje
+        StateChange(new_state='C', event_user=self.request.user, event_kind='S', date_created=timezone.now(), requirement_task=form.instance).save()
+        if  form.instance.state_kind != 'C': # ako je vec promenjeno stanje
+            StateChange(new_state=form.instance.state_kind, event_user=self.request.user, event_kind='S', date_created=timezone.now(), requirement_task=form.instance).save()
+        
+        return resp
 
 def ajax_comment(request, object_type):
     if request.POST:
