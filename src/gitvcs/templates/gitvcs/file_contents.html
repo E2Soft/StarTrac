@@ -1,4 +1,4 @@
-{% extends "tasks/page_template.html" %}
+{% extends "gitvcs/gitvcs_page_template.html" %}
 {% load shorter from git_extras %}
 
 {% block title %}File contents{% endblock %}
@@ -13,8 +13,4 @@
 	<br/><br/><br/>
 
 </div>
-{% endblock %}
-
-{% block sidebar_content %}
-{% include "gitvcs/git_sidebar_contents.html" %}
 {% endblock %}

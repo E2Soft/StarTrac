@@ -1,4 +1,4 @@
-{% extends "tasks/page_template.html" %}
+{% extends "gitvcs/gitvcs_page_template.html" %}
 {% load to_local_date from git_extras %}
 {% load shorter from git_extras %}
 {% load resolve_committer from git_extras %}
@@ -23,8 +23,4 @@
 		</div>
 	</div>
 </div>
-{% endblock %}
-
-{% block sidebar_content %}
-{% include "gitvcs/git_sidebar_contents.html" %}
 {% endblock %}
