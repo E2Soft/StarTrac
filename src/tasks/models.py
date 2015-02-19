@@ -104,4 +104,8 @@ class StateChange(Event):
     new_state = models.CharField(max_length=1, choices=STATE_KIND, default="C")
     
 class Commit(Event):
-    commit_url = models.URLField()
+    hex_sha = models.CharField(max_length=40)
+    message = models.CharField(max_length=300)
+    committer_name = models.CharField(max_length=70, null=True, blank=True)
+    committer_user = models.ForeignKey(User, null=True)
+    
