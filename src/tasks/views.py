@@ -375,7 +375,13 @@ def eventinfo(request):
     
     ret_list = []
     
-    if(event.milestone):
+    if hasattr(event, 'commit'):
+        data = {}
+        data["name"] = event.commit.message
+        data["glyph"] = "glyphicon glyphicon-record"
+        data["url"] = reverse('commit_detail', args=[event.commit.hex_sha])
+        ret_list.append(data)
+    elif(event.milestone):
         mstone_dict = {}
         mstone_dict["name"] = event.milestone.name
         mstone_dict["glyph"] = "glyphicon glyphicon-flag"
