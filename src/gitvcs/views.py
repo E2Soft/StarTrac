@@ -1,6 +1,8 @@
 
 from django.core.exceptions import SuspiciousOperation
-from django.http.response import HttpResponse, Http404
+from django.core.urlresolvers import reverse
+from django.http.response import Http404
+from django.shortcuts import redirect
 from django.views.generic.base import TemplateView
 
 from gitvcs import repository
@@ -66,9 +68,6 @@ class FileContentsView(TemplateView):
         context['all_branches'] = repository.branches()
         
         return context
-
-def diff(request):
-    return HttpResponse('hi this is diff')
 
 class CommitListView(TemplateView):
     
@@ -163,13 +162,43 @@ class DiffDetailView(TemplateView):
         
         return context
     
+class DiffSelectView(TemplateView):
     
+    template_name = "gitvcs/diff_select.html"
     
+    def dispatch(self, request, *args, **kwargs):  
+        ref_type_a = request.GET.get('ref_type_a')
+        ref_type_b = request.GET.get('ref_type_b')
+        
+        if not (ref_type_a or ref_type_b):
+            return super(DiffSelectView, self).dispatch(request, *args, **kwargs)
+        
+        if ref_type_a == 'branch':
+            ref_a = request.GET.get('branch_a')
+            param_a = 'branch_a='+ref_a
+        elif ref_type_a == 'commit':
+            ref_a = request.GET.get('commit_a')
+            param_a = 'commit_a='+ref_a
+        else:
+            raise SuspiciousOperation("Unknown ref_type.")
+        
+        if ref_type_b == 'branch':
+            ref_b = request.GET.get('branch_b')
+            param_b = 'branch_b='+ref_b
+        elif ref_type_b == 'commit':
+            ref_b = request.GET.get('commit_b')
+            param_b = 'commit_b='+ref_b
+        else:
+            raise SuspiciousOperation("Unknown ref_type.")
+        
+        if not ref_a or not ref_b:
+            raise Http404("Ref a not specified.")
+        
+        return redirect(reverse('diff_list')+'?'+param_a+'&'+param_b, permanent=True)
     
+    def get_context_data(self, **kwargs):
+        context = super(DiffSelectView, self).get_context_data(**kwargs)
+        context['all_branches'] = repository.branches()
+        return context
     
-    
-    
-    
-    
-
     
