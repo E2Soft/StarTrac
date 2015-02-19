@@ -1,4 +1,5 @@
 import json
+import datetime
 
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -629,50 +630,216 @@ class StatisticsIndexView(TemplateView):
     
     def get_context_data(self, **kwargs):
         context = super(StatisticsIndexView, self).get_context_data(**kwargs)
-        context['closed_tasks'] = self.closed_tasks
-        context['created_tasks'] = self.created_tasks
-        context['onwait_tasks'] = self.onwait_tasks
-        context['accepted_tasks'] = self.accepted_tasks
+        context['closed_tasks'] = self.closed_tasks()
+        context['created_tasks'] = self.created_tasks()
+        context['onwait_tasks'] = self.onwait_tasks()
+        context['accepted_tasks'] = self.accepted_tasks()
         context['data'] = self.cycle_time()
         context['average_hours'] = self.average_hours()
-        context['bar_labels']=self.get_labels()
+        context['bar_labels'] = self.get_labels()
+        context['created'] = self.get_created()
+        context['done']=self.get_done()
+        context['in_progress']=self.get_in_progress()
+        context['onwait'] = self.get_onwait()
+        context['date_labels']=self.date_labels()
         return context
     
-    closed_tasks = Task.objects.filter(state_kind="Z").count()
-    created_tasks = Task.objects.filter(state_kind="C").count() 
-    onwait_tasks = Task.objects.filter(state_kind="O").count()
-    accepted_tasks = Task.objects.filter(state_kind="P").count()
-        
+    def closed_tasks(self):
+        closed_tasks = Task.objects.filter(state_kind="Z").count()
+        return closed_tasks
+
+    def created_tasks(self):
+        created_tasks = Task.objects.filter(state_kind="C").count() 
+        return created_tasks
+    
+    def onwait_tasks(self):
+        onwait_tasks = Task.objects.filter(state_kind="O").count()
+        return onwait_tasks
+    
+    def accepted_tasks(self):
+        accepted_tasks = Task.objects.filter(state_kind="P").count()
+        return accepted_tasks 
+    
     def get_hours(self,time):
         return time.total_seconds()/3600;
 
-    def cycle_time(self):        
+    def cycle_time(self):   
         data = []
-        tasks = Task.objects.filter(resolve_type="F", state_kind="Z")
-                
-        for task in tasks:
-            state_accepted = StateChange.objects.filter(requirement_task = task, new_state="P")
-            for p in state_accepted:
-                state_closed = StateChange.objects.filter(requirement_task = task, new_state="Z")
-                for z in state_closed:
-                    date = z.date_created - p.date_created
-                    hours = self.get_hours(date)
-                    data.append(round(hours,2))
-                    
+        
+        t = Task.objects.filter(state_kind="Z")
+        for i in t:  
+            prvi = StateChange.objects.filter(requirement_task=i,new_state="P").order_by("date_created").first()
+            print("a",prvi.date_created,"",prvi.requirement_task.id)
+            drugi = StateChange.objects.filter(requirement_task=i,new_state="Z").order_by("-date_created").first()
+            print("b",drugi.date_created,"",drugi.requirement_task.id)
+            date = drugi.date_created - prvi.date_created
+            print("x",date)
+            hours = self.get_hours(date)                
+            data.append(round(hours,2))
         return data
            
     def average_hours(self):
-        tasks = Task.objects.filter(resolve_type="F", state_kind="Z").count()
+        tasks = Task.objects.filter(resolve_type="F").count()
         hours = self.cycle_time()     
-        average = sum(hours)/tasks
+        average = 0
+        if tasks != 0:
+            average = sum(hours)/tasks
         return round(average,2)
     
     def get_labels(self):
-        task = Task.objects.filter(resolve_type="F", state_kind="Z")
+        task = Task.objects.filter(state_kind="Z")
         labels = []
         for t in task:
             labels.append(t.id)
         return labels
+    
+    def get_created(self):
+        if not Task.objects.all():
+            return 0 
+        latest = Task.objects.order_by('pub_date').first()
+        start = latest.pub_date
+        end = timezone.now()
+        f = end - start
+        date_generated = [start + datetime.timedelta(days=x) for x in range(0,f.days+2)]
+        created = []
+        in_progress = []
+        done = []
+        onwait = []
+        list_created = []
+        for d in date_generated:  
+            z = StateChange.objects.filter(date_created__startswith = d.date)
+            for i in z:
+                if i.new_state == "C":
+                    created.append(i.requirement_task)
+                elif i.new_state == "O":
+                    onwait.append(i.requirement_task)
+                    if created.__contains__(i.requirement_task):
+                        created.remove(i.requirement_task)
+                elif i.new_state == "P":
+                    in_progress.append(i.requirement_task)
+                    if created.__contains__(i.requirement_task):
+                        created.remove(i.requirement_task)
+                elif i.new_state == "Z":
+                    done.append(i.requirement_task)
+                    if created.__contains__(i.requirement_task):
+                        created.remove(i.requirement_task)
+            list_created.append(len(created))        
+        return list_created
 
+
+    def get_onwait(self):
+        if not Task.objects.all():
+            return 0 
+        latest = Task.objects.order_by('pub_date').first()
+        start = latest.pub_date
+        end = timezone.now()
+        f = end - start
+        date_generated = [start + datetime.timedelta(days=x) for x in range(0,f.days+2)]
+            
+        in_progress = []
+        created = []
+        done = []
+        list_onwait = []
+        onwait = []
+        for d in date_generated:  
+            z = StateChange.objects.filter(date_created__startswith = d.date)
+            for i in z:
+                if i.new_state == "O":
+                    onwait.append(i.requirement_task)
+                elif i.new_state == "C":
+                    created.append(i.requirement_task)
+                    if onwait.__contains__(i.requirement_task):
+                        onwait.remove(i.requirement_task)
+                elif i.new_state == "P":
+                    in_progress.append(i.requirement_task)
+                    if onwait.__contains__(i.requirement_task):
+                        onwait.remove(i.requirement_task)
+                elif i.new_state == "Z":
+                    done.append(i.requirement_task)
+                    if onwait.__contains__(i.requirement_task):
+                        onwait.remove(i.requirement_task)
+            list_onwait.append(len(onwait))        
+        return list_onwait
+
+    def get_done(self):
+        if not Task.objects.all():
+            return 0 
+        latest = Task.objects.order_by('pub_date').first()
+        start = latest.pub_date
+        end = timezone.now()
+        f = end - start
+        date_generated = [start + datetime.timedelta(days=x) for x in range(0,f.days+2)]
         
+        created = []
+        done = []
+        in_progress= []
+        list_done = []      
+        onwait = []  
+        for d in date_generated:  
+            z = StateChange.objects.filter(date_created__startswith = d.date)
+            for i in z:
+                if i.new_state == "Z":
+                    done.append(i.requirement_task)
+                elif i.new_state == "C":
+                    created.append(i.requirement_task)
+                    if done.__contains__(i.requirement_task):
+                        done.remove(i.requirement_task)
+                elif i.new_state == "O":
+                    onwait.append(i.requirement_task)
+                    if done.__contains__(i.requirement_task):
+                        done.remove(i.requirement_task)
+                elif i.new_state == "P":
+                    in_progress.append(i.requirement_task)
+                    if done.__contains__(i.requirement_task):
+                        done.remove(i.requirement_task)
+            list_done.append(len(done))        
+        return list_done  
+    
+    def get_in_progress(self):      
+        if not Task.objects.all():
+            return 0 
+        latest = Task.objects.order_by('pub_date').first()
+        start = latest.pub_date
+        end = timezone.now()
+        f = end - start
+        date_generated = [start + datetime.timedelta(days=x) for x in range(0,f.days+2)]
+        
+        onwait = []
+        created = []
+        done = []
+        in_progress = []
+        list_in_progress = []  
+        for d in date_generated:  
+            z = StateChange.objects.filter(date_created__startswith = d.date)
+            for i in z:
+                if i.new_state == "P":
+                    in_progress.append(i.requirement_task)
+                elif i.new_state == "C":
+                    created.append(i.requirement_task)
+                    if in_progress.__contains__(i.requirement_task):
+                        in_progress.remove(i.requirement_task)
+                elif i.new_state == "O":
+                    onwait.append(i.requirement_task)
+                    if in_progress.__contains__(i.requirement_task):
+                        in_progress.remove(i.requirement_task)
+                elif i.new_state == "Z":
+                    done.append(i.requirement_task)
+                    if in_progress.__contains__(i.requirement_task):
+                        in_progress.remove(i.requirement_task)
+            list_in_progress.append(len(in_progress))        
+        return list_in_progress
+    
+    def date_labels(self):
+        if not Task.objects.all():
+            return 0 
+        latest = Task.objects.order_by('pub_date').first()
+        start = latest.pub_date
+        end = timezone.now()
+        f = end - start
+        date_generated = [start + datetime.timedelta(days=x) for x in range(0,f.days+2)]
+        lab = []
+        for date in date_generated:
+            formated = date.strftime('%d-%m-%Y')
+            lab.append(formated)
+        return lab        
     

@@ -3,7 +3,7 @@ $(function() {
 
 	var barOptions = {
 	        scaleIntegersOnly: false,
-	        barValueSpacing : 0.5,
+	        //barValueSpacing : 0.5,
 	        legendTemplate : '<ul class=\"<%=name.toLowerCase()%>-legend\">'
 	        	+'<% for (var i=0; i<datasets.length; i++){%>'
 	        	+'<li>'
@@ -23,6 +23,17 @@ $(function() {
                 +'</li>'
                 +'<% } %>'
                 +'</ul>'       	
+	};
+	
+	var lineOptions = {
+	        legendTemplate : '<ul class=\"<%=name.toLowerCase()%>-legend\">'
+	        	+'<% for (var i=0; i<datasets.length; i++){%>'
+	        	+'<li>'
+	        	+'<span style=\"background-color:<%=datasets[i].strokeColor%>\"></span>'
+	        	+'<%if(datasets[i].label){%><%=datasets[i].label%><%}%>'
+	        	+'</li>'
+	        	+'<%}%>'
+	        	+'</ul>'	        	
 	};
 	
 	var pieData = [
@@ -46,8 +57,8 @@ $(function() {
 	            },
 	            {
 	                value: closed_tasks,
-	                color:"#6FF272",
-	                highlight: "#6FF28D",
+	                color:"#00D965",
+	                highlight: "#00E56A",
 	                label: "Closed"
 	            }
 	        ]
@@ -57,13 +68,59 @@ $(function() {
 	        datasets: [				
 				{
 				    label: "Tasks",
-				    fillColor : "rgba(220,220,220,0.2)",
-					strokeColor : "rgba(220,220,220,1)",
-					pointColor : "rgba(220,220,220,1)",
+				    fillColor : "rgba(0,217,101,0.2)",
+					strokeColor : "rgba(0,217,101,0.8)",
+					pointColor : "rgba(0,217,101,1)",
 					pointStrokeColor : "#fff",
 					pointHighlightFill : "#fff",
-					pointHighlightStroke : "rgba(220,220,220,1)",
+					pointHighlightStroke : "rgba(0,217,101,0.2)",
 				    data: hours
+				}
+			]
+	};
+	
+	var lineData = {
+			 labels: date_labels,
+	         datasets: [	
+				{
+				    label: "Created",
+				    fillColor : "rgba(255,249,116,0.5)",
+					strokeColor : "rgba(255,249,116,0.8)",
+					pointColor : "rgba(255,249,116,1)",
+					pointStrokeColor : "#fff",
+					pointHighlightFill : "#fff",
+					pointHighlightStroke : "rgba(255,249,116,0.2)",
+				    data: created
+				},
+				{
+				    label: "On Wait",
+				    fillColor : "rgba(122,229,232,0.5)",
+					strokeColor : "rgba(122,229,232,0.8)",
+					pointColor : "rgba(122,229,232,1)",
+					pointStrokeColor : "#fff",
+					pointHighlightFill : "#fff",
+					pointHighlightStroke : "rgba(122,229,232,0.2)",
+				    data: onwait
+				},
+				{
+				    label: "In progress",
+				    fillColor : "rgba(255,111,99,0.5)",
+					strokeColor : "rgba(255,111,99,0.8)",
+					pointColor : "rgba(255,111,99,1)",
+					pointStrokeColor : "#fff",
+					pointHighlightFill : "#fff",
+					pointHighlightStroke : "rgba(111,23,21,0.2)",
+				    data: in_progress
+				},
+				{
+				    label: "Done",
+				    fillColor : "rgba(0,217,101,0.5)",
+					strokeColor : "rgba(0,217,101,0.8)",
+					pointColor : "rgba(0,217,101,1)",
+					pointStrokeColor : "#fff",
+					pointHighlightFill : "#fff",
+					pointHighlightStroke : "rgba(0,217,101,0.2)",
+				    data: done
 				}
 			]
 	};
@@ -73,13 +130,9 @@ $(function() {
     
 	var ctx2 = $("#myChart2").get(0).getContext("2d");
 	var myBarChart;
-	    
-	$('#tab3').on('shown.bs.tab', function (e) {
-		myBarChart = new Chart(ctx2).Bar(barData, barOptions);
-		
-		 var legend = myBarChart.generateLegend();
-	     $("#legend2").html(legend);
-	});    
+	
+	var ctx3 = $("#myChart3").get(0).getContext("2d");
+	var myLineChart;
 
     $('#tab2').on('shown.bs.tab', function (e) {
         myPieChart = new Chart(ctx1).Pie(pieData,pieOptions);
@@ -87,5 +140,19 @@ $(function() {
         var legend1 = myPieChart.generateLegend();
         $("#legend1").html(legend1);
     });
+    
+	$('#tab3').on('shown.bs.tab', function (e) {
+		myBarChart = new Chart(ctx2).Bar(barData, barOptions);
+		
+		 var legend = myBarChart.generateLegend();
+	     $("#legend2").html(legend);
+	});    
+  
+    $('#tab4').on('shown.bs.tab', function (e) {
+		myLineChart = new Chart(ctx3).Line(lineData, lineOptions);
+		
+		var legend = myLineChart.generateLegend();
+	    $("#legend3").html(legend);
+	}); 
 	   
 });
