@@ -1,46 +1,72 @@
 {% extends "tasks/base.html" %}
 {% block title %}Main Page{% endblock %}
+{% load showname from task_extras %}
+{% load paintborder from task_extras %}
 
 {% block content %}
 	</br>
 	<div class="page-header">
     	<a href="#"><h2><span class="glyphicon glyphicon-th"></span> Hit there {{username}}...this is our progress so far</h2></a>
     </div>
-{% endblock %}
-
-{% block sidebar %}
-
-<nav class="navbar navbar-inverse navbar-fixed-top">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="#"><span class="glyphicon glyphicon-road"></span> StarTrac</a>
-    </div>
-    <div>
-      <ul class="nav navbar-nav">
-        <li class="active"><a href="#"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-        <li><a href="{% url 'milestones' %}"><span class="glyphicon glyphicon-flag"></span> Milestones</a></li>
-        <li><a href="{% url 'requirements' %}"><span class="glyphicon glyphicon-list-alt"></span> Requirements</a></li>
-        <li><a href="#"><span class="glyphicon glyphicon-tasks"></span> Tasks</a></li>
-        <li><a href="{% url 'timeline' %}"><span class="glyphicon glyphicon-time"></span> Timeline</a></li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-      	<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">
-        <span class="glyphicon glyphicon-user"></span> 
-        {{username}} 
-        <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a href="{% url 'udetail' %}"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
-            {% if isadmin %}<li><a href="/admin"><span class="glyphicon glyphicon-tower"></span> Admin panel</a></li>{% endif %}
-            <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
-          </ul>
-        </li>
-      </ul
-    </div>
-  </div>
-</nav>
-
+    
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+	  <div class="container-fluid">
+	    <div class="navbar-header">
+	      <a class="navbar-brand" href="#"><span class="glyphicon glyphicon-road"></span> StarTrac</a>
+	    </div>
+	    <div>
+	      <ul class="nav navbar-nav">
+	        <li class="active"><a href="#"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+	        <li><a href="{% url 'milestones' %}"><span class="glyphicon glyphicon-flag"></span> Milestones</a></li>
+	        <li><a href="{% url 'requirements' %}"><span class="glyphicon glyphicon-list-alt"></span> Requirements</a></li>
+	        <li><a href="{% url 'tasks' %}"><span class="glyphicon glyphicon-tasks"></span> Tasks</a></li>
+	        <li><a href="{% url 'timeline' %}"><span class="glyphicon glyphicon-time"></span> Timeline</a></li>
+	        <li><a href="{% url 'browse_source' %}"><span class="glyphicon glyphicon-folder-close"></span> Repository</a></li>
+	      </ul>
+	      <ul class="nav navbar-nav navbar-right">
+	      	<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">
+	        <span class="glyphicon glyphicon-user"></span> 
+	        {{username}} 
+	        <span class="caret"></span></a>
+	          <ul class="dropdown-menu">
+	            <li><a href="{% url 'udetail' %}"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+	            {% if isadmin %}<li><a href="/admin"><span class="glyphicon glyphicon-tower"></span> Admin panel</a></li>{% endif %}
+	            <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+	          </ul>
+	        </li>
+	      </ul
+	    </div>
+	  </div>
+	</nav>
+	
+<div id="alertdiv">	
+	
+</div>
+	
 {% endblock %}
 
 {% block canban %}
+
+<div style="width:100%;">
+	{% for key,value in tasks.items %}
+		<div class='cellContainer' >
+			<div class="title">
+				<h4 >{{key|showname}}</h4>
+			</div>
+			<div class="box" id="{{key}}" >
+				{% for task in value %}
+					<div id="{{task.pk}}" class="shadow" style="border-left: 6pt solid {{task.priority_lvl|paintborder}};">
+						<ul class="list">
+						  <li align="center"><a href="{% url 'tdetail' task.pk %}"><span class="glyphicon glyphicon-tasks"></span><b><i> {{task.name}}</i></b></li></a>
+						  <li ><span class="glyphicon glyphicon-folder-open"></span> {{task.content}}</li>
+						  <li id="user{{task.pk}}"><span class="glyphicon glyphicon-user"></span> {{task.assigned_to}}</li>
+						  <li ><span class="glyphicon glyphicon-calendar"></span> {{task.pub_date}}</li>
+						</ul>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+	{% endfor %}
+</div>
 
 {% endblock %}

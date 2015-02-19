@@ -3,31 +3,31 @@ import json
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
-from django.http.response import HttpResponseRedirect
+from django.http.response import HttpResponseRedirect, HttpResponseServerError
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
+from django.views.generic.edit import UpdateView, CreateView
 
-from tasks.forms import MilestoneForm
-from tasks.models import Comment, Requirement, Event, Task
-from tasks.models import Milestone, RequirementTask
+from tasks.forms import MilestoneForm, TaskUpdateForm, TaskCreateForm
+from tasks.models import Task, Milestone, Comment, Requirement, StateChange, \
+    Event
 
 
-# Create your views here.
+    # Create your views here.
 def index(request):
     if request.user.is_authenticated():
-        """tasks = Task.objects.order_by('state_kind')
+        tasks = Task.objects.order_by('state_kind')
         ret_dict={"O":[],"C":[],"P":[],"Z":[]}
         
         for task in tasks:
             ret_dict[task.state_kind].append(task)
         
-        context = {"isadmin":request.user.is_superuser,"username":request.user.username, "tasks":ret_dict}"""
-        
-        context = {"isadmin":request.user.is_superuser,"username":request.user.username}
+        context = {"isadmin":request.user.is_superuser,"username":request.user.username, "tasks":ret_dict}
         
         return render(request,'tasks/logged.html',context)
     else:
         return render(request,'tasks/index.html')
+
     
 def mcomment(request):
     if request.POST:
@@ -47,10 +47,12 @@ def mcomment(request):
     response_data['user'] = request.user.username
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
+
 def addmilestone(request):
     if request.POST:
         form = MilestoneForm(request.POST)
         if form.is_valid():
+            form.instance.date_created = timezone.now()
             form.save()
             
             return HttpResponseRedirect(reverse('milestones'))
@@ -65,6 +67,7 @@ def addmilestone(request):
         
     return render(request,'tasks/addmilestone.html',{"form":form,
                                                      "back":back})
+
 
 def rcomment(request):
     if request.POST:
@@ -84,6 +87,7 @@ def rcomment(request):
     response_data['user'] = request.user.username
     
     return HttpResponse(json.dumps(response_data), content_type="application/json")
+
 
 def testgraphpriority(request):
     request_pk = request.GET["pk"]   
@@ -130,6 +134,62 @@ def testgraphpriority(request):
     resp_list.append(resp_obj3)
     
     return HttpResponse(json.dumps(resp_list), content_type="application/json")
+
+class MyError(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+
+
+def kanban(request):
+    rid = request.GET["id"]
+    box = request.GET["box"]
+    
+    task = get_object_or_404(Task,pk=rid)
+    ret_dict={}
+    
+    #if current state is not accepted it can't be closed!
+    """if task.state_kind != "P" and box == "Z":
+        return HttpResponseServerError("Closed can only be accepted task!")"""
+    
+    #print("ID:{} BOX:{}".format(rid, box))
+    
+    #proveri task i kako ga sacuvati
+    task.state_kind = box
+    
+    if(task.state_kind == "P"):
+        task.assigned_to = request.user
+    
+    #promena stanja    
+    state_change = StateChange(event_user=request.user, event_kind="S",
+                                           date_created=timezone.now(),requirement_task=task,
+                                           milestone=task.milestone,new_state=box)
+    state_change.save()
+    
+    #colors that represents priority
+    key_dict ={'C':'#ce2b37','H': '#ee6c3a','M': '#41783f','L': '#3d70b6'}
+    
+    #states that can be in cloed task
+    closed_dict={'F': 'Fixed','I': 'Invalid','W': 'Wontfix','D': 'Duplicate','R': 'Worksforme'}
+    
+    ret_dict["status"] = "Ok"
+    ret_dict["data"] = {}
+    ret_dict["code"] = "200"
+    ret_dict["message"] = key_dict[task.priority_lvl]
+    ret_dict["explaination"]= request.user.username
+    ret_dict["created"]= "false"
+    
+    if task.state_kind ==  "Z":
+        ret_dict["created"]= "true"
+        ret_dict["closedlist"]=closed_dict
+        task.resolve_type = "R"
+        
+    #update current task    
+    task.save()
+    
+    return HttpResponse(json.dumps(ret_dict), content_type="application/json")
+
 
 def testgraph(request):
     request_pk = request.GET["pk"]
@@ -410,18 +470,24 @@ def eventinfo(request):
     
     ret_list = []
     
-    if(event.milestone):
+    if hasattr(event, 'commit'):
+        data = {}
+        data["name"] = event.commit.message
+        data["glyph"] = "glyphicon glyphicon-record"
+        data["url"] = reverse('commit_detail', args=[event.commit.hex_sha])
+        ret_list.append(data)
+    elif(event.milestone):
         mstone_dict = {}
         mstone_dict["name"] = event.milestone.name
         mstone_dict["glyph"] = "glyphicon glyphicon-flag"
-        mstone_dict["url"] = "/tasks/mdetail/{}".format(event.milestone.pk)
+        mstone_dict["url"] = reverse('mdetail', args=[event.milestone.pk])
         ret_list.append(mstone_dict)
     else:
         try:
             mstone_dict = {}
             mstone_dict["name"] = "{}".format(event.requirement_task.task.name)
             mstone_dict["glyph"] = "glyphicon glyphicon-tasks"
-            mstone_dict["url"] = "/tasks/tdetail/{}".format(event.requirement_task.task.pk)
+            mstone_dict["url"] = reverse('tdetail', args=[event.requirement_task.task.pk])
             ret_list.append(mstone_dict)
         except:
             pass
@@ -430,7 +496,7 @@ def eventinfo(request):
             mstone_dict = {}
             mstone_dict["name"] = "{}".format(event.requirement_task.requirement.name)
             mstone_dict["glyph"] = "glyphicon glyphicon-list-alt"
-            mstone_dict["url"] = "/tasks/rdetail/{}".format(event.requirement_task.requirement.pk)
+            mstone_dict["url"] = reverse('rdetail', args=[event.requirement_task.requirement.pk])
             ret_list.append(mstone_dict)
         except:
             pass
@@ -439,7 +505,7 @@ def eventinfo(request):
             mstone_dict = {}
             mstone_dict["name"] = "{}".format(event.requirement_task.task.milestone.name)
             mstone_dict["glyph"] = "glyphicon glyphicon-flag"
-            mstone_dict["url"] = "/tasks/mdetail/{}".format(event.requirement_task.task.milestone.pk)
+            mstone_dict["url"] = reverse('mdetail', args=[event.requirement_task.task.milestone.pk])
             ret_list.append(mstone_dict)
         except:
             pass
@@ -460,3 +526,108 @@ def userview(request,pk):
     context = {"user":user,"back":back, "tasks":tasks_user}
     
     return render(request,"tasks/author.html", context)
+
+def determine_task_state(on_wait, assigned, resolved):
+    if resolved:
+        return 'Z' # Closed
+    elif assigned:
+        return 'P' # Accepted
+    elif on_wait:
+        return 'O' # On wait
+    else:
+        return 'C' # Created
+
+class TaskUpdate(UpdateView):
+    model = Task
+    form_class = TaskUpdateForm
+    template_name_suffix = '_update_form'
+    
+    def get_success_url(self):
+        return reverse('tdetail',args=(self.get_object().id,))
+    
+    def form_valid(self, form):
+
+        old_state = get_object_or_404(Task,pk=form.instance.pk).state_kind
+        
+        form.instance.state_kind = determine_task_state(on_wait=form.cleaned_data.get('is_on_wait'),
+                                                   assigned=form.cleaned_data.get('assigned_to'),
+                                                   resolved=form.cleaned_data.get('resolve_type') != 'N') # 'N' = Open
+        
+        response = super(TaskUpdate, self).form_valid(form)
+        
+        if old_state != form.instance.state_kind:
+            StateChange(new_state=form.instance.state_kind, event_user=self.request.user, event_kind='S', date_created=timezone.now(), requirement_task=form.instance).save()
+        
+        return response
+
+class TaskCreate(CreateView):
+    model = Task
+    form_class = TaskCreateForm
+    
+    def get_success_url(self):
+        return reverse('tasks')
+    
+    def form_valid(self, form):
+        form.instance.pub_date = timezone.now()
+        form.instance.project_tast_user = self.request.user
+        form.instance.state_kind = determine_task_state(on_wait=form.cleaned_data.get('is_on_wait'),
+                                                   assigned=form.cleaned_data.get('assigned_to'),
+                                                   resolved=False)
+        
+        # snimi objekat
+        resp = super(TaskCreate, self).form_valid(form) 
+        
+        # snimi dogadjaje
+        StateChange(new_state='C', event_user=self.request.user, event_kind='S', date_created=timezone.now(), requirement_task=form.instance).save()
+        if  form.instance.state_kind != 'C': # ako je vec promenjeno stanje
+            StateChange(new_state=form.instance.state_kind, event_user=self.request.user, event_kind='S', date_created=timezone.now(), requirement_task=form.instance).save()
+        
+        return resp
+
+def ajax_comment(request, object_type):
+    if request.POST:
+        content = request.POST.get("content","")
+        obj_id = request.POST.get("pk","")
+        date = timezone.now()
+        milestone=None
+        requirement_task=None
+
+        if object_type == Milestone:
+            milestone = get_object_or_404(object_type,pk=obj_id)
+        else:
+            requirement_task = get_object_or_404(object_type,pk=obj_id)
+
+        comment = Comment(event_user=request.user,content=content,
+                                  date_created=date,
+                                  requirement_task=requirement_task,
+                                  milestone=milestone,
+                                  event_kind="K")
+        comment.save()                                                         
+    
+    response_data = {}
+    response_data['content'] = content
+    response_data['date'] = date.__str__()
+    response_data['user'] = request.user.username
+    
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+
+def resolve(request):
+    
+    rid = request.GET["resolveid"]
+    box = request.GET["taskid"]
+    
+    task = get_object_or_404(Task,pk=box)
+    task.resolve_type = rid
+    task.save()
+    
+    #print("bla bla {} {}".format(rid, box))
+    
+    ret_dict={}
+    ret_dict["status"] = "Ok"
+    ret_dict["data"] = {}
+    ret_dict["code"] = "200"
+    
+    return HttpResponse(json.dumps(ret_dict), content_type="application/json")
+
+

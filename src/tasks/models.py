@@ -24,7 +24,7 @@ PRIORITY_LVL= (
     )
 
 RESOLVE_TYPE = (
-        ('N', 'None'),
+        ('N', 'Open'),
         ('F', 'Fixed'),
         ('I', 'Invalid'),
         ('W', 'Wontfix'),
@@ -69,7 +69,7 @@ class Requirement(RequirementTask):
 class Milestone(models.Model):
     date_created = models.DateTimeField('date published')
     name = models.CharField(max_length=70, default="")
-    summry =  models.CharField(max_length=300)
+    summary =  models.CharField(max_length=300)
     
     def __str__(self):
         return self.name 
@@ -93,7 +93,7 @@ class Event(models.Model):
                 return t[1]
 
 class Task(RequirementTask):
-    projects = models.ForeignKey(Requirement, null=True, blank=True)
+    requirement = models.ForeignKey(Requirement, null=True, blank=True)
     milestone = models.ForeignKey(Milestone, null=True, blank=True)
     assigned_to = models.ForeignKey(User, null=True, blank=True)
 
@@ -104,4 +104,8 @@ class StateChange(Event):
     new_state = models.CharField(max_length=1, choices=STATE_KIND, default="C")
     
 class Commit(Event):
-    commit_url = models.URLField()
+    hex_sha = models.CharField(max_length=40)
+    message = models.CharField(max_length=300)
+    committer_name = models.CharField(max_length=70, null=True, blank=True)
+    committer_user = models.ForeignKey(User, null=True)
+    

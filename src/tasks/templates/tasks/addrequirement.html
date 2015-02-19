@@ -1,10 +1,10 @@
-{% extends "tasks/base.html" %}
-{% block title %}Edit Requirement{% endblock %}
+{% extends "tasks/page_template.html" %}
+{% block title %}Add Requirement{% endblock %}
 
 {% block content %}
 
 	<div class="jumbotron">
-    	<h2>Update requirement</h2>
+    	<h2>Add new requirement</h2>
     </div>
 	
 	<div class="bs-callout bs-callout-success">
@@ -19,26 +19,4 @@
 	</form>
 	</div>
 	
-{% endblock %}
-
-{% block sidebar %}
-<div id="sidebar-wrapper">
-    	<ul class="sidebar-nav">
-        	<li class="sidebar-brand">
-            	<p>
-            		<span class="glyphicon glyphicon-road"></span>
-            		StarTrac
-            	</p>
-            </li>
-			<li>
-				<b>
-					<a href="{{back}}">
-						<span class="glyphicon glyphicon-chevron-left"></span>
-						Back
-					</a>
-				</b>
-			</li>
-			{{block.super}}
-		</ul>
-	</div>
 {% endblock %}

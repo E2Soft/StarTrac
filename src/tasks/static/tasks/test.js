@@ -2,7 +2,7 @@
     $("#comment").click(function(){
         $.ajax({
             type: "GET",
-            url: "/tasks/mstnscmt/",
+            url: "/mstnscmt/",
             success: function(data){
             var json = JSON.stringify(data);
                 //alert(json);
@@ -13,40 +13,6 @@
         });
     });
 });*/
-
-$(document).ready(function(){
-	$("#form").submit(function(){
-        $.ajax({
-            type: "post",
-            dataType: "json",
-            data : {
-            	'csrfmiddlewaretoken' : $("input[name=csrfmiddlewaretoken]").val(),
-            	'content' : $("#ccontent").val(),
-            	'pk' : $("#pk").val()
-            },
-            url: "/tasks/mcomment/",
-            
-            success: function(data){
-            
-                var content = data['content'];
-                var usr = data['user'];
-                var dt = data['date'];
-                
-                var contentlogo = "<span class=\"glyphicon glyphicon-comment\"></span>";
-				var usrlogo = "<p><span class=\"glyphicon glyphicon-user\"></span>";
-				var dtlogo = "<span class=\"glyphicon glyphicon-calendar\"></span>";
-                
-            	$("#rez").append("<li class=\"list-group-item\">"+ contentlogo+" "+content +" "+usrlogo+" "+usr+"</p>"+" "+dtlogo+" "+dt +"</li>");
-            	 $("#ccontent").val("")
-            },
-            
-            error: function(){
-                //alert("error");
-            }
-        });
-        return false;
-    });
-});
 
 $(document).ready(function() {
     $('#datepicker').datepicker();
@@ -68,7 +34,7 @@ $(document).ready(function(){
             	'content' : $("#ccontent").val(),
             	'pk' : $("#pk").val()
             },
-            url: "/tasks/rcomment/",
+            url: $("#comment_ajax_url").val(),
             
             success: function(data){
             
@@ -81,7 +47,7 @@ $(document).ready(function(){
 				var dtlogo = "<span class=\"glyphicon glyphicon-calendar\"></span>";
                 
             	$("#rez").append("<li class=\"list-group-item\">"+ contentlogo+" "+content +" "+usrlogo+" "+usr+"</p>"+" "+dtlogo+" "+dt +"</li>");
-            	 $("#ccontent").val("")
+            	$("#ccontent").val("")
             },
             
             error: function(){
@@ -131,7 +97,7 @@ $(document).ready(function(){
             data : {
             	'pk' : $("#pk").val()
             },
-            url: "/tasks/graph/",
+            url: reversed_urls.graph,
             success: function(data){
             var json = JSON.stringify(data);
                 //alert(json);
@@ -153,7 +119,7 @@ $(document).ready(function(){
             data : {
             	'pk' : $("#pk").val()
             },
-            url: "/tasks/prioritygraph/",
+            url: reversed_urls.prioritygraph,
             success: function(data){
             var json = JSON.stringify(data);
                 //alert(json);
@@ -175,7 +141,7 @@ $(document).ready(function(){
             data : {
             	'pk' : $("#pk").val()
             },
-            url: "/tasks/resolvegraph/",
+            url: reversed_urls.resolvegraph,
             success: function(data){
             var json = JSON.stringify(data);
                 //alert(json);
@@ -197,7 +163,7 @@ $(document).ready(function(){
             data : {
             	'pk' : $("#pk").val()
             },
-            url: "/tasks/reqgraph/",
+            url: reversed_urls.reqgraph,
             success: function(data){
             var json = JSON.stringify(data);
                 //alert(json);
@@ -219,7 +185,7 @@ $(document).ready(function(){
             data : {
             	'pk' : $("#pk").val()
             },
-            url: "/tasks/reqprioritygraph/",
+            url: reversed_urls.reqprioritygraph,
             success: function(data){
             var json = JSON.stringify(data);
                 //alert(json);
@@ -241,7 +207,7 @@ $(document).ready(function(){
             data : {
             	'pk' : $("#pk").val()
             },
-            url: "/tasks/reqresolvegraph/",
+            url: reversed_urls.reqresolvegraph,
             success: function(data){
             var json = JSON.stringify(data);
                 //alert(json);
@@ -268,7 +234,7 @@ jQuery(document).ready(function($) {
             data : {
             	'pk' : $(this).attr('id')
             },
-            url: "/tasks/eventinfo/",
+            url: reversed_urls.eventinfo,
             success: function(data){
             	var json = JSON.stringify(data);
                 //alert(json);

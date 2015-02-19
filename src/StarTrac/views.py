@@ -19,14 +19,13 @@ from tasks.models import Task
 
 def home(request):
     if request.user.is_authenticated():
-        """tasks = Task.objects.order_by('state_kind')
+        tasks = Task.objects.order_by('state_kind')
         ret_dict={"O":[],"C":[],"P":[],"Z":[]}
         
         for task in tasks:
             ret_dict[task.state_kind].append(task)
         
-        context = {"isadmin":request.user.is_superuser,"username":request.user.username, "tasks":ret_dict}"""
-        context = {"isadmin":request.user.is_superuser,"username":request.user.username}
+        context = {"isadmin":request.user.is_superuser,"username":request.user.username, "tasks":ret_dict}
 
         return render(request,'tasks/logged.html',context)
     else:
@@ -55,7 +54,14 @@ def login(request):
     
     if user is not None:
         auth.login(request, user)
-        context = {"isadmin":user.is_superuser,"username":username}
+
+        tasks = Task.objects.order_by('state_kind')
+        ret_dict={"O":[],"C":[],"P":[],"Z":[]}
+        
+        for task in tasks:
+            ret_dict[task.state_kind].append(task)
+        
+        context = {"isadmin":request.user.is_superuser,"username":request.user.username, "tasks":ret_dict}
         
         return render(request,'tasks/logged.html',context)
     else:

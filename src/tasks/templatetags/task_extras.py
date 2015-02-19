@@ -37,3 +37,53 @@ def percentage(milestone):
         return round(100 * float(part)/float(whole),2)
     
     return 0
+
+@register.filter
+def showname(keyvalue):
+    """filter koji za neku od prosledjenih kljuceva vraca vrednost"""
+    key_dict ={'P':'Accepted','C': 'Created','Z': 'Closed','O': 'On Wait'}
+    
+    return key_dict[keyvalue]
+
+@register.filter
+def paintborder(priority):
+    """filter koji dodaje boju za vaznost"""
+    key_dict ={'C':'#ce2b37','H': '#ee6c3a','M': '#41783f','L': '#3d70b6'}
+    
+    return key_dict[priority]
+
+@register.tag
+def task_priority_style(parser, token):
+    '''
+    Vraca bs-callout bootstrap stil sa bojom u zavisnosti od prioriteta i stanja taska.
+    '''
+    try:
+        _, task = token.split_contents()
+    except ValueError:
+        raise template.TemplateSyntaxError("%r tag requires a single argument" % token.contents.split()[0])
+    return CurrentTimeNode(task)
+
+class CurrentTimeNode(template.Node):
+    def __init__(self, task):
+        self.task_unresolved = template.Variable(task)
+    
+    def render(self, context):
+        
+        task = self.task_unresolved.resolve(context)
+        
+        if task.state_kind == 'Z':
+            return ""
+        
+        style_prefix = "bs-callout-"
+        
+        if task.priority_lvl == 'L':
+            style = "success"
+        elif task.priority_lvl == 'M':
+            style = "info"
+        elif task.priority_lvl == 'H':
+            style = "warning"
+        elif task.priority_lvl == 'C':
+            style = "danger"
+        
+        return style_prefix+style
+        
