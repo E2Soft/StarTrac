@@ -12,10 +12,10 @@ from django.contrib.auth.decorators import login_required
 """
 
 from django.contrib import auth
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
 from StarTrac.forms import RegistrationForm, UserExtendForm
-from tasks.models import Task
+from tasks.models import Task, UserExtend
 
 
 def home(request):
@@ -26,7 +26,15 @@ def home(request):
         for task in tasks:
             ret_dict[task.state_kind].append(task)
         
+        print("kljuc {}".format(request.user.pk))
+        
         context = {"isadmin":request.user.is_superuser,"username":request.user.username, "tasks":ret_dict}
+        
+        try:
+            userextend = UserExtend.objects.get(pk=request.user.pk)
+            context["user"] = userextend
+        except UserExtend.DoesNotExist:
+            context["user"] = None
 
         return render(request,'tasks/logged.html',context)
     else:
@@ -64,6 +72,12 @@ def login(request):
         
         context = {"isadmin":request.user.is_superuser,"username":request.user.username, "tasks":ret_dict}
         
+        try:
+            userextend = UserExtend.objects.get(pk=request.user.pk)
+            context["user"] = userextend
+        except UserExtend.DoesNotExist:
+            context["user"] = None
+        
         return render(request,'tasks/logged.html',context)
     else:
         context = {'invalid': "Username and/or password are not ok"}
@@ -72,11 +86,8 @@ def login(request):
 """
     Stranica koja samo vrsi izbacivanje korisnika i vraca na login
     stranicu.Za sve potrebe rada sa korisnicima koristi se 
-    djangov ugradjeni auth sistem da bi izbegli izmisljanje tocka
+    djangkov ugradjeni auth sistem da bi izbegli izmisljanje tocka
     ponovo.
-"""
-"""
-    logout ima smisla samo ako si registrovan
 """
 @login_required
 def logout(request):

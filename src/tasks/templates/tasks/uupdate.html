@@ -1,56 +1,22 @@
 {% extends "tasks/page_template.html" %}
 {% block title %}Edit User{% endblock %}
 
-{% block meta %}
-	{% if user.is_authenticated %}
-	    	<!-- Trenutno jedini nacin da se strana redirektuje ako korisnik nema pristup.
-	    		 Bolji nacin je ako se stavi dekorater @login_required.. u view.py na funkcije koje
-	    		 obradjuju zahtev (request); Trenutno ili nema svih funkcija ili ja ne mogu da ih nadjem :)
-	    		 Pa iz tog razloga resenje izgleda ovako.
-	    	-->
-	    	{{ block.super }}
-	{% else %}
-			<meta http-equiv="REFRESH" content="0;url=http://127.0.0.1:8000/login/">
-	{% endif %}
-{% endblock %}
-
 {% block content %}
-{% if user.is_authenticated %}
+
 	<div class="jumbotron">
     	<h2>Update user</h2>
     </div>
 	
 	<div class="bs-callout bs-callout-primary">
-	<form action="" method="post" role="form">{% csrf_token %}
+	<form action="" method="post" role="form" enctype="multipart/form-data">{% csrf_token %}
 		<table class="table table-hover">
 	    	{{ form.as_table }}
-	    	 
 	    </table>
-	    <table class="table table-hover">
-	    <tr>
-	    	<th>
-	    	Profile picture:
-			</th>
-	    	<td>
-	    	{% if user.userextend.picture != '' %}
-	
-				<img style="border:1px solid gray;" src="{{APP_URL}}../{{user.userextend.picture}}" width="100" height="100" />
-		
-			{% else %}
-			
-				<img style="border:1px solid gray;" src="http://127.0.0.1:8000/tasks/static/album/user.jpg" width="100" height="100" />
-			
-			{% endif %}
-	    	<input type="file"/>
-	    	</td>
-	    </tr>
-	    </table>
-	    
 	    <button type="submit" class="btn btn-primary">
         Update
         <span class="glyphicon glyphicon-ok"></span>
         </button>
 	</form>
 	</div>
-{% endif %}	
+	
 {% endblock %}

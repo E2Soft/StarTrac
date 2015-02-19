@@ -32,7 +32,7 @@ RESOLVE_TYPE = (
         ('R', 'Worksforme'),
     )
 
-class UserExtend(models.Model):
+class UserExtend(User):
     
     ''' 
     veza 1-1 da bi mogli lakse da pristupimo slici: 

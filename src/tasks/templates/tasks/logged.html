@@ -24,19 +24,11 @@
 	      </ul>
 	      <ul class="nav navbar-nav navbar-right">
 	      	<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">
-	        {% if user.userextend.picture != '' %}
-				<span >
-					<img src="{{APP_URL}}../{{user.userextend.picture}}" width="20" height="20" />		
-				</span>
-			
-			{% else %}
-				<span >
-					
-					<img src="http://127.0.0.1:8000/tasks/static/album/user.jpg" width="20" height="20" />
-				</span>
-				
-			{% endif %}
-	        
+	      	{% if user != None %}
+	      	<img src="{{user.picture}}" alt="Smiley face" height="22" width="22">
+	      	{% else %}
+	      	<span class="glyphicon glyphicon-user"></span> 
+	      	{% endif %}
 	        {{username}} 
 	        <span class="caret"></span></a>
 	          <ul class="dropdown-menu">
