@@ -612,6 +612,16 @@ def resolve(request):
     task.save()
     
     #print("bla bla {} {}".format(rid, box))
+    #kada bojana zavrsi stanja ovo odkomentarisati da bi se doda resolve event u timeline
+    """
+    if(rid == ""):
+        rid = "R"
+    
+    resolve_change = ResolveEvent(event_user=self.request.user, event_kind="R",
+                                       date_created=timezone.now(),requirement_task=task,
+                                       milestone=None,new_resolve=rid)
+    resolve_change.save()
+    """
     
     ret_dict={}
     ret_dict["status"] = "Ok"
