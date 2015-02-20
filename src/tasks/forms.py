@@ -136,7 +136,7 @@ class TimelineList(ListView):
         
         update_commit_events(self.request.user)
         
-        entities = Event.objects.order_by('date_created')
+        entities = Event.objects.order_by('date_created').reverse()
         list_of_lists = [list(g) for _, g in groupby(entities, key=extract_date)]
 
         return list_of_lists

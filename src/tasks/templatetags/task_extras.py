@@ -4,6 +4,9 @@ Created on Jan 2, 2015
 @author: Milos
 '''
 from django import template
+from django.core.urlresolvers import reverse
+from django.utils.html import conditional_escape
+from django.utils.safestring import mark_safe
 
 
 register = template.Library()
@@ -52,38 +55,73 @@ def paintborder(priority):
     
     return key_dict[priority]
 
-@register.tag
-def task_priority_style(parser, token):
-    '''
-    Vraca bs-callout bootstrap stil sa bojom u zavisnosti od prioriteta i stanja taska.
-    '''
-    try:
-        _, task = token.split_contents()
-    except ValueError:
-        raise template.TemplateSyntaxError("%r tag requires a single argument" % token.contents.split()[0])
-    return CurrentTimeNode(task)
+@register.filter
+def event_glyphicon_style(event):
+    return {'K':"glyphicon-comment",
+            'C':"glyphicon-record",
+            'S':"glyphicon-cog",
+                    }[event.event_kind]
 
-class CurrentTimeNode(template.Node):
-    def __init__(self, task):
-        self.task_unresolved = template.Variable(task)
+@register.filter
+def task_priority_style(task):
     
-    def render(self, context):
-        
-        task = self.task_unresolved.resolve(context)
-        
-        if task.state_kind == 'Z':
-            return ""
-        
-        style_prefix = "bs-callout-"
-        
-        if task.priority_lvl == 'L':
-            style = "success"
-        elif task.priority_lvl == 'M':
-            style = "info"
-        elif task.priority_lvl == 'H':
-            style = "warning"
-        elif task.priority_lvl == 'C':
-            style = "danger"
-        
-        return style_prefix+style
-        
+    if task.state_kind == 'Z':
+        return ""
+    
+    style_prefix = "bs-callout-"
+    
+    return style_prefix + {'L':"success",
+                           'M':"info",
+                           'H':"warning",
+                           'C':"danger",
+                                        }[task.priority_lvl]
+
+@register.filter
+def event_summary(event):
+    if event.requirement_task:
+        if hasattr(event.requirement_task, 'task'):
+            summary="Task "
+        elif hasattr(event.requirement_task, 'requirement'):
+            summary="Requirement "
+        else:
+            summary=''
+        summary += '"'+event.requirement_task.name+'": '
+    elif event.milestone:
+        summary = '"Milestone "'+event.milestone.name+'": '
+    else:
+        summary = ''
+    
+    if event.event_kind == 'K':
+        summary += event.comment.content
+    elif event.event_kind == 'C':
+        summary += event.commit.message
+    elif event.event_kind == 'S':
+        summary += event.statechange.getstate()
+    
+    max_length = 100
+    
+    if len(summary) > max_length:
+        summary = summary[:max_length-3]+"..."
+    else:
+        summary = summary[:max_length]
+    
+    return summary
+
+def do_escape(to_escape, autoescape):
+    return conditional_escape(to_escape) if autoescape else to_escape
+
+@register.filter
+def event_user(event, autoescape=None):
+    if event.event_kind == 'C':
+        if event.commit.committer_user:
+            user = event.commit.committer_user
+            ret = """<a href="{author_url}"><span class="glyphicon glyphicon-user"></span> {user_name}</a>""".format(author_url=reverse('author', kwargs={'pk':user.pk}), user_name=do_escape(user.username, autoescape))
+        else:
+            ret = """<span class="glyphicon glyphicon-user"></span> {user_name}""".format(user_name=do_escape(event.commit.committer_name, autoescape))
+    else:
+        ret = """<a href="{author_url}"><span class="glyphicon glyphicon-user"></span> {user_name}</a>""".format(author_url=reverse('author', kwargs={'pk':event.event_user.pk}), user_name=do_escape(event.event_user.username, autoescape))
+    
+    return mark_safe(ret)
+
+
+

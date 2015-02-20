@@ -103,6 +103,11 @@ class Comment(Event):
 class StateChange(Event):
     new_state = models.CharField(max_length=1, choices=STATE_KIND, default="C")
     
+    def getstate(self):
+        for t in STATE_KIND:
+            if(t[0]==self.new_state):
+                return t[1]
+    
 class Commit(Event):
     hex_sha = models.CharField(max_length=40)
     message = models.CharField(max_length=300)
