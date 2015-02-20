@@ -15,10 +15,21 @@ Instalacija:
 	
 Funkcionalnosti:
 	- Kanban:
+		-Osnovni prikaz kanban table podeljene u 4 sekcije u kojima se zadatak moze naci Created On Wait Accepted Closed gde se u svakoj koloni nalaze taskovi tog stanja
+		-Moguca je manipulacija taskovima mehanizmom drag-drop pri cemu se vrsi izmena stanja i dodaje se event promene stanja u timeline
+		-Prilikom zatvaranja taska nudi se opcija kako se zatvara.
 		
 	- Milestones:
+		-Omogucava prikaz svih milestone-ova sa procentualnim prikazom zatvorenih taskova.U listi svih takodje je dostupan prikaz broja komentara, i taskova
+		-Moguce je prikaz pojedinacnih milestone-ova kao i izmena vrednosti. U detaljima je dostupan i prikaz svih povezanih taskova.
+		-Za svaki pojedinacni milestone moguce je dobiti i graficki prika odnosa stanja u kom se task nalazi, odnosa prioriteta taskova, kao i prikaz zatvorenih taskova.
+		-Dodavanje novog milestone-a
 		
 	- Requirements:
+		-Omogucava prikaz svih zahteva, gde svaki u listi prikazuje i koliko je zatvorenih taskova. Prikazuje i broj komentara i broj taskova za svaki pojedinacni zahtev.
+		-Dodavanje novog zahteva izmena postojeceg
+		-Prikaz detalja za svaki zahtev. Pored osnovnih detalja prikazuju se i komentari i taskovi za taj zahtev
+		-Za svaki pojedinacni milestone moguce je dobiti i graficki prika odnosa stanja u kom se task nalazi, odnosa prioriteta taskova, kao i prikaz zatvorenih taskova.
 		
 	- Tasks:
 		- Listu zadataka je moguce filtrirati po stanju odabirom odgovarajuceg taba na vrhu stranice, boja svakog reda odgovara prioritetu zadatka (siva ako je zatvoren).
@@ -41,3 +52,5 @@ Funkcionalnosti:
 	
 	- Komentari:
 		- Moguce je postaviti komentare vezane za Task, Milestone i Requirement.
+		
+	-Graficki prikaz
