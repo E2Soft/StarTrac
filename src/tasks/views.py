@@ -8,7 +8,7 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 from django.views.generic.edit import UpdateView, CreateView
-
+from collections import OrderedDict
 from tasks.forms import MilestoneForm, TaskUpdateForm, TaskCreateForm
 from tasks.models import Task, Milestone, Comment, Requirement, StateChange, \
     Event
@@ -18,12 +18,16 @@ from django.views.generic.base import TemplateView
 def index(request):
     if request.user.is_authenticated():
         tasks = Task.objects.order_by('state_kind')
-        ret_dict={"O":[],"C":[],"P":[],"Z":[]}
+        ret_dict_order = OrderedDict()
+        ret_dict_order["C"] = []
+        ret_dict_order["O"] = []
+        ret_dict_order["P"] = []
+        ret_dict_order["Z"] = []
         
         for task in tasks:
-            ret_dict[task.state_kind].append(task)
+            ret_dict_order[task.state_kind].append(task)
         
-        context = {"isadmin":request.user.is_superuser,"username":request.user.username, "tasks":ret_dict}
+        context = {"isadmin":request.user.is_superuser,"username":request.user.username, "tasks":ret_dict_order}
         
         return render(request,'tasks/logged.html',context)
     else:
@@ -471,7 +475,13 @@ def eventinfo(request):
     
     ret_list = []
     
-    if(event.milestone):
+    if event.event_kind == 'C':
+        data = {}
+        data["name"] = event.commit.hex_sha[:9]
+        data["glyph"] = "glyphicon glyphicon-record"
+        data["url"] = reverse('commit_detail', args=[event.commit.hex_sha])
+        ret_list.append(data)
+    elif(event.milestone):
         mstone_dict = {}
         mstone_dict["name"] = event.milestone.name
         mstone_dict["glyph"] = "glyphicon glyphicon-flag"
@@ -617,6 +627,16 @@ def resolve(request):
     task.save()
     
     #print("bla bla {} {}".format(rid, box))
+    #kada bojana zavrsi stanja ovo odkomentarisati da bi se doda resolve event u timeline
+    """
+    if(rid == ""):
+        rid = "R"
+    
+    resolve_change = ResolveEvent(event_user=self.request.user, event_kind="R",
+                                       date_created=timezone.now(),requirement_task=task,
+                                       milestone=None,new_resolve=rid)
+    resolve_change.save()
+    """
     
     ret_dict={}
     ret_dict["status"] = "Ok"
@@ -691,12 +711,14 @@ class StatisticsIndexView(TemplateView):
         return data
            
     def average_cycle_hours(self):
-        tasks = 0
         average = 0
+        count_list = []
         closed_tasks = Task.objects.filter(state_kind="Z")
-        for i in closed_tasks:  
-            accepted = StateChange.objects.filter(requirement_task = i, new_state = "P").count()
-            tasks = accepted
+        accepted = StateChange.objects.filter(requirement_task = closed_tasks, new_state = "P")        
+        for i in accepted:    
+            if i.requirement_task not in count_list:
+                count_list.append(i.requirement_task)
+        tasks = len(count_list)
         hours = self.cycle_time()
         if tasks != 0:
             average = sum(hours)/tasks
