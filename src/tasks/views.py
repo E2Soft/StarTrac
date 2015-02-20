@@ -666,14 +666,11 @@ class StatisticsIndexView(TemplateView):
     def cycle_time(self):   
         data = []
         
-        t = Task.objects.filter(state_kind="Z")
-        for i in t:  
-            prvi = StateChange.objects.filter(requirement_task=i,new_state="P").order_by("date_created").first()
-            print("a",prvi.date_created,"",prvi.requirement_task.id)
-            drugi = StateChange.objects.filter(requirement_task=i,new_state="Z").order_by("-date_created").first()
-            print("b",drugi.date_created,"",drugi.requirement_task.id)
-            date = drugi.date_created - prvi.date_created
-            print("x",date)
+        closed_tasks = Task.objects.filter(state_kind="Z")
+        for i in closed_tasks:  
+            first = StateChange.objects.filter(requirement_task = i, new_state = "P").order_by("date_created").first()
+            latest = StateChange.objects.filter(requirement_task = i, new_state = "Z").order_by("-date_created").first()
+            date = latest.date_created - first.date_created
             hours = self.get_hours(date)                
             data.append(round(hours,2))
         return data
@@ -693,19 +690,25 @@ class StatisticsIndexView(TemplateView):
             labels.append(t.id)
         return labels
     
-    def get_created(self):
+    def time_interval(self):
         if not Task.objects.all():
-            return 0 
-        latest = Task.objects.order_by('pub_date').first()
-        start = latest.pub_date
+            return []
+        first = Task.objects.order_by('pub_date').first()
+        start = first.pub_date
         end = timezone.now()
-        f = end - start
-        date_generated = [start + datetime.timedelta(days=x) for x in range(0,f.days+2)]
+        count_days = end - start
+        days_number = count_days.days + 2
+        date_generated = [start + datetime.timedelta(days=x) for x in range(0,days_number)]
+        return date_generated
+        
+    def get_created(self):
+        date_generated = self.time_interval()        
         created = []
         in_progress = []
         done = []
         onwait = []
         list_created = []
+        
         for d in date_generated:  
             z = StateChange.objects.filter(date_created__startswith = d.date)
             for i in z:
@@ -728,19 +731,13 @@ class StatisticsIndexView(TemplateView):
 
 
     def get_onwait(self):
-        if not Task.objects.all():
-            return 0 
-        latest = Task.objects.order_by('pub_date').first()
-        start = latest.pub_date
-        end = timezone.now()
-        f = end - start
-        date_generated = [start + datetime.timedelta(days=x) for x in range(0,f.days+2)]
-            
+        date_generated = self.time_interval()   
         in_progress = []
         created = []
         done = []
         list_onwait = []
         onwait = []
+        
         for d in date_generated:  
             z = StateChange.objects.filter(date_created__startswith = d.date)
             for i in z:
@@ -762,19 +759,13 @@ class StatisticsIndexView(TemplateView):
         return list_onwait
 
     def get_done(self):
-        if not Task.objects.all():
-            return 0 
-        latest = Task.objects.order_by('pub_date').first()
-        start = latest.pub_date
-        end = timezone.now()
-        f = end - start
-        date_generated = [start + datetime.timedelta(days=x) for x in range(0,f.days+2)]
-        
+        date_generated = self.time_interval()
         created = []
         done = []
         in_progress= []
         list_done = []      
         onwait = []  
+        
         for d in date_generated:  
             z = StateChange.objects.filter(date_created__startswith = d.date)
             for i in z:
@@ -796,19 +787,13 @@ class StatisticsIndexView(TemplateView):
         return list_done  
     
     def get_in_progress(self):      
-        if not Task.objects.all():
-            return 0 
-        latest = Task.objects.order_by('pub_date').first()
-        start = latest.pub_date
-        end = timezone.now()
-        f = end - start
-        date_generated = [start + datetime.timedelta(days=x) for x in range(0,f.days+2)]
-        
+        date_generated = self.time_interval()
         onwait = []
         created = []
         done = []
         in_progress = []
-        list_in_progress = []  
+        list_in_progress = []
+          
         for d in date_generated:  
             z = StateChange.objects.filter(date_created__startswith = d.date)
             for i in z:
@@ -830,14 +815,8 @@ class StatisticsIndexView(TemplateView):
         return list_in_progress
     
     def date_labels(self):
-        if not Task.objects.all():
-            return 0 
-        latest = Task.objects.order_by('pub_date').first()
-        start = latest.pub_date
-        end = timezone.now()
-        f = end - start
-        date_generated = [start + datetime.timedelta(days=x) for x in range(0,f.days+2)]
         lab = []
+        date_generated = self.time_interval()
         for date in date_generated:
             formated = date.strftime('%d-%m-%Y')
             lab.append(formated)
