@@ -6,7 +6,7 @@
 {% block content %}
 	</br>
 	<div class="page-header">
-    	<a href="#"><h2><span class="glyphicon glyphicon-th"></span> Hit there {{username}}...this is our progress so far</h2></a>
+    	<a href="/statistics"><h2><span class="glyphicon glyphicon-th"></span> Hit there {{username}}...this is our progress so far</h2></a>
     </div>
     
     <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -21,6 +21,7 @@
 	        <li><a href="{% url 'requirements' %}"><span class="glyphicon glyphicon-list-alt"></span> Requirements</a></li>
 	        <li><a href="{% url 'tasks' %}"><span class="glyphicon glyphicon-tasks"></span> Tasks</a></li>
 	        <li><a href="{% url 'timeline' %}"><span class="glyphicon glyphicon-time"></span> Timeline</a></li>
+	        <li><a href="{% url 'statistics' %}"><span class="glyphicon glyphicon-stats"></span> Statistics</a></li>
 	        <li><a href="{% url 'browse_source' %}"><span class="glyphicon glyphicon-folder-close"></span> Repository</a></li>
 	      </ul>
 	      <ul class="nav navbar-nav navbar-right">
@@ -34,7 +35,7 @@
 	            <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
 	          </ul>
 	        </li>
-	      </ul
+	      </ul>
 	    </div>
 	  </div>
 	</nav>
