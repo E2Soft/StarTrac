@@ -13,7 +13,6 @@ from tasks.forms import MilestoneForm, TaskUpdateForm, TaskCreateForm
 from tasks.models import Task, Milestone, Comment, Requirement, StateChange, \
     Event
 from django.views.generic.base import TemplateView
-from asyncio.tasks import sleep
 
     # Create your views here.
 def index(request):
@@ -639,7 +638,8 @@ class StatisticsIndexView(TemplateView):
         context['lead_time'] = self.lead_time()
         context['average_cycle'] = self.average_cycle_hours()
         context['average_lead'] = self.average_lead_hours()
-        context['bar_labels'] = self.get_labels()
+        context['bar_labels'] = self.get_cycle_labels()
+        context['lead_labels'] = self.get_lead_labels()
         context['created'] = self.get_created()
         context['done']=self.get_done()
         context['in_progress']=self.get_in_progress()
@@ -670,28 +670,34 @@ class StatisticsIndexView(TemplateView):
         data = []        
         closed_tasks = Task.objects.filter(state_kind="Z")
         for i in closed_tasks:  
-            first = StateChange.objects.filter(requirement_task = i, new_state = "P").order_by("date_created").first()
-            latest = StateChange.objects.filter(requirement_task = i, new_state = "Z").order_by("-date_created").first()
-            date = latest.date_created - first.date_created
-            hours = self.get_hours(date)                
-            data.append(round(hours,2))
+            accepted = StateChange.objects.filter(requirement_task = i, new_state = "P").exists()
+            if accepted:  
+                first = StateChange.objects.filter(requirement_task = i, new_state = "P").order_by("date_created").first()            
+                latest = StateChange.objects.filter(requirement_task = i, new_state = "Z").order_by("-date_created").first()
+                date = latest.date_created - first.date_created
+                hours = self.get_hours(date)                
+                data.append(round(hours,2))
         return data
     
     def lead_time(self):
-        data = []
+        data = []        
         closed_tasks = Task.objects.filter(state_kind="Z")
         for i in closed_tasks:  
             first = StateChange.objects.filter(requirement_task = i, new_state = "C").order_by("date_created").first()
             latest = StateChange.objects.filter(requirement_task = i, new_state = "Z").order_by("-date_created").first()
             date = latest.date_created - first.date_created
-            hours = self.get_hours(date)                
+            hours = self.get_hours(date)                           
             data.append(round(hours,2))
         return data
            
     def average_cycle_hours(self):
-        tasks = Task.objects.filter(state_kind="Z").count()
-        hours = self.cycle_time()
+        tasks = 0
         average = 0
+        closed_tasks = Task.objects.filter(state_kind="Z")
+        for i in closed_tasks:  
+            accepted = StateChange.objects.filter(requirement_task = i, new_state = "P").count()
+            tasks = accepted
+        hours = self.cycle_time()
         if tasks != 0:
             average = sum(hours)/tasks
         return round(average,2)
@@ -703,8 +709,19 @@ class StatisticsIndexView(TemplateView):
         if tasks != 0:
             average = sum(hours)/tasks
         return round(average,2)
-
-    def get_labels(self):
+    
+    def get_cycle_labels(self):
+        labels = []
+        tasks = Task.objects.filter(state_kind="Z")
+        for i in tasks:  
+            accepted = StateChange.objects.filter(requirement_task = i, new_state = "P")
+            for i in accepted:
+                lab = i.requirement_task.id
+                if lab not in labels:
+                    labels.append(lab)    
+        return labels
+    
+    def get_lead_labels(self):
         task = Task.objects.filter(state_kind="Z")
         labels = []
         for t in task:
@@ -728,9 +745,8 @@ class StatisticsIndexView(TemplateView):
         in_progress = []
         done = []
         onwait = []
-        list_created = []
-        
-        for d in date_generated:  
+        list_created = []        
+        for d in date_generated: 
             z = StateChange.objects.filter(date_created__startswith = d.date)
             for i in z:
                 if i.new_state == "C":
@@ -749,7 +765,6 @@ class StatisticsIndexView(TemplateView):
                         created.remove(i.requirement_task)
             list_created.append(len(created))        
         return list_created
-
 
     def get_onwait(self):
         date_generated = self.time_interval()   
@@ -807,7 +822,7 @@ class StatisticsIndexView(TemplateView):
             list_done.append(len(done))        
         return list_done  
     
-    def get_in_progress(self):      
+    def get_in_progress(self):
         date_generated = self.time_interval()
         onwait = []
         created = []

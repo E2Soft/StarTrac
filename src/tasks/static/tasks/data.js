@@ -75,8 +75,14 @@ $(function() {
 					pointHighlightFill : "#fff",
 					pointHighlightStroke : "rgba(0,217,101,0.2)",
 				    data: hours
-				},
-				{
+				}
+			]
+	};
+	
+	var barLeadData = {
+			labels: lead_labels,
+	        datasets: [				
+	             {
 				    label: "Lead time",
 				    fillColor : "rgba(169,55,171,0.5)",
 					strokeColor : "rgba(169,55,171,0.8)",
@@ -86,7 +92,7 @@ $(function() {
 					pointHighlightStroke : "rgba(169,55,171,0.2)",
 				    data: lead_time
 				}
-			]
+	        ]
 	};
 	
 	var lineData = {
@@ -142,6 +148,9 @@ $(function() {
 	var myBarChart;
 	
 	var ctx3 = $("#myChart3").get(0).getContext("2d");
+	var myBarLeadChart;
+	
+	var ctx4 = $("#myChart4").get(0).getContext("2d");
 	var myLineChart;
 
     $('#tab2').on('shown.bs.tab', function (e) {
@@ -156,13 +165,20 @@ $(function() {
 		
 		 var legend = myBarChart.generateLegend();
 	     $("#legend2").html(legend);
-	});    
+	});
+	
+	$('#tab4').on('shown.bs.tab', function (e) {
+		myBarLeadChart = new Chart(ctx3).Bar(barLeadData, barOptions);
+		
+		 var legend = myBarLeadChart.generateLegend();
+	     $("#legend3").html(legend);
+	}); 
   
-    $('#tab4').on('shown.bs.tab', function (e) {
-		myLineChart = new Chart(ctx3).Line(lineData, lineOptions);
+    $('#tab5').on('shown.bs.tab', function (e) {
+		myLineChart = new Chart(ctx4).Line(lineData, lineOptions);
 		
 		var legend = myLineChart.generateLegend();
-	    $("#legend3").html(legend);
+	    $("#legend4").html(legend);
 	}); 
 	   
 });

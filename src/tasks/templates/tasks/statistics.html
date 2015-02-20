@@ -11,6 +11,7 @@
 	var	hours = {{ data }};
 	var lead_time = {{ lead_time }}
 	var bar_labels = {{ bar_labels }};
+	var lead_labels = {{ lead_labels }};
 	var created = {{ created }}
 	var done = {{ done }};
     var in_progress = {{ in_progress }};
@@ -28,14 +29,15 @@
     				<ul class="nav nav-tabs">    	
     				  <li class="active"><a id="tab1" href="#info" data-toggle="tab">Reports</a></li>   							
 					  <li><a id="tab2" href="#chart1"data-toggle="tab">Tasks Distribution</a></li>   												  
-					  <li><a id="tab3" href="#chart2" data-toggle="tab">Cycle & Lead Time</a></li>
-					  <li><a id="tab4" href="#chart3" data-toggle="tab">Cumulative Flow</a></li>
+					  <li><a id="tab3" href="#chart2" data-toggle="tab">Cycle Time</a></li>
+					  <li><a id="tab4" href="#chart3" data-toggle="tab">Lead Time</a></li>					  
+					  <li><a id="tab5" href="#chart4" data-toggle="tab">Cumulative Flow</a></li>
 					</ul>					
 					<div class="tab-content">
 					  <div class="tab-pane active" id="info">
 						<div class="jumbotron" style="margin-top: 20px;">
 						  <h2>Project reports</h2><p></p>
-						  <p><a class="btn btn-primary btn-lg" href="/" role="button">Kanban board</a></p>
+						  <p><a class="btn btn-primary btn-lg" href="/">Kanban board</a></p>
 						</div>
 						<div class="panel panel-default">
 				        <div class="panel-heading">
@@ -46,7 +48,7 @@
 				         <div id="collapse1" class="panel-collapse collapse">
 				           <div class="panel-body">
 				           	<p>With the Task Distribution Chart you can track the number of tasks on your Kanban board.</p>
-							<p>Cycle & Lead Time Diagram presents the amount of time it takes for a task to be
+							<p>Cycle and Lead Time Diagrams presents the amount of time it takes for a task to be
 							   processed from the specific start to the finish point and shows average amount of hours.</p>	
 							<p>The Cycle time is only the amount of time, that the team spent working on this item 
 							   (without the time that it spent just waiting on the board).The Lead time is the time from
@@ -69,7 +71,7 @@
 					  	 <div class="panel panel-default" style="margin-top: 20px;">
  						 	<div class="panel-body">
  						 		<p><span class="label label-default" style=" font-size: 10pt; display: block; margin: 0 auto; width: 500px">
- 						 		Average hours - Cycle time: {{average_cycle}} - Lead time: {{average_lead}}</span></p>
+ 						 		Average Cycle time: {{average_cycle}}</span></p>
 					  	  		<canvas id="myChart2" width="500" height="300" style="display: block; margin: 0 auto;"></canvas>						  		
 						  		<div id="legend2"></div>					  							  
 					  		</div>
@@ -78,8 +80,18 @@
 					  <div class="tab-pane" id="chart3">
 					  	 <div class="panel panel-default" style="margin-top: 20px;">
  						 	<div class="panel-body">
+ 						 		<p><span class="label label-default" style=" font-size: 10pt; display: block; margin: 0 auto; width: 500px">
+ 						 		Average Lead time: {{average_lead}}</span></p>
 		   			        	<canvas id="myChart3" width="500" height="300" style="display: block; margin: 0 auto;"></canvas>
 				  	      		<div id="legend3"></div>					  							  					  
+					  		</div>
+					  	 </div>	
+					  </div>
+					  <div class="tab-pane" id="chart4">
+					  	 <div class="panel panel-default" style="margin-top: 20px;">
+ 						 	<div class="panel-body">
+		   			        	<canvas id="myChart4" width="500" height="300" style="display: block; margin: 0 auto;"></canvas>
+				  	      		<div id="legend4"></div>					  							  					  
 					  		</div>
 					  	 </div>	
 					  </div>					
