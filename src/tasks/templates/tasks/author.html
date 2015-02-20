@@ -60,7 +60,7 @@
 			{% for task in tasks %}
 				<li class="list-group-item">
 					<span class="badge"><span class="glyphicon glyphicon-comment"></span> {{task|commnets}}</span>
-					{{task.name}}
+					<a href="{% url 'tdetail' task.pk %}">{{task.name}}</a>
 				</li>
 			{% endfor %}
 		</ul>
