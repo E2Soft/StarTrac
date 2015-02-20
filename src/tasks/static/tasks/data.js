@@ -3,7 +3,7 @@ $(function() {
 
 	var barOptions = {
 	        scaleIntegersOnly: false,
-	        //barValueSpacing : 0.5,
+	        barValueSpacing : 0.5,
 	        legendTemplate : '<ul class=\"<%=name.toLowerCase()%>-legend\">'
 	        	+'<% for (var i=0; i<datasets.length; i++){%>'
 	        	+'<li>'
@@ -47,7 +47,7 @@ $(function() {
 	                value: onwait_tasks,
 	                color: "#7ADCE8",
 	                highlight: "#AADCE8",
-	                label: "OnWait"
+	                label: "On Wait"
 	            },
 	            {
 	                value: accepted_tasks,
