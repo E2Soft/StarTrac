@@ -32,6 +32,26 @@ RESOLVE_TYPE = (
         ('R', 'Worksforme'),
     )
 
+class UserExtend(User):
+    
+    ''' 
+    veza 1-1 da bi mogli lakse da pristupimo slici: 
+    # npr. user.UserExtend.picture 
+    '''
+    user = models.OneToOneField(User)
+    
+    '''
+    slika moze biti null, u tom slucaju korisniku dodeljujemo
+    neku podrazumevanu sliku
+    '''
+    picture = models.ImageField(upload_to='album', blank = True, null = True)
+    
+    '''
+    user toString()
+    '''
+    def __str__(self):
+        return self.user.username
+
 class RequirementTask(models.Model):
     name = models.CharField(max_length=70, default="")
     state_kind = models.CharField(max_length=1, choices=STATE_KIND, default="C")
@@ -69,7 +89,7 @@ class Requirement(RequirementTask):
 class Milestone(models.Model):
     date_created = models.DateTimeField('date published')
     name = models.CharField(max_length=70, default="")
-    summry =  models.CharField(max_length=300)
+    summary =  models.CharField(max_length=300)
     
     def __str__(self):
         return self.name 
@@ -103,5 +123,14 @@ class Comment(Event):
 class StateChange(Event):
     new_state = models.CharField(max_length=1, choices=STATE_KIND, default="C")
     
+    def getstate(self):
+        for t in STATE_KIND:
+            if(t[0]==self.new_state):
+                return t[1]
+    
 class Commit(Event):
-    commit_url = models.URLField()
+    hex_sha = models.CharField(max_length=40)
+    message = models.CharField(max_length=300)
+    committer_name = models.CharField(max_length=70, null=True, blank=True)
+    committer_user = models.ForeignKey(User, null=True)
+    

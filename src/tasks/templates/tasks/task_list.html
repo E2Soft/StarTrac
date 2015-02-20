@@ -1,8 +1,21 @@
 {% extends "tasks/page_template.html" %}
 {% block title %}Tasks Page{% endblock %}
 
-{% block content %}
+{% block meta %}
+	{% if user.is_authenticated %}
+	    	<!-- Trenutno jedini nacin da se strana redirektuje ako korisnik nema pristup.
+	    		 Bolji nacin je ako se stavi dekorater @login_required.. u view.py na funkcije koje
+	    		 obradjuju zahtev (request); Trenutno ili nema svih funkcija ili ja ne mogu da ih nadjem :)
+	    		 Pa iz tog razloga resenje izgleda ovako.
+	    	-->
+	    	{{ block.super }}
+	{% else %}
+			<meta http-equiv="REFRESH" content="0;url=http://127.0.0.1:8000/login/">
+	{% endif %}
+{% endblock %}
 
+{% block content %}
+{% if user.is_authenticated %}
 </br>
 
 <ul class="nav nav-tabs" role="tablist">
@@ -31,9 +44,11 @@
 		{% include "tasks/filtered_tasks_list_template.html" with filter_kind="Z" %}
 	</div>
 </div>
+{% endif %}
 {% endblock %}
 
 {% block sidebar_content %}
+{% if user.is_authenticated %}	
 	<li>
 		<b>
 			<a href="{% url 'task_create' %}">
@@ -42,4 +57,5 @@
 			</a>
 		</b>
 	</li>
+{% endif %}
 {% endblock %}

@@ -2,6 +2,19 @@
 {% block title %}Detail Page{% endblock %}
 {% load commnets from task_extras %}
 
+{% block meta %}
+	{% if user.is_authenticated %}
+	    	<!-- Trenutno jedini nacin da se strana redirektuje ako korisnik nema pristup.
+	    		 Bolji nacin je ako se stavi dekorater @login_required.. u view.py na funkcije koje
+	    		 obradjuju zahtev (request); Trenutno ili nema svih funkcija ili ja ne mogu da ih nadjem :)
+	    		 Pa iz tog razloga resenje izgleda ovako.
+	    	-->
+	    	{{ block.super }}
+	{% else %}
+			<meta http-equiv="REFRESH" content="0;url=http://127.0.0.1:8000/login/">
+	{% endif %}
+{% endblock %}
+
 {% block modal%}
 {{block.super}}
 {% endblock %}
@@ -13,7 +26,7 @@
 <div class="bs-callout bs-callout-default">
 <ul class="list-group">
 	<li class="list-group-item"><span class="glyphicon glyphicon-calendar"></span> Date: {{milestone.date_created}}</li>
-	<li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> Summry: {{milestone.summry}}</li>
+	<li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> Summary: {{milestone.summary}}</li>
 </ul>
 </div>
 
