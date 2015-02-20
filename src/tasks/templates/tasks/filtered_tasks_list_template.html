@@ -1,5 +1,6 @@
 {% load commnets from task_extras %}
 {% load task_priority_style from task_extras %}
+{% load staticfiles %}
 
 <div id="page-content-wrapper">
 	<div class="container-fluid">
@@ -24,9 +25,9 @@
 								<td>
 									{% if task.assigned_to %}
 										{% if task.assigned_to.userextend.picture %}
-											<img src="{{APP_URL}}../{{task.assigned_to.userextend.picture}}" width="20" height="20" />
+											<img src="{% static task.assigned_to.userextend.picture %}" width="20" height="20" />
 										{% else %}
-											<img src="http://127.0.0.1:8000/tasks/static/album/user.jpg" width="20" height="20" />
+											<img src="{% static 'album/user.jpg' %}" width="20" height="20" />
 										{% endif %}
 										<a href="{% url 'author' task.assigned_to.pk %}">{{task.assigned_to}}</a>
 									{% endif %}

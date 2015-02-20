@@ -85,9 +85,6 @@ USE_TZ = True
 # git repo path
 GIT_REPO_PATH="../.git"
 
-STATIC_URL = '/tasks/static/'
-'''
-URL za slike
-/tasks je zbog static foldera koji se nalazi u tasks
-'''
-APP_URL = 'http://127.0.0.1:8000/tasks'
+STATIC_URL = '/static/'
+MEDIA_ROOT = 'tasks/static/'
+
