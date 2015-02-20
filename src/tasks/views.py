@@ -3,7 +3,7 @@ import json
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
-from django.http.response import HttpResponseRedirect, HttpResponseServerError
+from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 from django.views.generic.edit import UpdateView, CreateView
@@ -470,9 +470,9 @@ def eventinfo(request):
     
     ret_list = []
     
-    if hasattr(event, 'commit'):
+    if event.event_kind == 'C':
         data = {}
-        data["name"] = event.commit.message
+        data["name"] = event.commit.hex_sha[:9]
         data["glyph"] = "glyphicon glyphicon-record"
         data["url"] = reverse('commit_detail', args=[event.commit.hex_sha])
         ret_list.append(data)
