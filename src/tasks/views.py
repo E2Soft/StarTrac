@@ -523,7 +523,6 @@ def userview(request,pk):
     
     return render(request,"tasks/author.html", context)
 
-@login_required(login_url="/login/")
 def determine_task_state(on_wait, assigned, resolved):
     if resolved:
         return 'Z' # Closed
@@ -533,7 +532,6 @@ def determine_task_state(on_wait, assigned, resolved):
         return 'O' # On wait
     else:
         return 'C' # Created
-
 
 class TaskUpdate(UpdateView):
     model = Task

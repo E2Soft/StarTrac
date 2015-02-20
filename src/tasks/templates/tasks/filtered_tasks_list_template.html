@@ -11,23 +11,7 @@
 				<table class="table">
 					<tr>
 						<th><span class="glyphicon glyphicon-tasks"></span> Name</th>
-						<th>
-							{% if user.userextend.picture != '' %}
-							<span class="glyphicon glyphicon-user">
-								<img src="{{APP_URL}}../{{user.userextend.picture}}" width="20" height="16" />		
-							</span>
-							
-						
-							{% else %}
-							<span class="glyphicon glyphicon-user">
-								
-								<img src="http://127.0.0.1:8000/tasks/static/album/user.jpg" width="100" height="100" />
-							</span>
-							
-							{% endif %}
-							 
-							Assigned to
-						</th>
+						<th><span class="glyphicon glyphicon-user"></span> Assigned to</th>
 						<th><span class="glyphicon glyphicon-signal"></span> Priority</th>
 						{% if filter_kind == "all" %}<th><span class="glyphicon glyphicon-cog"></span> State</th>{% endif %}
 						<th><span class="glyphicon glyphicon-tag"></span> Resolved</th>
@@ -37,7 +21,16 @@
 						{% if filter_kind == task.state_kind or filter_kind == "all" %}
 							<tr class="bs-callout {% task_priority_style task %}">
 								<td><p><a href="{% url 'tdetail' task.pk %}">{{task.name}}</a></p></td>
-								<td>{% if task.assigned_to != None %}<a href="{% url 'author' task.assigned_to.pk %}">{{task.assigned_to}}</a>{% endif %}</td>
+								<td>
+									{% if task.assigned_to %}
+										{% if task.assigned_to.userextend.picture %}
+											<img src="{{APP_URL}}../{{task.assigned_to.userextend.picture}}" width="20" height="20" />
+										{% else %}
+											<img src="http://127.0.0.1:8000/tasks/static/album/user.jpg" width="20" height="20" />
+										{% endif %}
+										<a href="{% url 'author' task.assigned_to.pk %}">{{task.assigned_to}}</a>
+									{% endif %}
+								</td>
 								<td>{{task.getpriority}}</td>
 								{% if filter_kind == "all" %}
 								<td>{{task.getstate}}</td>
