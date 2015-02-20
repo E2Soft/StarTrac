@@ -21,7 +21,16 @@
 						{% if filter_kind == task.state_kind or filter_kind == "all" %}
 							<tr class="bs-callout {{task|task_priority_style}}">
 								<td><p><a href="{% url 'tdetail' task.pk %}">{{task.name}}</a></p></td>
-								<td>{% if task.assigned_to != None %}<a href="{% url 'author' task.assigned_to.pk %}">{{task.assigned_to}}</a>{% endif %}</td>
+								<td>
+									{% if task.assigned_to %}
+										{% if task.assigned_to.userextend.picture %}
+											<img src="{{APP_URL}}../{{task.assigned_to.userextend.picture}}" width="20" height="20" />
+										{% else %}
+											<img src="http://127.0.0.1:8000/tasks/static/album/user.jpg" width="20" height="20" />
+										{% endif %}
+										<a href="{% url 'author' task.assigned_to.pk %}">{{task.assigned_to}}</a>
+									{% endif %}
+								</td>
 								<td>{{task.getpriority}}</td>
 								{% if filter_kind == "all" %}
 								<td>{{task.getstate}}</td>

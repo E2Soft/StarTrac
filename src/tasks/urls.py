@@ -3,6 +3,7 @@ Created on Dec 21, 2014
 
 @author: Milos
 '''
+from django.conf import settings
 from django.conf.urls import patterns, url
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
@@ -55,4 +56,6 @@ urlpatterns = patterns('',
     #url(r'^task_comment/$', views.task_comment, name='task_comment'),
     
     url(r'statistics/$', views.StatisticsIndexView.as_view(), name='statistics'),
+    
+    url(r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.APP_URL}),
 )

@@ -12,7 +12,10 @@ from collections import OrderedDict
 from tasks.forms import MilestoneForm, TaskUpdateForm, TaskCreateForm
 from tasks.models import Task, Milestone, Comment, Requirement, StateChange, \
     Event
+
 from django.views.generic.base import TemplateView
+
+from django.contrib.auth.decorators import login_required
 
     # Create your views here.
 def index(request):
@@ -33,7 +36,7 @@ def index(request):
     else:
         return render(request,'tasks/index.html')
 
-    
+@login_required(login_url="/login/")
 def mcomment(request):
     if request.POST:
         content = request.POST.get("content","")
@@ -52,7 +55,7 @@ def mcomment(request):
     response_data['user'] = request.user.username
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
-
+@login_required(login_url="/login/")
 def addmilestone(request):
     if request.POST:
         form = MilestoneForm(request.POST)
@@ -74,6 +77,7 @@ def addmilestone(request):
                                                      "back":back})
 
 
+@login_required(login_url="/login/")
 def rcomment(request):
     if request.POST:
         content = request.POST.get("content","")
@@ -93,7 +97,7 @@ def rcomment(request):
     
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
-
+@login_required(login_url="/login/")
 def testgraphpriority(request):
     request_pk = request.GET["pk"]   
     #print("REQ PK:{}".format(request_pk))
@@ -146,7 +150,7 @@ class MyError(Exception):
     def __str__(self):
         return repr(self.value)
 
-
+@login_required(login_url="/login/")
 def kanban(request):
     rid = request.GET["id"]
     box = request.GET["box"]
@@ -195,7 +199,7 @@ def kanban(request):
     
     return HttpResponse(json.dumps(ret_dict), content_type="application/json")
 
-
+@login_required(login_url="/login/")
 def testgraph(request):
     request_pk = request.GET["pk"]
     #print("REQ PK:{}".format(request_pk))   
@@ -242,7 +246,7 @@ def testgraph(request):
     
     return HttpResponse(json.dumps(resp_list), content_type="application/json")
     
-    
+@login_required(login_url="/login/")    
 def resolvegraph(request):
     request_pk = request.GET["pk"]
     #print("REQ PK:{}".format(request_pk))   
@@ -307,7 +311,7 @@ def resolvegraph(request):
     
     return HttpResponse(json.dumps(resp_list), content_type="application/json")
     
-    
+@login_required(login_url="/login/")    
 def reqgraph(request):
     request_pk = request.GET["pk"]
     #print("REQ PK:{}".format(request_pk))
@@ -354,7 +358,7 @@ def reqgraph(request):
     
     return HttpResponse(json.dumps(resp_list), content_type="application/json")
 
-
+@login_required(login_url="/login/")
 def reqtestgraphpriority(request):
     request_pk = request.GET["pk"]   
     #print("REQ PK:{}".format(request_pk))
@@ -401,7 +405,7 @@ def reqtestgraphpriority(request):
     
     return HttpResponse(json.dumps(resp_list), content_type="application/json")
 
-
+@login_required(login_url="/login/")
 def reqresolvegraph(request):
     request_pk = request.GET["pk"]
     #print("REQ PK:{}".format(request_pk))   
@@ -466,7 +470,7 @@ def reqresolvegraph(request):
     
     return HttpResponse(json.dumps(resp_list), content_type="application/json")
 
-
+@login_required(login_url="/login/")
 def eventinfo(request):
     #print(request.GET["pk"])
     
@@ -517,7 +521,7 @@ def eventinfo(request):
 
     return HttpResponse(json.dumps(ret_list), content_type="application/json")
 
-
+@login_required(login_url="/login/")
 def userview(request,pk):
     user = get_object_or_404(User,pk=pk)
     tasks_user = Task.objects.filter(assigned_to=user, resolve_type="N")#taskovi na kojima je aktivan korisnik
@@ -588,7 +592,8 @@ class TaskCreate(CreateView):
             StateChange(new_state=form.instance.state_kind, event_user=self.request.user, event_kind='S', date_created=timezone.now(), requirement_task=form.instance).save()
         
         return resp
-
+    
+@login_required(login_url="/login/")
 def ajax_comment(request, object_type):
     if request.POST:
         content = request.POST.get("content","")
@@ -616,7 +621,7 @@ def ajax_comment(request, object_type):
     
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
-
+@login_required(login_url="/login/")
 def resolve(request):
     
     rid = request.GET["resolveid"]
