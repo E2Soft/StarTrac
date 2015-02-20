@@ -13,6 +13,7 @@ from tasks.forms import MilestoneForm, TaskUpdateForm, TaskCreateForm
 from tasks.models import Task, Milestone, Comment, Requirement, StateChange, \
     Event
 from django.views.generic.base import TemplateView
+from asyncio.tasks import sleep
 
     # Create your views here.
 def index(request):
@@ -635,7 +636,9 @@ class StatisticsIndexView(TemplateView):
         context['onwait_tasks'] = self.onwait_tasks()
         context['accepted_tasks'] = self.accepted_tasks()
         context['data'] = self.cycle_time()
-        context['average_hours'] = self.average_hours()
+        context['lead_time'] = self.lead_time()
+        context['average_cycle'] = self.average_cycle_hours()
+        context['average_lead'] = self.average_lead_hours()
         context['bar_labels'] = self.get_labels()
         context['created'] = self.get_created()
         context['done']=self.get_done()
@@ -664,8 +667,7 @@ class StatisticsIndexView(TemplateView):
         return time.total_seconds()/3600;
 
     def cycle_time(self):   
-        data = []
-        
+        data = []        
         closed_tasks = Task.objects.filter(state_kind="Z")
         for i in closed_tasks:  
             first = StateChange.objects.filter(requirement_task = i, new_state = "P").order_by("date_created").first()
@@ -674,15 +676,34 @@ class StatisticsIndexView(TemplateView):
             hours = self.get_hours(date)                
             data.append(round(hours,2))
         return data
+    
+    def lead_time(self):
+        data = []
+        closed_tasks = Task.objects.filter(state_kind="Z")
+        for i in closed_tasks:  
+            first = StateChange.objects.filter(requirement_task = i, new_state = "C").order_by("date_created").first()
+            latest = StateChange.objects.filter(requirement_task = i, new_state = "Z").order_by("-date_created").first()
+            date = latest.date_created - first.date_created
+            hours = self.get_hours(date)                
+            data.append(round(hours,2))
+        return data
            
-    def average_hours(self):
-        tasks = Task.objects.filter(resolve_type="F").count()
-        hours = self.cycle_time()     
+    def average_cycle_hours(self):
+        tasks = Task.objects.filter(state_kind="Z").count()
+        hours = self.cycle_time()
         average = 0
         if tasks != 0:
             average = sum(hours)/tasks
         return round(average,2)
     
+    def average_lead_hours(self):
+        tasks = Task.objects.filter(state_kind="Z").count()
+        hours = self.lead_time()
+        average = 0
+        if tasks != 0:
+            average = sum(hours)/tasks
+        return round(average,2)
+
     def get_labels(self):
         task = Task.objects.filter(state_kind="Z")
         labels = []

@@ -67,7 +67,7 @@ $(function() {
 			labels: bar_labels,
 	        datasets: [				
 				{
-				    label: "Tasks",
+				    label: "Cycle time",
 				    fillColor : "rgba(0,217,101,0.2)",
 					strokeColor : "rgba(0,217,101,0.8)",
 					pointColor : "rgba(0,217,101,1)",
@@ -75,6 +75,16 @@ $(function() {
 					pointHighlightFill : "#fff",
 					pointHighlightStroke : "rgba(0,217,101,0.2)",
 				    data: hours
+				},
+				{
+				    label: "Lead time",
+				    fillColor : "rgba(169,55,171,0.5)",
+					strokeColor : "rgba(169,55,171,0.8)",
+					pointColor : "rgba(169,55,171,1)",
+					pointStrokeColor : "#fff",
+					pointHighlightFill : "#fff",
+					pointHighlightStroke : "rgba(169,55,171,0.2)",
+				    data: lead_time
 				}
 			]
 	};
@@ -103,7 +113,7 @@ $(function() {
 				    data: onwait
 				},
 				{
-				    label: "In progress",
+				    label: "Accepted",
 				    fillColor : "rgba(255,111,99,0.5)",
 					strokeColor : "rgba(255,111,99,0.8)",
 					pointColor : "rgba(255,111,99,1)",
@@ -113,7 +123,7 @@ $(function() {
 				    data: in_progress
 				},
 				{
-				    label: "Done",
+				    label: "Closed",
 				    fillColor : "rgba(0,217,101,0.5)",
 					strokeColor : "rgba(0,217,101,0.8)",
 					pointColor : "rgba(0,217,101,1)",
