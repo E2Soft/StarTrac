@@ -27,19 +27,24 @@
 	<link rel="stylesheet" href="{% static 'tasks/theme.css' %}">
 	<link rel="stylesheet" href="{% static 'tasks/kanban.css' %}">
 	
+	
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="">
 	<meta name="author" content="">
+	{% block meta %}
+	{% endblock %}
 	
 	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 	
 	<!-- Latest compiled JavaScript -->
-	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 	
     <title>{% block title %}StarTrack{% endblock %}</title>
+    
+    {% block head_includes %}{% endblock %}
     
 </head>
 
@@ -75,16 +80,20 @@
 	
 	{% endblock %}
 	
-	<div class="container">
-	<div id="wrapper">
+	{% block content_wrapper %}
 	
-	{% block sidebar %}{% endblock %}
-    
-    {% block content %}{% endblock %}
-     
+	<div class="container">
+		<div id="wrapper">
+		
+			{% block sidebar %}{% endblock %}
+		    
+		    {% block content %}{% endblock %}
+		     
+		</div>
     </div>
-    </div>
-    
+
+	{% endblock %}
+
     {% block canban%} {% endblock %}
      
 </body>

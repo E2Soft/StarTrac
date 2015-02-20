@@ -1,0 +1,31 @@
+{% extends "gitvcs/gitvcs_page_template.html" %}
+{% load shorter from git_extras %}
+
+{% block head_includes %}
+	{% load staticfiles %}
+	<link rel="stylesheet" href="{% static 'nice_file_tree_view/css/file-tree.min.css' %}">
+	<script type="text/javascript" src="{% static 'nice_file_tree_view/js/file-tree.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'gitvcs/js/file_tree.js' %}"></script>
+{% endblock %}
+
+{% block title %}Browse source {% endblock %}
+
+{% block content %}
+
+<div id="page-content-wrapper">
+	<h2>
+		{% if rev_type == 'branch' %}
+			<span class="glyphicon glyphicon-random"></span> {{rev_name}}
+		{% elif rev_type == 'commit' %}
+			<span class="glyphicon glyphicon-record"></span> <a href="{% url 'commit_detail' rev_name %}">{{rev_name|shorter}}</a>
+		{% endif %}
+	</h2>
+
+	<div class="file-tree">
+		<div>
+			{{file_tree_data}}
+		</div>
+	</div>
+</div>
+
+{% endblock %}

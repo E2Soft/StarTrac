@@ -1,5 +1,22 @@
 {% extends "tasks/page_template.html" %}
+{% load event_glyphicon_style from task_extras %}
+{% load event_summary from task_extras %}
+{% load event_user from task_extras %}
+
 {% block title %}Timeline{% endblock %}
+
+{% block meta %}
+	{% if user.is_authenticated %}
+	    	<!-- Trenutno jedini nacin da se strana redirektuje ako korisnik nema pristup.
+	    		 Bolji nacin je ako se stavi dekorater @login_required.. u view.py na funkcije koje
+	    		 obradjuju zahtev (request); Trenutno ili nema svih funkcija ili ja ne mogu da ih nadjem :)
+	    		 Pa iz tog razloga resenje izgleda ovako.
+	    	-->
+	    	{{ block.super }}
+	{% else %}
+			<meta http-equiv="REFRESH" content="0;url=http://127.0.0.1:8000/login/">
+	{% endif %}
+{% endblock %}
 
 {% block modal %}
 
@@ -8,35 +25,31 @@
 {% endblock %}
 
 {% block content %}
+{% if user.is_authenticated %}
 	<div id="page-content-wrapper">
-    	<div class="container-fluid">
-        	<div class="row">
-            	<div class="col-lg-12">	
-            		<div class="page-header">
-       					<h2><span class="glyphicon glyphicon-time"></span> Timeline</h2>
-    				</div>
-					{% for publisher in object_list %}
-						<div class="bs-callout bs-callout-primary">
-							<table class="table table-hover">
-								<thead>
-									<tr>
-										<th><span class="glyphicon glyphicon-calendar"></span> {{publisher.0.date_created}}</th>
-									</tr>
-								</thead>
-								<tbody>
-									{% for obj in publisher %}
-										<tr>
-											<td class='clickableRow' id="{{obj.pk}}"><span class="glyphicon glyphicon-cog"></span> {{obj.geteventkind}}</td>
-											<td><a href="{% url 'author' obj.event_user.pk %}"><span class="glyphicon glyphicon-user"></span> {{obj.event_user}}</a></td>
-										</tr>
-									{% endfor %}
-								</tbody>
-							</table>
-						</div>
-					{% endfor %}
-				</div>
-			</div>
+		<div class="page-header">
+   					<h2><span class="glyphicon glyphicon-time"></span> Timeline</h2>
 		</div>
+		{% for event_group in object_list %}
+			<div class="bs-callout bs-callout-primary">
+				<table class="table table-hover container-fluid">
+					<thead>
+						<tr class="row">
+							<th class="col-md-2"><span class="glyphicon glyphicon-calendar"></span> {{event_group.0.date_created|date:"d M Y"}}</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for event in event_group %}
+							<tr class="row">
+								<td class='clickableRow col-md-1' id="{{event.pk}}"><span class="glyphicon {{event|event_glyphicon_style}}"></span> {{event.geteventkind}}</td>
+								<td class='clickableRow col-md-8' id="{{event.pk}}">{{event|event_summary}}</td>
+								<td class="col-md-2">{{event|event_user}}</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		{% endfor %}
 	</div>
-		
+{% endif %}		
 {% endblock %}

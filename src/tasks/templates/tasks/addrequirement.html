@@ -1,22 +1,39 @@
 {% extends "tasks/page_template.html" %}
-{% block title %}Add Requirement{% endblock %}
+
+{% block title %}Add Requirement {% endblock %}
+
+{% block meta %}
+	{% if user.is_authenticated %}
+	    	<!-- Trenutno jedini nacin da se strana redirektuje ako korisnik nema pristup.
+	    		 Bolji nacin je ako se stavi dekorater @login_required.. u view.py na funkcije koje
+	    		 obradjuju zahtev (request); Trenutno ili nema svih funkcija ili ja ne mogu da ih nadjem :)
+	    		 Pa iz tog razloga resenje izgleda ovako.
+	    	-->
+	    	{{ block.super }}
+	{% else %}
+			<meta http-equiv="REFRESH" content="0;url=http://127.0.0.1:8000/login/">
+	{% endif %}
+{% endblock %}
+	
+
+
 
 {% block content %}
-
-	<div class="jumbotron">
-    	<h2>Add new requirement</h2>
-    </div>
-	
-	<div class="bs-callout bs-callout-success">
-	<form action="" method="post" role="form">{% csrf_token %}
-		<table class="table table-hover">
-	    	{{ form.as_table }}
-	    </table>
-	    <button type="submit" class="btn btn-success">
-        Add
-        <span class="glyphicon glyphicon-plus"></span>
-        </button>
-	</form>
-	</div>
-	
+	{% if user.is_authenticated %}
+		<div class="jumbotron">
+	    	<h2>Add new requirement</h2>
+	    </div>
+		
+		<div class="bs-callout bs-callout-success">
+		<form action="" method="post" role="form">{% csrf_token %}
+			<table class="table table-hover">
+		    	{{ form.as_table }}
+		    </table>
+		    <button type="submit" class="btn btn-success">
+	        Add
+	        <span class="glyphicon glyphicon-plus"></span>
+	        </button>
+		</form>
+		</div>
+	{% endif %}
 {% endblock %}
