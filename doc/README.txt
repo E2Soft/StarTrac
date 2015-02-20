@@ -54,3 +54,8 @@ Funkcionalnosti:
 		- Moguce je postaviti komentare vezane za Task, Milestone i Requirement.
 		
 	-Graficki prikaz
+		-Kumulativni prikaz zadataka
+		-Report koji vodi na kanban tablu
+		-Pomoc pri citanju grafika
+		-Srednje vreme za taskove
+		-Odnos stanja za sve taskove
