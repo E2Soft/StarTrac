@@ -32,9 +32,29 @@ RESOLVE_TYPE = (
         ('R', 'Worksforme'),
     )
 
+class UserExtend(User):
+    
+    ''' 
+    veza 1-1 da bi mogli lakse da pristupimo slici: 
+    # npr. user.UserExtend.picture 
+    '''
+    user = models.OneToOneField(User)
+    
+    '''
+    slika moze biti null, u tom slucaju korisniku dodeljujemo
+    neku podrazumevanu sliku
+    '''
+    picture = models.ImageField(upload_to='album', blank = True, null = True)
+    
+    '''
+    user toString()
+    '''
+    def __str__(self):
+        return self.user.username
+
 class Tag(models.Model):
     name = models.CharField(max_length=20, default="")
-    color = models.CharField(max_length=8, default="#ffffff")
+    color = models.CharField(max_length=8, default="#000000")
     
     def __str__(self):
         return self.name
