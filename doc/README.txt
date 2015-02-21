@@ -6,6 +6,9 @@ Instalacija:
 		- GitPython (0.3.6)
 			http://gitpython.readthedocs.org/en/stable/intro.html
 			# pip install gitpython
+		- Git (1.7.0 or newer)
+			http://git-scm.com/
+			trebalo bi da bude u PATH
 		- Pillow (2.7.0)
 			http://pillow.readthedocs.org/
 			# pip install Pillow
