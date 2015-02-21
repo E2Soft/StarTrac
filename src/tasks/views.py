@@ -37,25 +37,6 @@ def index(request):
         return render(request,'tasks/index.html')
 
 @login_required(login_url="/login/")
-def mcomment(request):
-    if request.POST:
-        content = request.POST.get("content","")
-        milestone_id = request.POST.get("pk","")
-        date = timezone.now()
-        milestone = get_object_or_404(Milestone,pk=milestone_id)
-
-        comment = Comment(event_user=request.user,content=content,
-                                  date_created=date,
-                                  milestone=milestone,event_kind="K")
-        comment.save()                                                         
-    
-    response_data = {}
-    response_data['content'] = content
-    response_data['date'] = date.__str__()
-    response_data['user'] = request.user.username
-    return HttpResponse(json.dumps(response_data), content_type="application/json")
-
-@login_required(login_url="/login/")
 def addmilestone(request):
     if request.POST:
         form = MilestoneForm(request.POST)
@@ -75,27 +56,6 @@ def addmilestone(request):
         
     return render(request,'tasks/addmilestone.html',{"form":form,
                                                      "back":back})
-
-
-@login_required(login_url="/login/")
-def rcomment(request):
-    if request.POST:
-        content = request.POST.get("content","")
-        requirement_id = request.POST.get("pk","")
-        date = timezone.now()
-        requirement = get_object_or_404(Requirement,pk=requirement_id)
-
-        comment = Comment(event_user=request.user,content=content,
-                                  date_created=date,
-                                  requirement_task=requirement,event_kind="K")
-        comment.save()                                                         
-    
-    response_data = {}
-    response_data['content'] = content
-    response_data['date'] = date.__str__()
-    response_data['user'] = request.user.username
-    
-    return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 @login_required(login_url="/login/")
 def testgraphpriority(request):
