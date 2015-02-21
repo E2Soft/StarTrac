@@ -2,6 +2,7 @@
 {% block title %}Main Page{% endblock %}
 {% load showname from task_extras %}
 {% load paintborder from task_extras %}
+{% load staticfiles %}
 
 {% block content %}
 	</br>
@@ -26,7 +27,11 @@
 	      </ul>
 	      <ul class="nav navbar-nav navbar-right">
 	      	<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">
-	        <span class="glyphicon glyphicon-user"></span> 
+	      	{% if user != None %}
+	      	<img src="{% static user.picture %}" alt="Smiley face" height="22" width="22">
+	      	{% else %}
+	      	<span class="glyphicon glyphicon-user"></span> 
+	      	{% endif %}
 	        {{username}} 
 	        <span class="caret"></span></a>
 	          <ul class="dropdown-menu">

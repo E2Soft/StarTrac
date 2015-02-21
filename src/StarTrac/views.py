@@ -10,11 +10,14 @@ Created on Dec 21, 2014
     Ako nije autentifikovan ostavlja stranicu za login kao pocetnu
 """
 
-from django.contrib import auth
-from django.shortcuts import render, redirect
 from collections import OrderedDict
-from StarTrac.forms import RegistrationForm
-from tasks.models import Task
+
+from django.contrib import auth
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+
+from StarTrac.forms import RegistrationForm, UserExtendForm
+from tasks.models import Task, UserExtend
 
 
 def home(request):
@@ -30,6 +33,12 @@ def home(request):
             ret_dict_order[task.state_kind].append(task)
         
         context = {"isadmin":request.user.is_superuser,"username":request.user.username, "tasks":ret_dict_order}
+        
+        try:
+            userextend = UserExtend.objects.get(pk=request.user.pk)
+            context["user"] = userextend
+        except UserExtend.DoesNotExist:
+            context["user"] = None
 
         return render(request,'tasks/logged.html',context)
     else:
@@ -67,6 +76,12 @@ def login(request):
         
         context = {"isadmin":request.user.is_superuser,"username":request.user.username, "tasks":ret_dict}
         
+        try:
+            userextend = UserExtend.objects.get(pk=request.user.pk)
+            context["user"] = userextend
+        except UserExtend.DoesNotExist:
+            context["user"] = None
+        
         return render(request,'tasks/logged.html',context)
     else:
         context = {'invalid': "Username and/or password are not ok"}
@@ -78,6 +93,7 @@ def login(request):
     djangkov ugradjeni auth sistem da bi izbegli izmisljanje tocka
     ponovo.
 """
+@login_required
 def logout(request):
     auth.logout(request)
     return render(request, 'tasks/index.html')
@@ -90,8 +106,27 @@ def logout(request):
 def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()
+        formExtend = UserExtendForm(request.POST, request.FILES)
+     
+        if form.is_valid() and formExtend.is_valid():
+    
+            '''
+            snimi korisnika u bazu
+            '''
+            
+            user = form.save()
+             
+            userExtend = formExtend.save(commit=False)
+            userExtend.user = user
+    
+            if 'picture' in request.FILES:
+     
+                userExtend.picture = request.FILES['picture']
+     
+            userExtend.save()
+            
+     
+#             registered = True
             context = {'message': "User registred, now login..."}
             return render(request, 'tasks/index.html',context)
         """else:
@@ -99,6 +134,7 @@ def register(request):
             print(form.error_messages)"""
     else:
         form = RegistrationForm()
+        formExtend = UserExtendForm()
     
     back = ""
     try:
@@ -106,4 +142,4 @@ def register(request):
     except(KeyError):
         back = "/"
         
-    return render(request,'tasks/register.html', {'form': form,"back":back})
+    return render(request,'tasks/register.html', {'form': form,"back":back,'formExtend':formExtend})
