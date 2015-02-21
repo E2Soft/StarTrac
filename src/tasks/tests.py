@@ -45,11 +45,6 @@ class SimpleTestCase(TestCase):
         
         self.assertEqual(milestone.name, "Test")
         
-    def test_client(self):
-        c = Client()
-        resp =  c.get(reverse('mdetail', args=(2,)))
-        self.assertEqual(resp.status_code, 404)
-        
 class TasksTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='jacob', email='jacob@asd.com', password='top_secret')
