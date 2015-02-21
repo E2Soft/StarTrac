@@ -1,21 +1,7 @@
 {% extends "tasks/page_template.html" %}
 {% block title %}Task details{% endblock %}
 
-{% block meta %}
-	{% if user.is_authenticated %}
-	    	<!-- Trenutno jedini nacin da se strana redirektuje ako korisnik nema pristup.
-	    		 Bolji nacin je ako se stavi dekorater @login_required.. u view.py na funkcije koje
-	    		 obradjuju zahtev (request); Trenutno ili nema svih funkcija ili ja ne mogu da ih nadjem :)
-	    		 Pa iz tog razloga resenje izgleda ovako.
-	    	-->
-	    	{{ block.super }}
-	{% else %}
-			<meta http-equiv="REFRESH" content="0;url=http://127.0.0.1:8000/login/">
-	{% endif %}
-{% endblock %}
-
 {% block content %}
-{% if user.is_authenticated %}
 <div class="jumbotron">
 	<h2><span class="glyphicon glyphicon-tasks"></span> {{task}}</h2>
 	
@@ -34,40 +20,53 @@
 	</div>
 </div>
 
-<div class="container-fluid">
-	<div class="bs-callout bs-callout-warning">
-		<form method="post" id="formreq" role="form">{% csrf_token %}
-			<input type='hidden' name='pk' value='{{task.pk}}' id="pk" />
-			<input type='hidden' name='comment_ajax_url' value="{% url 'task_ajax_comment' %}" id="comment_ajax_url" />	
-			<div class="form-group has-error has-feedback" id="err">
-				<textarea rows="5" cols="50" form="usrform" id="ccontent" class="form-control" 
-				placeholder="Share your thoughts"></textarea>
-			</div>
-			<!--<input type="submit" value="Comment" class="save btn btn-default" />-->
-			<button type="submit" class="btn btn-warning disabled" id="btncomment">
-				Comment
-				<span class="glyphicon glyphicon-comment"></span>
-			</button>
-		</form>
+<ul class="nav nav-tabs" role="tablist">
+	<li class="active"><a href="#pane1" data-toggle="tab"><span class="glyphicon glyphicon-comment"></span> Comments</a></li>
+	<li><a href="#pane3" data-toggle="tab"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>        
+</ul>
+
+<div class="tab-content">
+	<div id="pane1" class="tab-pane active">
+		<div class="bs-callout bs-callout-warning">
+			<form method="post" id="formreq" role="form">{% csrf_token %}
+				<input type='hidden' name='pk' value='{{task.pk}}' id="pk" />
+				<input type='hidden' name='comment_ajax_url' value="{% url 'task_ajax_comment' %}" id="comment_ajax_url" />	
+				<div class="form-group has-error has-feedback" id="err">
+					<textarea rows="5" cols="50" form="usrform" id="ccontent" class="form-control" 
+					placeholder="Share your thoughts"></textarea>
+				</div>
+				<!--<input type="submit" value="Comment" class="save btn btn-default" />-->
+				<button type="submit" class="btn btn-warning disabled" id="btncomment">
+					Comment
+					<span class="glyphicon glyphicon-comment"></span>
+				</button>
+			</form>
+		</div>
+		
+		<ul id="rez" class="list-group">
+			{% for event in task.event_set.all %}
+				{% if event.iscomment %}
+				<li class="list-group-item">
+					<span class="glyphicon glyphicon-comment"></span> {{event.comment.content}}
+					<p><span class="glyphicon glyphicon-user"></span> {{event.comment.event_user.username}}</p>
+					<span class="glyphicon glyphicon-calendar"></span> {{event.comment.date_created}}
+				</li>
+				{% endif %}
+			{% endfor %}
+		</ul>
 	</div>
 	
-	<ul id="rez" class="list-group">
-		{% for event in task.event_set.all %}
-			{% if event.iscomment %}
-			<li class="list-group-item">
-				<span class="glyphicon glyphicon-comment"></span> {{event.comment.content}}
-				<p><span class="glyphicon glyphicon-user"></span> {{event.comment.event_user.username}}</p>
-				<span class="glyphicon glyphicon-calendar"></span> {{event.comment.date_created}}
-			</li>
-			{% endif %}
-		{% endfor %}
-	</ul>
+	<div id="pane3" class="tab-pane">
+		<div class="bs-callout bs-callout-default">
+			{% for newtag in task.tags.all %}
+				<a style="color: {{newtag.color}};" href="{% url 'tagdetail' newtag.pk %}"><span class="label" style="background-color: {{newtag.color}};"><span class="glyphicon glyphicon-tag"></span> {{newtag.name}}</span></a>
+			{% endfor %}
+		</div>
+	</div>
 </div>
-{% endif %}
 {% endblock %}
 
 {% block sidebar_content %}
-	{% if user.is_authenticated %}
 	<li>
 		<b>
 			<a href="{% url 'task_update' task.pk %}">
@@ -76,5 +75,4 @@
 			</a>
 		</b>
 	</li>
-	{% endif %}
 {% endblock %}

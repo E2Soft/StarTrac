@@ -32,25 +32,12 @@ RESOLVE_TYPE = (
         ('R', 'Worksforme'),
     )
 
-class UserExtend(User):
+class Tag(models.Model):
+    name = models.CharField(max_length=20, default="")
+    color = models.CharField(max_length=8, default="#ffffff")
     
-    ''' 
-    veza 1-1 da bi mogli lakse da pristupimo slici: 
-    # npr. user.UserExtend.picture 
-    '''
-    user = models.OneToOneField(User)
-    
-    '''
-    slika moze biti null, u tom slucaju korisniku dodeljujemo
-    neku podrazumevanu sliku
-    '''
-    picture = models.ImageField(upload_to='album', blank = True, null = True)
-    
-    '''
-    user toString()
-    '''
     def __str__(self):
-        return self.user.username
+        return self.name
 
 class RequirementTask(models.Model):
     name = models.CharField(max_length=70, default="")
@@ -60,6 +47,7 @@ class RequirementTask(models.Model):
     pub_date = models.DateTimeField('date published')
     content = models.CharField(max_length=100, default="")
     resolve_type = models.CharField(max_length=1, choices=RESOLVE_TYPE, default="N")
+    tags = models.ManyToManyField(Tag, null=True, blank=True)
     
     class Meta:
         abstract = False
