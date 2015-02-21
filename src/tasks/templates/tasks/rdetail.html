@@ -14,7 +14,7 @@
 <ul class="list-group">
 	<li class="list-group-item"><span class="glyphicon glyphicon-calendar"></span> Date: {{requirement.pub_date}}</li>
 	<li class="list-group-item"><span class="glyphicon glyphicon-cog"></span> State: {{requirement.getstate}}</li>
-	<li class="list-group-item"><span class="glyphicon glyphicon-user"></span> User: {{requirement.project_tast_user}}</li>
+	<li class="list-group-item"><span class="glyphicon glyphicon-user"></span> User: <a href="{% url 'author' requirement.project_tast_user.pk %}">{{requirement.project_tast_user}}</a></li>
 	<li class="list-group-item"><span class="glyphicon glyphicon-signal"></span> Priority: {{requirement.getpriority}}</li>
 	<li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> Content: {{requirement.content}}</li>
 	<li class="list-group-item"><span class="glyphicon glyphicon-tag"></span> Resolve: {{requirement.getresolve}}</li>
@@ -24,7 +24,8 @@
 
 <ul class="nav nav-tabs" role="tablist">
 	<li class="active"><a href="#pane1" data-toggle="tab"><span class="glyphicon glyphicon-comment"></span> Comments</a></li>
-	<li><a href="#pane2" data-toggle="tab"><span class="glyphicon glyphicon-tasks"></span> Tasks</a></li>        
+	<li><a href="#pane2" data-toggle="tab"><span class="glyphicon glyphicon-tasks"></span> Tasks</a></li>
+	<li><a href="#pane3" data-toggle="tab"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>        
 </ul>
 
 <div class="tab-content">
@@ -75,6 +76,15 @@
 			{% endfor %}
 		</ul>
 	</div>
+	
+	<div id="pane3" class="tab-pane">
+		<div class="bs-callout bs-callout-default">
+			{% for newtag in requirement.tags.all %}
+				<a style="color: {{newtag.color}};" href="{% url 'tagdetail' newtag.pk %}"><span class="label" style="background-color: {{newtag.color}};"><span class="glyphicon glyphicon-tag"></span> {{newtag.name}}</span></a>
+			{% endfor %}
+		</div>
+	</div>
+	
 </div>
 
 {% endblock %}
@@ -88,15 +98,14 @@
 			</a>
 		</b>
 	</li>
-	
 	<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">
-	<span class="glyphicon glyphicon-stats"></span>
-	Statistics
-	<span class="caret"></span></a>
-      <ul class="dropdown-menu">
-        <li id="reqgraph"><a href="#">Tasks states stats</a></li>
-        <li id="reqpriority"><a href="#">Tasks priority stats</a></li>
-        <li id="reqresolve"><a href="#">Tasks resolved stats</a></li>
-      </ul>
-    </li>
+			<span class="glyphicon glyphicon-stats"></span>
+			Statistics
+			<span class="caret"></span></a>
+	          <ul class="dropdown-menu">
+	            <li id="reqgraph"><a href="#">Tasks states stats</a></li>
+	            <li id="reqpriority"><a href="#">Tasks priority stats</a></li>
+	            <li id="reqresolve"><a href="#">Tasks resolved stats</a></li>
+	          </ul>
+	</li>
 {% endblock %}

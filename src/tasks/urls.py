@@ -10,7 +10,7 @@ from django.views.generic.list import ListView
 from tasks import views
 from tasks.forms import MilestonesList, MilestoneDetail, MilestoneUpdate, \
     RequirementsList, RequirementDetail, RequirementUpdate, RequiremenCreate, \
-    TimelineList
+    TimelineList, TagsList, TagCreate, TagDetail, TagUpdate
 from tasks.models import Task, Requirement, Milestone
 from tasks.views import TaskUpdate, TaskCreate
 
@@ -54,4 +54,11 @@ urlpatterns = patterns('',
     url(r'^task_ajax_comment/$', views.ajax_comment, name='task_ajax_comment', kwargs={'object_type':Task}),
     
     url(r'statistics/$', views.StatisticsIndexView.as_view(), name='statistics'),
+    
+    url(r'tags/$', TagsList.as_view(), name='tags'),
+    url(r'addtag/$', TagCreate.as_view(), name='addtag'),
+    url(r'tagdetail/(?P<pk>\d+)/$', TagDetail.as_view(), name='tagdetail'),
+    url(r'tagedit/(?P<pk>\d+)/$', TagUpdate.as_view(), name='tagedit'),
+    
+    
 )

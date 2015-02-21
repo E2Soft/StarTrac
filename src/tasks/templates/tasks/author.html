@@ -3,21 +3,7 @@
 {% load commnets from task_extras %}
 {% load staticfiles %}
 
-{% block meta %}
-	{% if user.is_authenticated %}
-	    	<!-- Trenutno jedini nacin da se strana redirektuje ako korisnik nema pristup.
-	    		 Bolji nacin je ako se stavi dekorater @login_required.. u view.py na funkcije koje
-	    		 obradjuju zahtev (request); Trenutno ili nema svih funkcija ili ja ne mogu da ih nadjem :)
-	    		 Pa iz tog razloga resenje izgleda ovako.
-	    	-->
-	    	{{ block.super }}
-	{% else %}
-			<meta http-equiv="REFRESH" content="0;url=http://127.0.0.1:8000/login/">
-	{% endif %}
-{% endblock %}
-
 {% block content %}
-{% if user.is_authenticated %}
 <div class="jumbotron">
 <h2>{{user}}</h2>
 
@@ -43,7 +29,6 @@
 	<li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> First name: {{user.first_name}}</li>
 	<li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> Last name: {{user.last_name}}</li>
 	<li class="list-group-item"><span class="glyphicon glyphicon-envelope"></span> E-mail: {{user.email}}</li>
-
 </ul>
 
 </div>
@@ -51,7 +36,7 @@
 
 
 <ul class="nav nav-tabs" role="tablist">
-	<li><a href="#pane1" data-toggle="tab"><span class="glyphicon glyphicon-tasks"></span> Tasks</a></li>        
+	<li><a href="#pane1" data-toggle="tab"><span class="glyphicon glyphicon-tasks"></span> Tasks</a></li>      
 </ul>
 
 <div class="tab-content">
@@ -66,5 +51,4 @@
 		</ul>
 	</div>
 </div>
-{% endif %}
 {% endblock %}

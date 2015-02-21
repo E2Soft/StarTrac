@@ -16,7 +16,8 @@
 						<th><span class="glyphicon glyphicon-signal"></span> Priority</th>
 						{% if filter_kind == "all" %}<th><span class="glyphicon glyphicon-cog"></span> State</th>{% endif %}
 						<th><span class="glyphicon glyphicon-tag"></span> Resolved</th>
-						<th><span class="glyphicon glyphicon-comment"></span></th>
+						<th><span class="glyphicon glyphicon-comment"></span> Comments</th>
+						<th><span class="glyphicon glyphicon-tags"></span> Tags</th>
 					</tr>
 					{% for task in task_list %}
 						{% if filter_kind == task.state_kind or filter_kind == "all" %}
@@ -38,6 +39,9 @@
 								{% endif %}
 								<td>{{task.getresolve}}</td>
 								<td>{{task|commnets}}</td>
+								<td>
+									{{task.tags.all.count}}
+								</td>
 							</tr>
 						{% endif %}
 					{% endfor %}

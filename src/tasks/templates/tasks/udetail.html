@@ -3,7 +3,6 @@
 
 {% block title %}Detail Page{% endblock %}
 
-
 {% block content %}
 <div class="jumbotron">
 <h2>{{user}}</h2>
@@ -35,7 +34,6 @@
 {% endblock %}
 
 {% block sidebar_content %}
-	{% if not user.is_superuser %}
 	<li>
 		<b>
 			<a href="{% url 'uedit' user.pk %}">
@@ -44,5 +42,4 @@
 			</a>
 		</b>
 	</li>
-	{% endif %}
 {% endblock %}

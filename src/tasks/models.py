@@ -52,6 +52,13 @@ class UserExtend(User):
     def __str__(self):
         return self.user.username
 
+class Tag(models.Model):
+    name = models.CharField(max_length=20, default="")
+    color = models.CharField(max_length=8, default="#000000")
+    
+    def __str__(self):
+        return self.name
+
 class RequirementTask(models.Model):
     name = models.CharField(max_length=70, default="")
     state_kind = models.CharField(max_length=1, choices=STATE_KIND, default="C")
@@ -60,6 +67,7 @@ class RequirementTask(models.Model):
     pub_date = models.DateTimeField('date published')
     content = models.CharField(max_length=100, default="")
     resolve_type = models.CharField(max_length=1, choices=RESOLVE_TYPE, default="N")
+    tags = models.ManyToManyField(Tag, null=True, blank=True)
     
     class Meta:
         abstract = False
