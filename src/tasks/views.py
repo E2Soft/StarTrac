@@ -1,21 +1,21 @@
-import json
+from collections import OrderedDict
 import datetime
+import json
 
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
+from django.views.generic.base import TemplateView
 from django.views.generic.edit import UpdateView, CreateView
-from collections import OrderedDict
+
 from tasks.forms import MilestoneForm, TaskUpdateForm, TaskCreateForm
 from tasks.models import Task, Milestone, Comment, Requirement, StateChange, \
-    Event
+ Event, AddEvent, PriorityChange, ResolveEvent
 
-from django.views.generic.base import TemplateView
-
-from django.contrib.auth.decorators import login_required
 
     # Create your views here.
 def index(request):
@@ -44,6 +44,11 @@ def addmilestone(request):
             form.instance.date_created = timezone.now()
             form.save()
             
+            #add event
+            add_req = AddEvent(event_user=request.user, event_kind="A",date_created=timezone.now(),
+                               requirement_task=None,milestone=form.instance)
+            add_req.save()
+            
             return HttpResponseRedirect(reverse('milestones'))
     else:
         form = MilestoneForm()
@@ -56,6 +61,25 @@ def addmilestone(request):
         
     return render(request,'tasks/addmilestone.html',{"form":form,
                                                      "back":back})
+
+def rcomment(request):
+    if request.POST:
+        content = request.POST.get("content","")
+        requirement_id = request.POST.get("pk","")
+        date = timezone.now()
+        requirement = get_object_or_404(Requirement,pk=requirement_id)
+
+        comment = Comment(event_user=request.user,content=content,
+                                  date_created=date,
+                                  requirement_task=requirement,event_kind="K")
+        comment.save()                                                         
+    
+    response_data = {}
+    response_data['content'] = content
+    response_data['date'] = date.__str__()
+    response_data['user'] = request.user.username
+    
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 @login_required(login_url="/login/")
 def testgraphpriority(request):
@@ -515,7 +539,8 @@ class TaskUpdate(UpdateView):
         return reverse('tdetail',args=(self.get_object().id,))
     
     def form_valid(self, form):
-
+        pk = self.get_object().id
+        task = get_object_or_404(Task,pk=pk)
         old_state = get_object_or_404(Task,pk=form.instance.pk).state_kind
         
         form.instance.state_kind = determine_task_state(on_wait=form.cleaned_data.get('is_on_wait'),
@@ -526,7 +551,25 @@ class TaskUpdate(UpdateView):
         
         if old_state != form.instance.state_kind:
             StateChange(new_state=form.instance.state_kind, event_user=self.request.user, event_kind='S', date_created=timezone.now(), requirement_task=form.instance).save()
+               
+        #izmena prioriteta
+        priority_var = self.request.POST.get("priority_lvl",None)
+
+        if(priority_var != task.priority_lvl):
+            priority_change = PriorityChange(event_user=self.request.user, event_kind="P",
+                                       date_created=timezone.now(),requirement_task=form.instance,
+                                       milestone=None,new_priority=priority_var)
+            priority_change.save()
         
+        #izmena resolve-a
+        resolve_var = self.request.POST.get("priority_lvl",None)
+        
+        if(resolve_var != task.resolve_type):
+            resolve_change = ResolveEvent(event_user=self.request.user, event_kind="R",
+                                       date_created=timezone.now(),requirement_task=form.instance,
+                                       milestone=None,new_resolve=resolve_var)
+            resolve_change.save()
+       
         return response
 
 class TaskCreate(CreateView):
@@ -550,6 +593,11 @@ class TaskCreate(CreateView):
         StateChange(new_state='C', event_user=self.request.user, event_kind='S', date_created=timezone.now(), requirement_task=form.instance).save()
         if  form.instance.state_kind != 'C': # ako je vec promenjeno stanje
             StateChange(new_state=form.instance.state_kind, event_user=self.request.user, event_kind='S', date_created=timezone.now(), requirement_task=form.instance).save()
+        
+        #add event
+        add_req = AddEvent(event_user=self.request.user, event_kind="A",date_created=timezone.now(),
+                           requirement_task=form.instance)
+        add_req.save()
         
         return resp
     
@@ -590,18 +638,14 @@ def resolve(request):
     task = get_object_or_404(Task,pk=box)
     task.resolve_type = rid
     task.save()
-    
-    #print("bla bla {} {}".format(rid, box))
-    #kada bojana zavrsi stanja ovo odkomentarisati da bi se doda resolve event u timeline
-    """
+
     if(rid == ""):
         rid = "R"
     
-    resolve_change = ResolveEvent(event_user=self.request.user, event_kind="R",
+    resolve_change = ResolveEvent(event_user=request.user, event_kind="R",
                                        date_created=timezone.now(),requirement_task=task,
                                        milestone=None,new_resolve=rid)
     resolve_change.save()
-    """
     
     ret_dict={}
     ret_dict["status"] = "Ok"
@@ -732,9 +776,11 @@ class StatisticsIndexView(TemplateView):
         in_progress = []
         done = []
         onwait = []
-        list_created = []        
+        list_created = []  
+        
+        tasks = Task.objects.all()      
         for d in date_generated: 
-            z = StateChange.objects.filter(date_created__startswith = d.date)
+            z = StateChange.objects.filter(date_created__startswith = d.date, requirement_task = tasks)
             for i in z:
                 if i.new_state == "C":
                     created.append(i.requirement_task)
@@ -761,8 +807,9 @@ class StatisticsIndexView(TemplateView):
         list_onwait = []
         onwait = []
         
+        tasks = Task.objects.all()  
         for d in date_generated:  
-            z = StateChange.objects.filter(date_created__startswith = d.date)
+            z = StateChange.objects.filter(date_created__startswith = d.date, requirement_task = tasks)
             for i in z:
                 if i.new_state == "O":
                     onwait.append(i.requirement_task)
@@ -789,8 +836,9 @@ class StatisticsIndexView(TemplateView):
         list_done = []      
         onwait = []  
         
+        tasks = Task.objects.all()  
         for d in date_generated:  
-            z = StateChange.objects.filter(date_created__startswith = d.date)
+            z = StateChange.objects.filter(date_created__startswith = d.date, requirement_task = tasks)
             for i in z:
                 if i.new_state == "Z":
                     done.append(i.requirement_task)
@@ -817,8 +865,9 @@ class StatisticsIndexView(TemplateView):
         in_progress = []
         list_in_progress = []
           
+        tasks = Task.objects.all()  
         for d in date_generated:  
-            z = StateChange.objects.filter(date_created__startswith = d.date)
+            z = StateChange.objects.filter(date_created__startswith = d.date, requirement_task = tasks)
             for i in z:
                 if i.new_state == "P":
                     in_progress.append(i.requirement_task)

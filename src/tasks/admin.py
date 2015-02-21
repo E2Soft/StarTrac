@@ -12,3 +12,9 @@ admin.site.register(models.Comment)
 admin.site.register(models.StateChange)
 admin.site.register(models.Commit)
 admin.site.register(models.Tag)
+
+admin.site.register(models.PriorityChange)
+admin.site.register(models.AddEvent)
+admin.site.register(models.ResolveEvent)
+
+admin.site.register(models.UserExtend)

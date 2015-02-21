@@ -14,6 +14,9 @@ EVENT_KIND = (
         ('K', 'Comment'),
         ('C', 'Commit'),
         ('S', 'StateChange'),
+        ('P', 'PriorityChange'),
+        ('R', 'Resolve'),
+        ('A', 'Adding'),
     )
 
 PRIORITY_LVL= (
@@ -141,4 +144,12 @@ class Commit(Event):
     message = models.CharField(max_length=300)
     committer_name = models.CharField(max_length=70, null=True, blank=True)
     committer_user = models.ForeignKey(User, null=True)
+
+class PriorityChange(Event):
+    new_priority = models.CharField(max_length=1, choices=PRIORITY_LVL, default="L")
     
+class ResolveEvent(Event):
+    new_resolve = models.CharField(max_length=1, choices=RESOLVE_TYPE, default="O")
+    
+class AddEvent(Event):
+    pass
