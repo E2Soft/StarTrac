@@ -13,7 +13,7 @@ from django.test import TestCase
 from django.utils import timezone
 
 from tasks import views
-from tasks.models import Milestone, Task
+from tasks.models import Milestone, Task, Requirement
 
 
 class SimpleTestCase(TestCase):
@@ -118,4 +118,34 @@ class TasksTestCase(TestCase):
         self.assertEqual(sv.accepted_tasks(), 1)
         self.assertEqual(sv.closed_tasks(), 1)
 
+class RequirementsTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='jacob', email='jacob@asd.com', password='top_secret')
+        self.client.login(username='jacob', password='top_secret')
+        self.created_requirement = Requirement.objects.create(pub_date=timezone.now(), name="TestRequirement", content="Test adding new Requirement", project_tast_user=self.user)
+        self.onwait_requirement = Requirement.objects.create(pub_date=timezone.now(), name="onwait_requirement", content="Test adding new Requirement", project_tast_user=self.user, state_kind='O')
+        self.accepted_requirement= Requirement.objects.create(pub_date=timezone.now(), name="accepted_requirement", content="Test adding new Requirement", project_tast_user=self.user, state_kind='P')
+        self.closed_requirement = Requirement.objects.create(pub_date=timezone.now(), name="closed_requirement", content="Test adding new Requirement", project_tast_user=self.user, state_kind='Z')
     
+    def test_name(self):
+        requirement = Requirement.objects.get(pk=self.created_requirement.pk)
+        self.assertEqual(requirement.name, self.created_requirement.name)
+
+    def test_state_kind(self):
+        self.assertEqual(Requirement.objects.get(pk=self.created_requirement.pk).state_kind, "C")
+        self.assertEqual(Requirement.objects.get(pk=self.onwait_requirement.pk).state_kind, "O")
+        self.assertEqual(Requirement.objects.get(pk=self.accepted_requirement.pk).state_kind, "P")
+        self.assertEqual(Requirement.objects.get(pk=self.closed_requirement.pk).state_kind, "Z")
+        
+    def test_project_tast_user(self):
+        requirement = Requirement.objects.get(pk=self.closed_requirement.pk)
+        self.assertEqual(requirement.project_tast_user.username, self.user.username)
+        
+    def test_default_priority_lvl(self):
+        requirement = Requirement.objects.get(pk=self.created_requirement.pk)
+        self.assertEqual(requirement.priority_lvl, "L")
+    
+    def test_default_resolve_type(self):
+        requirement = Requirement.objects.get(pk=self.closed_requirement.pk)
+        self.assertEqual(requirement.resolve_type, "N")
+                
