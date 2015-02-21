@@ -639,16 +639,13 @@ def resolve(request):
     task.resolve_type = rid
     task.save()
 
-    """
-
     if(rid == ""):
         rid = "R"
     
-    resolve_change = ResolveEvent(event_user=self.request.user, event_kind="R",
+    resolve_change = ResolveEvent(event_user=request.user, event_kind="R",
                                        date_created=timezone.now(),requirement_task=task,
                                        milestone=None,new_resolve=rid)
     resolve_change.save()
-    """
     
     ret_dict={}
     ret_dict["status"] = "Ok"
