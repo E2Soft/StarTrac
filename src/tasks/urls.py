@@ -52,7 +52,6 @@ urlpatterns = patterns('',
     url(r'^tasks/update/(?P<pk>\d+)/$', TaskUpdate.as_view(), name='task_update'),
     url(r'^tasks/create/$', TaskCreate.as_view(), name='task_create'),
     url(r'^task_ajax_comment/$', views.ajax_comment, name='task_ajax_comment', kwargs={'object_type':Task}),
-    #url(r'^task_comment/$', views.task_comment, name='task_comment'),
     
     url(r'statistics/$', views.StatisticsIndexView.as_view(), name='statistics'),
 )
