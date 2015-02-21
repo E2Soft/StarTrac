@@ -1,0 +1,76 @@
+{% extends "gitvcs/gitvcs_page_template.html" %}
+{% load shorter from git_extras %}
+
+{% block title %}Diff select{% endblock %}
+
+{% block content %}
+
+<div id="page-content-wrapper">
+	
+	<h2>
+		Diff between:
+	</h2>
+	
+	<form>
+		<div class="row">
+			<div class="col-lg-6">
+				<h3>Ref A:</h3>
+			</div><!-- /.col-lg-6 -->
+			<div class="col-lg-6">
+				<h3>Ref B:</h3>
+			</div><!-- /.col-lg-6 -->
+		</div><!-- /.row -->
+		<div class="row">
+			<div class="col-lg-6">
+				<div class="input-group">
+					<span class="input-group-addon">
+						<input type="radio" name="ref_type_a" value="branch" checked> Branch: </input>
+					</span>  
+					<select class="form-control" name="branch_a">
+						{% for branch in all_branches %}
+						<option>{{branch.name}}</option>
+						{% endfor %}
+					</select>
+				</div><!-- /input-group -->
+			</div><!-- /.col-lg-6 -->
+			<div class="col-lg-6">
+				<div class="input-group">
+					<span class="input-group-addon">
+						<input type="radio" name="ref_type_b" value="branch" checked> Branch: </input>
+					</span>
+					<select class="form-control" name="branch_b">
+						{% for branch in all_branches %}
+						<option>{{branch.name}}</option>
+						{% endfor %}
+					</select>
+				</div><!-- /input-group -->
+			</div><!-- /.col-lg-6 -->
+		</div><!-- /.row -->
+		<div class="row">
+			<div class="col-lg-6">
+				<div class="input-group">
+					<span class="input-group-addon">
+						<input type="radio" name="ref_type_a" value="commit"> Commit: </input>
+					</span>
+					<input type="text" class="form-control" name="commit_a">
+				</div><!-- /input-group -->
+			</div><!-- /.col-lg-6 -->
+			<div class="col-lg-6">
+				<div class="input-group">
+					<span class="input-group-addon">
+						<input type="radio" name="ref_type_b" value="commit"> Commit: </input>
+					</span>
+					<input type="text" class="form-control" name="commit_b">
+				</div><!-- /input-group -->
+			</div><!-- /.col-lg-6 -->
+		</div><!-- /.row -->
+		<br><br>
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="text-center"><button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-transfer"></span> Diff</button></div>
+			</div><!-- /.col-lg-12 -->
+		</div><!-- /.row -->
+	</form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "tasks/page_template.html" %}
+{% block title %}Tags Page{% endblock %}
+
+
+{% block content %}
+	<div id="page-content-wrapper">
+    	<div class="container-fluid">
+        	<div class="row">
+            	<div class="col-lg-12">	
+            		<div class="page-header">
+       					<h2><span class="glyphicon glyphicon-tags"></span> Tags</h2>
+    				</div>
+					<ul class="list-group">
+						{% for publisher in object_list %}
+							<div class="bs-callout bs-callout-primary">
+							<p>
+							<li class="list-group-item">
+							<a href="{% url 'tagdetail' publisher.pk %}"><span class="glyphicon glyphicon-tag"></span> {{publisher.name}}</a>
+							</p>
+							</li>
+							</div>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+		
+{% endblock %}
+
+{% block sidebar_content %}
+	<li>
+		<b>
+			<a href="{% url 'addtag' %}">
+				<span class="glyphicon glyphicon-file"></span>
+				Add new Tag
+			</a>
+		</b>
+	</li>
+{% endblock %}

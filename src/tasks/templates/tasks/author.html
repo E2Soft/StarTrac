@@ -1,6 +1,7 @@
 {% extends "tasks/page_template.html" %}
 {% block title %}Detail Page{% endblock %}
 {% load commnets from task_extras %}
+{% load staticfiles %}
 
 {% block content %}
 <div class="jumbotron">
@@ -8,7 +9,24 @@
 
 <div class="bs-callout bs-callout-default">
 <ul class="list-group">
-	<li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> First Name: {{user.first_name}}</li>
+	
+	{% if user.userextend.picture %}
+	
+	<li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> Profile picture: 
+	<br/><br/>&nbsp;
+		<img src="{% static user.userextend.picture %}" width="100" height="100" />
+	</li>
+
+	{% else %}
+	
+	<li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> Profile picture: 
+	<br/><br/>&nbsp;	
+		<img src="{% static 'album/user.jpg' %}" width="100" height="100" />
+	</li>
+	
+	{% endif %}
+	
+	<li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> First name: {{user.first_name}}</li>
 	<li class="list-group-item"><span class="glyphicon glyphicon-align-justify"></span> Last name: {{user.last_name}}</li>
 	<li class="list-group-item"><span class="glyphicon glyphicon-envelope"></span> E-mail: {{user.email}}</li>
 </ul>
@@ -18,7 +36,7 @@
 
 
 <ul class="nav nav-tabs" role="tablist">
-	<li><a href="#pane1" data-toggle="tab"><span class="glyphicon glyphicon-tasks"></span> Tasks</a></li>        
+	<li><a href="#pane1" data-toggle="tab"><span class="glyphicon glyphicon-tasks"></span> Tasks</a></li>      
 </ul>
 
 <div class="tab-content">
@@ -27,7 +45,7 @@
 			{% for task in tasks %}
 				<li class="list-group-item">
 					<span class="badge"><span class="glyphicon glyphicon-comment"></span> {{task|commnets}}</span>
-					{{task.name}}
+					<a href="{% url 'tdetail' task.pk %}">{{task.name}}</a>
 				</li>
 			{% endfor %}
 		</ul>

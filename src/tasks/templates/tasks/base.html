@@ -20,10 +20,15 @@
 	
 	{% load staticfiles %}
 	<script type="text/javascript" src="{% static 'tasks/test.js' %}" ></script>
+	<script type="text/javascript" src="{% static 'tasks/kanban.js' %}" ></script>
 	<script type="text/javascript" src="{% static 'tasks/Chart.js' %}" ></script>
+	<script type="text/javascript" src="{% static 'tasks/bootstrap-colorpicker.js' %}" ></script>
 	
+	<link rel="stylesheet" media="screen" href="{% static 'tasks/bootstrap-colorpicker.css' %}" />
 	<link rel="stylesheet" href="{% static 'tasks/callout.css' %}">
 	<link rel="stylesheet" href="{% static 'tasks/theme.css' %}">
+	<link rel="stylesheet" href="{% static 'tasks/label.css' %}" />
+	<link rel="stylesheet" href="{% static 'tasks/kanban.css' %}">
 	
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -32,12 +37,14 @@
 	<meta name="author" content="">
 	
 	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 	
 	<!-- Latest compiled JavaScript -->
-	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 	
     <title>{% block title %}StarTrack{% endblock %}</title>
+    
+    {% block head_includes %}{% endblock %}
     
 </head>
 
@@ -73,17 +80,21 @@
 	
 	{% endblock %}
 	
-	<div class="container">
-	<div id="wrapper">
+	{% block content_wrapper %}
 	
-	{% block sidebar %}{% endblock %}
-    
-    {% block content %}{% endblock %}
-     
+	<div class="container">
+		<div id="wrapper">
+		
+			{% block sidebar %}{% endblock %}
+		    
+		    {% block content %}{% endblock %}
+		     
+		</div>
     </div>
-    </div>
-    
-     {% block canban%} {% endblock %}
+
+	{% endblock %}
+
+    {% block canban%} {% endblock %}
      
 </body>
 </html>

@@ -20,6 +20,7 @@
 							<li class="list-group-item">
 							<span class="badge"><span class="glyphicon glyphicon-tasks"></span> {{publisher.task_set.all.count}}</span>
 							<span class="badge"><span class="glyphicon glyphicon-comment"></span> {{publisher|commnets}}</span>
+							<span class="badge"><span class="glyphicon glyphicon-tags"></span>  {{publisher.tags.all.count}}</span>
 							<a href="{% url 'rdetail' publisher.pk %}">{{publisher.name}}</a>
 							</p>
 							<div class="progress">
@@ -28,6 +29,9 @@
 								{{publisher|percentage}}%
 							    </div>
 							</div>
+								{% for newtag in publisher.tags.all %}
+									<span class="label" style="background-color: {{newtag.color}};"><span class="glyphicon glyphicon-tag"></span> {{newtag.name}}</span>
+							    {% endfor %}
 							</li>
 							</div>
 						{% endfor %}
@@ -36,7 +40,6 @@
 			</div>
 		</div>
 	</div>
-		
 {% endblock %}
 
 {% block sidebar_content %}
