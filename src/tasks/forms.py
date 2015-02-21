@@ -16,7 +16,8 @@ from django.views.generic.edit import UpdateView, CreateView
 from django.views.generic.list import ListView
 
 from gitvcs.repository import update_commit_events
-from tasks.models import Milestone, Requirement, StateChange, Event, Task
+from tasks.models import Milestone, Requirement, StateChange, Event, Task,\
+    PriorityChange, ResolveEvent, AddEvent
 
 
 class MilestoneForm(forms.ModelForm):
@@ -105,7 +106,25 @@ class RequirementUpdate(UpdateView):
                                        date_created=timezone.now(),requirement_task=requirement,
                                        milestone=None,new_state=state_var)
             state_change.save()
-
+        
+        #izmena prioriteta
+        priority_var = self.request.POST.get("priority_lvl",None)
+        
+        if(priority_var != requirement.priority_lvl):
+            priority_change = PriorityChange(event_user=self.request.user, event_kind="P",
+                                       date_created=timezone.now(),requirement_task=requirement,
+                                       milestone=None,new_priority=priority_var)
+            priority_change.save()
+        
+        #izmena resolve-a
+        resolve_var = self.request.POST.get("priority_lvl",None)
+        
+        if(resolve_var != requirement.resolve_type):
+            resolve_change = ResolveEvent(event_user=self.request.user, event_kind="R",
+                                       date_created=timezone.now(),requirement_task=requirement,
+                                       milestone=None,new_resolve=resolve_var)
+            resolve_change.save()
+            
         self.object.save()
         
         return HttpResponseRedirect(self.get_success_url())
@@ -122,7 +141,14 @@ class RequiremenCreate(CreateView):
         form.instance.pub_date = timezone.now()
         form.instance.project_tast_user = self.request.user
         
-        return super(RequiremenCreate, self).form_valid(form)
+        response = super(RequiremenCreate, self).form_valid(form)
+        
+        #add event
+        add_req = AddEvent(event_user=self.request.user, event_kind="A",date_created=timezone.now(),
+                           requirement_task=form.instance,milestone=None)
+        add_req.save()
+        
+        return response
     
 def extract_date(entity):
     'extracts the starting date from an entity'

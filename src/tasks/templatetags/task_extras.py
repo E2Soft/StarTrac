@@ -60,7 +60,10 @@ def event_glyphicon_style(event):
     return {'K':"glyphicon-comment",
             'C':"glyphicon-record",
             'S':"glyphicon-cog",
-                    }[event.event_kind]
+            'A':"glyphicon-plus-sign",
+            'P':"glyphicon-exclamation-sign",
+            'R':"glyphicon-ok-circle",
+            }[event.event_kind]
 
 @register.filter
 def task_priority_style(task):

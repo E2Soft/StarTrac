@@ -11,7 +11,7 @@ from django.views.generic.edit import UpdateView, CreateView
 from collections import OrderedDict
 from tasks.forms import MilestoneForm, TaskUpdateForm, TaskCreateForm
 from tasks.models import Task, Milestone, Comment, Requirement, StateChange, \
-    Event
+    Event, AddEvent
 from django.views.generic.base import TemplateView
 
     # Create your views here.
@@ -60,6 +60,11 @@ def addmilestone(request):
             form.instance.date_created = timezone.now()
             form.save()
             
+            #add event
+            add_req = AddEvent(event_user=request.user, event_kind="A",date_created=timezone.now(),
+                               requirement_task=None,milestone=form.instance)
+            add_req.save()
+            
             return HttpResponseRedirect(reverse('milestones'))
     else:
         form = MilestoneForm()
@@ -72,8 +77,7 @@ def addmilestone(request):
         
     return render(request,'tasks/addmilestone.html',{"form":form,
                                                      "back":back})
-
-
+    
 def rcomment(request):
     if request.POST:
         content = request.POST.get("content","")
@@ -629,6 +633,7 @@ def resolve(request):
     #print("bla bla {} {}".format(rid, box))
     #kada bojana zavrsi stanja ovo odkomentarisati da bi se doda resolve event u timeline
     """
+
     if(rid == ""):
         rid = "R"
     
