@@ -1,0 +1,46 @@
+{% extends "tasks/page_template.html" %}
+{% block title %}Detail Page{% endblock %}
+
+{% block modal%}
+{{block.super}}
+{% endblock %}
+
+{% block content %}
+<div class="jumbotron">
+<h2>{{requirement}}</h2>
+
+<div class="bs-callout bs-callout-default">
+<ul class="list-group">
+	<li class="list-group-item"><span class="glyphicon glyphicon-info-sign"></span> Name: {{tag.name}}</li>
+	<li class="list-group-item"><span class="glyphicon glyphicon-copyright-mark"></span> Color: {{tag.color}}</li>
+</ul>
+</div>
+</div>
+
+<ul class="nav nav-tabs" role="tablist">
+	<li><a href="#pane2" data-toggle="tab"><span class="glyphicon glyphicon-tasks"></span> Tasks</a></li>        
+</ul>
+	
+	<div id="pane2" class="tab-pane active">
+		<ul class="list-group">
+			<div class="bs-callout bs-callout-default">
+				{% for task in tag.requirementtask_set.all %}
+						<li class="list-group-item">{{task.name}}</li>
+				{% endfor %}
+			</div>
+		</ul>
+	</div>
+</div>
+
+{% endblock %}
+
+{% block sidebar_content %}
+	<li>
+		<b>
+			<a href="{% url 'tagedit' tag.pk %}">
+				<span class="glyphicon glyphicon-pencil"></span>
+				Edit
+			</a>
+		</b>
+	</li>
+{% endblock %}

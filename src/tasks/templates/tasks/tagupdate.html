@@ -1,0 +1,44 @@
+{% extends "tasks/base.html" %}
+{% block title %}Edit Tag{% endblock %}
+
+{% block content %}
+
+	<div class="jumbotron">
+    	<h2>Update tag</h2>
+    </div>
+	
+	<div class="bs-callout bs-callout-primary">
+	<form action="" method="post" role="form">{% csrf_token %}
+		<table class="table table-hover">
+	    	{{ form.as_table }}
+	    </table>
+	    <button type="submit" class="btn btn-primary">
+        Update
+        <span class="glyphicon glyphicon-ok"></span>
+        </button>
+	</form>
+	</div>
+	
+{% endblock %}
+
+{% block sidebar %}
+<div id="sidebar-wrapper">
+    	<ul class="sidebar-nav">
+        	<li class="sidebar-brand">
+            	<p>
+            		<span class="glyphicon glyphicon-road"></span>
+            		StarTrac
+            	</p>
+            </li>
+			<li>
+				<b>
+					<a href="{{back}}">
+						<span class="glyphicon glyphicon-chevron-left"></span>
+						Back
+					</a>
+				</b>
+			</li>
+			{{block.super}}
+		</ul>
+	</div>
+{% endblock %}

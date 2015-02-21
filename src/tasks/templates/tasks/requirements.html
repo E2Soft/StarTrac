@@ -4,21 +4,8 @@
 {% load closedtasks from task_extras %}
 {% load percentage from task_extras %}
 
-{% block meta %}
-	{% if user.is_authenticated %}
-	    	<!-- Trenutno jedini nacin da se strana redirektuje ako korisnik nema pristup.
-	    		 Bolji nacin je ako se stavi dekorater @login_required.. u view.py na funkcije koje
-	    		 obradjuju zahtev (request); Trenutno ili nema svih funkcija ili ja ne mogu da ih nadjem :)
-	    		 Pa iz tog razloga resenje izgleda ovako.
-	    	-->
-	    	{{ block.super }}
-	{% else %}
-			<meta http-equiv="REFRESH" content="0;url=http://127.0.0.1:8000/login/">
-	{% endif %}
-{% endblock %}
 
 {% block content %}
-{% if user.is_authenticated %}
 	<div id="page-content-wrapper">
     	<div class="container-fluid">
         	<div class="row">
@@ -33,6 +20,7 @@
 							<li class="list-group-item">
 							<span class="badge"><span class="glyphicon glyphicon-tasks"></span> {{publisher.task_set.all.count}}</span>
 							<span class="badge"><span class="glyphicon glyphicon-comment"></span> {{publisher|commnets}}</span>
+							<span class="badge"><span class="glyphicon glyphicon-tags"></span>  {{publisher.tags.all.count}}</span>
 							<a href="{% url 'rdetail' publisher.pk %}">{{publisher.name}}</a>
 							</p>
 							<div class="progress">
@@ -41,6 +29,9 @@
 								{{publisher|percentage}}%
 							    </div>
 							</div>
+								{% for newtag in publisher.tags.all %}
+									<span class="label" style="background-color: {{newtag.color}};"><span class="glyphicon glyphicon-tag"></span> {{newtag.name}}</span>
+							    {% endfor %}
 							</li>
 							</div>
 						{% endfor %}
@@ -49,11 +40,9 @@
 			</div>
 		</div>
 	</div>
-{% endif %}
 {% endblock %}
 
 {% block sidebar_content %}
-{% if user.is_authenticated %}
 	<li>
 		<b>
 			<a href="{% url 'addrequirement' %}">
@@ -62,5 +51,4 @@
 			</a>
 		</b>
 	</li>
-{% endif %}
 {% endblock %}

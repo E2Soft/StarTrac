@@ -2,7 +2,7 @@
 {% block title %}Main Page{% endblock %}
 {% load showname from task_extras %}
 {% load paintborder from task_extras %}
-{% load staticfiles %}
+{% load commnets from task_extras %}
 
 {% block content %}
 	</br>
@@ -21,17 +21,14 @@
 	        <li><a href="{% url 'milestones' %}"><span class="glyphicon glyphicon-flag"></span> Milestones</a></li>
 	        <li><a href="{% url 'requirements' %}"><span class="glyphicon glyphicon-list-alt"></span> Requirements</a></li>
 	        <li><a href="{% url 'tasks' %}"><span class="glyphicon glyphicon-tasks"></span> Tasks</a></li>
+	        <li><a href="{% url 'tags' %}"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
 	        <li><a href="{% url 'timeline' %}"><span class="glyphicon glyphicon-time"></span> Timeline</a></li>
 	        <li><a href="{% url 'statistics' %}"><span class="glyphicon glyphicon-stats"></span> Statistics</a></li>
 	        <li><a href="{% url 'browse_source' %}"><span class="glyphicon glyphicon-folder-close"></span> Repository</a></li>
 	      </ul>
 	      <ul class="nav navbar-nav navbar-right">
 	      	<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">
-	      	{% if user != None %}
-	      	<img src="{% static user.picture %}" alt="Smiley face" height="22" width="22">
-	      	{% else %}
-	      	<span class="glyphicon glyphicon-user"></span> 
-	      	{% endif %}
+	        <span class="glyphicon glyphicon-user"></span> 
 	        {{username}} 
 	        <span class="caret"></span></a>
 	          <ul class="dropdown-menu">

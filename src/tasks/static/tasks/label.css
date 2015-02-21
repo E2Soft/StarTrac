@@ -1,0 +1,15 @@
+.label {
+    margin: 10px auto;
+    text-align: center;
+    font-family: 'Helvetica Neue', sans-serif;
+    padding: 1px 3px 2px;
+    font-size: 7px;
+    font-weight: bold;
+    color: #ffffff;
+    text-transform: uppercase;
+    white-space: nowrap;
+    background-color: #bfbfbf;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
