@@ -62,7 +62,7 @@ def event_glyphicon_style(event):
             'S':"glyphicon-cog",
             'A':"glyphicon-plus-sign",
             'P':"glyphicon-exclamation-sign",
-            'R':"glyphicon-ok-circle",
+            'R':"glyphicon-ok-sign",
             }[event.event_kind]
 
 @register.filter

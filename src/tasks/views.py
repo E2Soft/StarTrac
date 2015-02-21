@@ -11,7 +11,7 @@ from django.views.generic.edit import UpdateView, CreateView
 from collections import OrderedDict
 from tasks.forms import MilestoneForm, TaskUpdateForm, TaskCreateForm
 from tasks.models import Task, Milestone, Comment, Requirement, StateChange, \
-    Event, AddEvent
+    Event, AddEvent, PriorityChange, ResolveEvent
 from django.views.generic.base import TemplateView
 
     # Create your views here.
@@ -555,7 +555,8 @@ class TaskUpdate(UpdateView):
         return reverse('tdetail',args=(self.get_object().id,))
     
     def form_valid(self, form):
-
+        pk = self.get_object().id
+        task = get_object_or_404(Task,pk=pk)
         old_state = get_object_or_404(Task,pk=form.instance.pk).state_kind
         
         form.instance.state_kind = determine_task_state(on_wait=form.cleaned_data.get('is_on_wait'),
@@ -566,7 +567,25 @@ class TaskUpdate(UpdateView):
         
         if old_state != form.instance.state_kind:
             StateChange(new_state=form.instance.state_kind, event_user=self.request.user, event_kind='S', date_created=timezone.now(), requirement_task=form.instance).save()
+               
+        #izmena prioriteta
+        priority_var = self.request.POST.get("priority_lvl",None)
+
+        if(priority_var != task.priority_lvl):
+            priority_change = PriorityChange(event_user=self.request.user, event_kind="P",
+                                       date_created=timezone.now(),requirement_task=form.instance,
+                                       milestone=None,new_priority=priority_var)
+            priority_change.save()
         
+        #izmena resolve-a
+        resolve_var = self.request.POST.get("priority_lvl",None)
+        
+        if(resolve_var != task.resolve_type):
+            resolve_change = ResolveEvent(event_user=self.request.user, event_kind="R",
+                                       date_created=timezone.now(),requirement_task=form.instance,
+                                       milestone=None,new_resolve=resolve_var)
+            resolve_change.save()
+       
         return response
 
 class TaskCreate(CreateView):
@@ -590,6 +609,11 @@ class TaskCreate(CreateView):
         StateChange(new_state='C', event_user=self.request.user, event_kind='S', date_created=timezone.now(), requirement_task=form.instance).save()
         if  form.instance.state_kind != 'C': # ako je vec promenjeno stanje
             StateChange(new_state=form.instance.state_kind, event_user=self.request.user, event_kind='S', date_created=timezone.now(), requirement_task=form.instance).save()
+        
+        #add event
+        add_req = AddEvent(event_user=self.request.user, event_kind="A",date_created=timezone.now(),
+                           requirement_task=form.instance)
+        add_req.save()
         
         return resp
 
@@ -629,9 +653,7 @@ def resolve(request):
     task = get_object_or_404(Task,pk=box)
     task.resolve_type = rid
     task.save()
-    
-    #print("bla bla {} {}".format(rid, box))
-    #kada bojana zavrsi stanja ovo odkomentarisati da bi se doda resolve event u timeline
+
     """
 
     if(rid == ""):
@@ -772,9 +794,11 @@ class StatisticsIndexView(TemplateView):
         in_progress = []
         done = []
         onwait = []
-        list_created = []        
+        list_created = []  
+        
+        tasks = Task.objects.all()      
         for d in date_generated: 
-            z = StateChange.objects.filter(date_created__startswith = d.date)
+            z = StateChange.objects.filter(date_created__startswith = d.date, requirement_task = tasks)
             for i in z:
                 if i.new_state == "C":
                     created.append(i.requirement_task)
@@ -801,8 +825,9 @@ class StatisticsIndexView(TemplateView):
         list_onwait = []
         onwait = []
         
+        tasks = Task.objects.all()  
         for d in date_generated:  
-            z = StateChange.objects.filter(date_created__startswith = d.date)
+            z = StateChange.objects.filter(date_created__startswith = d.date, requirement_task = tasks)
             for i in z:
                 if i.new_state == "O":
                     onwait.append(i.requirement_task)
@@ -829,8 +854,9 @@ class StatisticsIndexView(TemplateView):
         list_done = []      
         onwait = []  
         
+        tasks = Task.objects.all()  
         for d in date_generated:  
-            z = StateChange.objects.filter(date_created__startswith = d.date)
+            z = StateChange.objects.filter(date_created__startswith = d.date, requirement_task = tasks)
             for i in z:
                 if i.new_state == "Z":
                     done.append(i.requirement_task)
@@ -857,8 +883,9 @@ class StatisticsIndexView(TemplateView):
         in_progress = []
         list_in_progress = []
           
+        tasks = Task.objects.all()  
         for d in date_generated:  
-            z = StateChange.objects.filter(date_created__startswith = d.date)
+            z = StateChange.objects.filter(date_created__startswith = d.date, requirement_task = tasks)
             for i in z:
                 if i.new_state == "P":
                     in_progress.append(i.requirement_task)

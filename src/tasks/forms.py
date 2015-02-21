@@ -109,7 +109,6 @@ class RequirementUpdate(UpdateView):
         
         #izmena prioriteta
         priority_var = self.request.POST.get("priority_lvl",None)
-        
         if(priority_var != requirement.priority_lvl):
             priority_change = PriorityChange(event_user=self.request.user, event_kind="P",
                                        date_created=timezone.now(),requirement_task=requirement,
@@ -142,12 +141,12 @@ class RequiremenCreate(CreateView):
         form.instance.project_tast_user = self.request.user
         
         response = super(RequiremenCreate, self).form_valid(form)
-        
+    
         #add event
         add_req = AddEvent(event_user=self.request.user, event_kind="A",date_created=timezone.now(),
                            requirement_task=form.instance,milestone=None)
         add_req.save()
-        
+    
         return response
     
 def extract_date(entity):
@@ -180,6 +179,7 @@ class TaskCreateForm(forms.ModelForm):
         for field in self.fields.values():
             field.widget.attrs['class']='form-control'
         self.fields["is_on_wait"].widget.attrs['class']=''
+        
 
 class TaskUpdateForm(forms.ModelForm):
     class Meta:
