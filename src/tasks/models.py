@@ -34,7 +34,7 @@ RESOLVE_TYPE = (
 
 class Tag(models.Model):
     name = models.CharField(max_length=20, default="")
-    color = models.CharField(max_length=8, default="#ffffff")
+    color = models.CharField(max_length=8, default="#000000")
     
     def __str__(self):
         return self.name

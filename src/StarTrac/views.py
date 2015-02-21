@@ -16,8 +16,8 @@ from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
-from StarTrac.forms import RegistrationForm, UserExtendForm
-from tasks.models import Task, UserExtend
+from StarTrac.forms import RegistrationForm
+from tasks.models import Task
 
 
 def home(request):
@@ -33,13 +33,13 @@ def home(request):
             ret_dict_order[task.state_kind].append(task)
         
         context = {"isadmin":request.user.is_superuser,"username":request.user.username, "tasks":ret_dict_order}
-        
+        '''
         try:
             userextend = UserExtend.objects.get(pk=request.user.pk)
             context["user"] = userextend
         except UserExtend.DoesNotExist:
             context["user"] = None
-
+'''
         return render(request,'tasks/logged.html',context)
     else:
         return render(request,'tasks/index.html')
@@ -75,13 +75,13 @@ def login(request):
             ret_dict[task.state_kind].append(task)
         
         context = {"isadmin":request.user.is_superuser,"username":request.user.username, "tasks":ret_dict}
-        
+        '''
         try:
             userextend = UserExtend.objects.get(pk=request.user.pk)
             context["user"] = userextend
         except UserExtend.DoesNotExist:
             context["user"] = None
-        
+        '''
         return render(request,'tasks/logged.html',context)
     else:
         context = {'invalid': "Username and/or password are not ok"}
@@ -106,16 +106,16 @@ def logout(request):
 def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
-        formExtend = UserExtendForm(request.POST, request.FILES)
+        #formExtend = UserExtendForm(request.POST, request.FILES)
      
-        if form.is_valid() and formExtend.is_valid():
+        if form.is_valid():# and formExtend.is_valid():
     
             '''
             snimi korisnika u bazu
             '''
             
             user = form.save()
-             
+            '''
             userExtend = formExtend.save(commit=False)
             userExtend.user = user
     
@@ -124,7 +124,7 @@ def register(request):
                 userExtend.picture = request.FILES['picture']
      
             userExtend.save()
-            
+            '''
      
 #             registered = True
             context = {'message': "User registred, now login..."}
@@ -134,7 +134,7 @@ def register(request):
             print(form.error_messages)"""
     else:
         form = RegistrationForm()
-        formExtend = UserExtendForm()
+        #formExtend = UserExtendForm()
     
     back = ""
     try:
@@ -142,4 +142,4 @@ def register(request):
     except(KeyError):
         back = "/"
         
-    return render(request,'tasks/register.html', {'form': form,"back":back,'formExtend':formExtend})
+    return render(request,'tasks/register.html', {'form': form,"back":back})#,'formExtend':formExtend})
