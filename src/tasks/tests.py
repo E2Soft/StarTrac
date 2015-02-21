@@ -1,17 +1,4 @@
-from django.test import TestCase
-
 # Create your tests here.
-from django.contrib.auth.models import User, AnonymousUser
-from django.core.urlresolvers import reverse
-from django.test import Client
-from django.test import TestCase
-from django.test.client import RequestFactory
-from django.utils import timezone
-
-from tasks.forms import MilestoneDetail, TimelineList
-from tasks.models import Milestone
-
-
 # Create your tests here.
 """
     pokretanje:
@@ -19,9 +6,21 @@ from tasks.models import Milestone
         ili desni klik na projekat > Django > run Django Django Tests
 """
 
+from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
+from django.test import Client
+from django.test import TestCase
+from django.test.client import RequestFactory
+from django.utils import timezone
+from tasks.models import Milestone
+
+
 class SimpleTestCase(TestCase):
     def setUp(self):
-        milestone = Milestone.objects.create(date_created=timezone.now(),name="Test",summary="Test adding new Milestone")
+        Milestone.objects.create(date_created=timezone.now(),name="Test",summary="Test adding new Milestone")
+        self.factory = RequestFactory()
+        self.user = User.objects.create_user(username='jacob', email='jacob@asd.com', password='top_secret')
+        self.client.login(username='jacob', password='top_secret')
     
     def test_timeline_view(self):
         resp = self.client.get('/timeline/')
