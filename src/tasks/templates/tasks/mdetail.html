@@ -80,7 +80,7 @@
 			{% for event in milestone.task_set.all %}
 					<li class="list-group-item">
 					<span class="badge"><span class="glyphicon glyphicon-comment"></span> {{event.task|commnets}}</span>
-					{{event.task.name}}
+					<a href="{% url 'tdetail' event.task.pk %}">{{event.task.name}}</a>
 					</li>
 			{% endfor %}
 		</ul>
