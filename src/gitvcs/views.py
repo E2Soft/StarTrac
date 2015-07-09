@@ -61,7 +61,10 @@ class FileContentsView(TemplateView):
         
         commit, rev_type, rev_name = _get_rev(self.request.GET.get('branch'), self.request.GET.get('commit'))
         
-        context['file_contents'] = repository.get_blob_contents(commit.tree[file_path])
+        try:
+            context['file_contents'] = repository.get_blob_contents(commit.tree[file_path])
+        except:
+            context['file_contents'] = "Non-text file"
         context['file_path'] = file_path
         context['rev_name'] = rev_name
         context['rev_type'] = rev_type

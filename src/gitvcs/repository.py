@@ -60,7 +60,7 @@ def branches():
     return local_repo().branches
 
 def _all_commits_generator():
-    current_commits = [head.commit for head in local_repo().heads] # take all head commits
+    current_commits = list(set([head.commit for head in local_repo().heads])) # take all head commits
     
     while current_commits: # while there are commits
         current_commits.sort(key=lambda commit: commit.committed_date) # sort by date
